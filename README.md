@@ -1,4 +1,4 @@
 ## DEVELOPERS TEAM - SCAPE ROOM S3.T3
 
-#te quiero lucy#
+
 
