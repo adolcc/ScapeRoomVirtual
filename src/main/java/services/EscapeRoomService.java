@@ -23,7 +23,8 @@ public class EscapeRoomService {
     }
 
     public void checkNotEmptyName(String name) {
-        if(name.isBlank()) {
+        name = name.trim();
+        if(name.isEmpty()) {
             throw new EmptyEscapeRoomNameException();
         }
     }
