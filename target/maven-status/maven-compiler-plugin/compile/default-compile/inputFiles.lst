@@ -1,0 +1,12 @@
+C:\Users\cadec\IdeaProjects\ScapeRoomVirtual\src\main\java\exceptions\DuplicateEscapeRoomNameException.java
+C:\Users\cadec\IdeaProjects\ScapeRoomVirtual\src\main\java\exceptions\DuplicateRoomNameException.java
+C:\Users\cadec\IdeaProjects\ScapeRoomVirtual\src\main\java\exceptions\EmptyEscapeRoomNameException.java
+C:\Users\cadec\IdeaProjects\ScapeRoomVirtual\src\main\java\exceptions\EmptyRoomNameException.java
+C:\Users\cadec\IdeaProjects\ScapeRoomVirtual\src\main\java\exceptions\InsufficientCluesException.java
+C:\Users\cadec\IdeaProjects\ScapeRoomVirtual\src\main\java\exceptions\InsufficientDecorationsException.java
+C:\Users\cadec\IdeaProjects\ScapeRoomVirtual\src\main\java\exceptions\NullEscapeRoomNameException.java
+C:\Users\cadec\IdeaProjects\ScapeRoomVirtual\src\main\java\models\Clue.java
+C:\Users\cadec\IdeaProjects\ScapeRoomVirtual\src\main\java\models\Decoration.java
+C:\Users\cadec\IdeaProjects\ScapeRoomVirtual\src\main\java\models\EscapeRoom.java
+C:\Users\cadec\IdeaProjects\ScapeRoomVirtual\src\main\java\models\Room.java
+C:\Users\cadec\IdeaProjects\ScapeRoomVirtual\src\main\java\services\EscapeRoomService.java

@@ -2,7 +2,7 @@ package exceptions;
 
 public class NullEscapeRoomNameException extends RuntimeException {
 
-    public NullEscapeRoomNameException(){
+    public NullEscapeRoomNameException(String s){
         super("El nombre del Escape Room no puede ser nulo.");
     }
 }
