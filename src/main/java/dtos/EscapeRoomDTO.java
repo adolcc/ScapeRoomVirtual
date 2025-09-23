@@ -1,19 +1,22 @@
 package dtos;
 
-import models.EscapeRoom;
-
 import java.util.Objects;
 
 public class EscapeRoomDTO {
-    private int id;
+    private Integer id;
     private String name;
 
     public EscapeRoomDTO(){}
 
-    public EscapeRoomDTO(int id, String name) {
+    public EscapeRoomDTO(Integer id, String name) {
         this.id = id;
         this.name = name;
     }
+
+    public Integer getId() { return this.id; }
+    public String getName() { return this.name; }
+    public void setId(Integer id) { this.id = id; }
+    public void setName(String name) { this.name = name; }
 
     @Override
     public boolean equals(Object obj) {

@@ -59,7 +59,6 @@ public class EscapeRoomServiceTest {
         EscapeRoom persisted = escapeRoomService.findByName("Ciudad Futura");
         assertNotNull(persisted);
         assertEquals("Ciudad Futura", persisted.getName());
-
     }
 }
 /*
