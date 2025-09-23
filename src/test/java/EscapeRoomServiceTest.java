@@ -54,9 +54,4 @@ public class EscapeRoomServiceTest {
 /*
 given_when_then
 
-(\"" + escapeRoomService.getEscapeRooms().contains("La Prisión") + "\")
-
-No se admiten nombres vacíos ni duplicados.
-
-
 Debe guardarse en una bbdd.*/
