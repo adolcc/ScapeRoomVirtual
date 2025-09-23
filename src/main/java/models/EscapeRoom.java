@@ -1,17 +1,25 @@
 package models;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 public class EscapeRoom {
 
     private String name;
-
+    private List<Room> rooms;
     public EscapeRoom(String name) {
         this.name = name;
+        this.rooms = new ArrayList<>();
     }
 
     public String getName() {
         return this.name;
+    }
+
+
+    public List<Room> getRooms() {
+        return rooms;
     }
 
     @Override
@@ -26,4 +34,9 @@ public class EscapeRoom {
     public int hashCode() {
         return Objects.hash(this.name.toLowerCase());
     }
+
+    public void addRoom(Room room) {
+        rooms.add(room);
+    }
+
 }
