@@ -12,3 +12,6 @@ docker-compose.override.yml
 /workspace.xml
 # Environment-dependent path to Maven home directory
 /mavenHomeManager.xml
+.idea/
+
+.target/
