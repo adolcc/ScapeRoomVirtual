@@ -1,3 +1,22 @@
+# IDE
 .idea/
-target/
+*.iws
 *.iml
+*.ipr
+
+# Build
+target/
+bin/
+build/
+*.class
+*.jar
+*.war
+*.ear
+
+# Logs
+logs/
+*.log
+
+# OS
+.DS_Store
+Thumbs.db
