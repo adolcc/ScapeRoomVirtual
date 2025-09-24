@@ -5,15 +5,16 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 
 public class DatabaseConfig {
-    private static final String URL;
-    private static final String USER;
-    private static final String PASSWORD;
+    private static final String URL = "jdbc:mysql://localhost:3306/escape_room_db";
+    private static final String USER = "escape_user";
+    private static final String PASSWORD = "escape_password";
 
     static {
-        URL = "jdbc:mysql://localhost:3306/escape_room_db";
-        USER = "escape_user";
-        PASSWORD = "escape_password";
-
+        try {
+            Class.forName("com.mysql.cj.jdbc.Driver");
+        } catch (ClassNotFoundException e) {
+            throw new RuntimeException("Error cargando MySQL JDBC Driver.");
+        }
     }
 
     public static Connection getConnection() throws SQLException {
@@ -24,6 +25,7 @@ public class DatabaseConfig {
         return DriverManager.getConnection(
                 "jdbc:mysql://localhost:3306/escape_room_test",
                 USER,
-                PASSWORD);
+                PASSWORD
+        );
     }
 }

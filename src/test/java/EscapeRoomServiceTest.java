@@ -61,7 +61,3 @@ public class EscapeRoomServiceTest {
         assertEquals("Ciudad Futura", persisted.getName());
     }
 }
-/*
-given_when_then
-
-Debe guardarse en una bbdd.*/

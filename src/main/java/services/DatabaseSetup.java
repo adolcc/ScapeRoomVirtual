@@ -26,10 +26,13 @@ public class DatabaseSetup {
         try (Connection conn = getConnection();
              Statement stmt = conn.createStatement()) {
 
+            stmt.execute("CREATE DATABASE IF NOT EXISTS escape_room_test");
+            stmt.execute("USE escape_rooms_test");
+
             executeInitScript(conn);
 
         } catch (Exception e) {
-            throw new SQLException("Error inicializando la base de datos con init.sql.");
+            throw new SQLException("Error inicializando la base de datos.");
         }
     }
 

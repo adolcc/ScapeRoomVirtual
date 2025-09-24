@@ -7,12 +7,9 @@ import org.junit.jupiter.api.Test;
 import services.DatabaseSetup;
 
 import java.sql.SQLException;
-import java.util.Optional;
-
 import static org.junit.jupiter.api.Assertions.*;
 
-public class EscapeRoomDAOTest {
-
+class EscapeRoomDAOTest {
     private EscapeRoomDAO escapeRoomDAO;
     private DatabaseSetup testDatabase;
 
@@ -31,9 +28,12 @@ public class EscapeRoomDAOTest {
         assertNotNull(savedDto.getId());
         assertEquals("Ciudad Futura", savedDto.getName());
 
-        Optional<EscapeRoomDTO> foundDto = escapeRoomDAO.findByName("Ciudad Futura");
-        assertTrue(foundDto.isPresent());
-        assertEquals(savedDto.getId(), foundDto.get().getId());
+        assertNotNull(savedDto.getId());
+        assertEquals("Ciudad Futura", savedDto.getName());
+
+        EscapeRoomDTO foundDto = escapeRoomDAO.findByName("Ciudad Futura");
+        assertNotNull(foundDto);
+        assertEquals(savedDto.getId(), foundDto.getId());
     }
 
     @Test

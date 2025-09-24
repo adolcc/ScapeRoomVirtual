@@ -30,4 +30,9 @@ public class EscapeRoomDTO {
     public int hashCode() {
         return Objects.hash(this.id, this.name);
     }
+
+    @Override
+    public String toString() {
+        return "EscapeRoomDTO{id=" + this.id + ", nombre='" + this.name + "'}";
+    }
 }

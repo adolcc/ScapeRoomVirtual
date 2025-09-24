@@ -8,7 +8,7 @@ import java.util.Optional;
 public interface EscapeRoomDAO {
     EscapeRoomDTO save(EscapeRoomDTO escapeRoomDTO);
     Optional<EscapeRoomDTO> findById(Integer id);
-    Optional<EscapeRoomDTO> findByName(String name);
+    EscapeRoomDTO findByName(String name);
     List<EscapeRoomDTO> findAll();
     boolean delete(Integer id);
 }
