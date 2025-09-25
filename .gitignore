@@ -1,0 +1,31 @@
+# IDE files - DO NOT COMMIT
+.idea/
+*.iml
+*.iws
+*.ipr
+
+# Build files
+target/
+bin/
+build/
+
+# Dependencies
+**/node_modules/
+**/.gradle/
+
+# Logs
+logs/
+*.log
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Maven
+pom.xml.tag
+pom.xml.releaseBackup
+pom.xml.versionsBackup
+
+# Application properties (si hay configuraciones locales)
+application-local.properties
+application-dev.properties
