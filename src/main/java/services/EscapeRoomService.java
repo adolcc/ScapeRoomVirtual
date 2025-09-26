@@ -11,77 +11,64 @@ public class EscapeRoomService {
 
     private Set<EscapeRoom> escapeRoomSet;
 
-    public EscapeRoomService() {
+    public EscapeRoomService(){
         this.escapeRoomSet = new HashSet<>();
     }
 
-    // Validaciones de nombre
     public void checkNotNullName(String name) {
-        if (name == null) {
-            throw new NullEscapeRoomNameException("El nombre del Escape Room no puede ser nulo.");
+        if(name == null) {
+            throw new NullEscapeRoomNameException();
         }
     }
 
     public void checkNotEmptyName(String name) {
         name = name.trim();
-        if (name.isEmpty()) {
-            throw new EmptyEscapeRoomNameException("El nombre del Escape Room no puede estar vacío.");
+        if(name.isEmpty()) {
+            throw new EmptyEscapeRoomNameException();
         }
     }
 
     public void checkNotDuplicateName(String name) {
-        if (escapeRoomSet.contains(new EscapeRoom(name))) {
-            throw new DuplicateEscapeRoomNameException("El nombre elegido corresponde a un Escape Room existente.");
+        if(escapeRoomSet.contains(new EscapeRoom(name))) {
+            throw new DuplicateEscapeRoomNameException();
         }
     }
 
-    // Crear Escape Room
     public void createEscapeRoom(String name) {
         checkNotNullName(name);
         checkNotEmptyName(name);
         checkNotDuplicateName(name);
-        escapeRoomSet.add(new EscapeRoom(name.trim()));
+        escapeRoomSet.add(new EscapeRoom(name));
     }
-
-    // Obtener Escape Room por nombre
-    public EscapeRoom getEscapeRoom(String name) {
-        return escapeRoomSet.stream()
-                .filter(er -> er.getName().equalsIgnoreCase(name.trim()))
-                .findFirst()
-                .orElse(null);
-    }
-
-    // Obtener todos los Escape Rooms
-    public Set<EscapeRoom> getEscapeRooms() {
-        return escapeRoomSet;
-    }
-
-    // Añadir sala a un Escape Room
     public void addRoomToEscapeRoom(String escapeRoomName, Room room) {
-        EscapeRoom escapeRoom = getEscapeRoom(escapeRoomName);
-        if (escapeRoom == null) {
-            throw new RuntimeException("Escape Room no encontrado.");
-        }
+        EscapeRoom escapeRoom = escapeRoomSet.stream()
+                .filter(er -> er.getName().equalsIgnoreCase(escapeRoomName))
+                .findFirst()
+                .orElseThrow(() -> new RuntimeException("Escape Room no encontrado"));
 
-        String nameRoom = room.getName().trim();
-        if (nameRoom.isEmpty()) {
-            throw new EmptyRoomNameException("El nombre de la sala no puede estar vacío.");
+        if (escapeRoom.getRooms().contains(room)) {
+            throw new DuplicateRoomNameException();
         }
-
-        boolean duplicado = escapeRoom.getRooms().stream()
-                .anyMatch(r -> r.getName().equalsIgnoreCase(nameRoom));
-        if (duplicado) {
-            throw new DuplicateRoomNameException("Ya existe una sala con ese nombre en el Escape Room.");
-        }
-
         if (room.getClues().size() < 2) {
-            throw new InsufficientCluesException("La sala debe contener al menos dos pistas.");
+            throw new InsufficientCluesException();
         }
-
         if (room.getDecorations().size() < 2) {
-            throw new InsufficientDecorationsException("La sala debe contener al menos dos objetos de decoración.");
+            throw new InsufficientDecorationsException();
         }
 
         escapeRoom.addRoom(room);
     }
+
+    public Set<EscapeRoom> getEscapeRooms() {
+        return escapeRoomSet;
+    }
+
+    public EscapeRoom getEscapeRoom(String name) {
+        return escapeRoomSet.stream()
+                .filter(er -> er.getName().equalsIgnoreCase(name))
+                .findFirst()
+                .orElseThrow(() -> new RuntimeException("Escape Room no encontrado"));
+    }
+
 }
+

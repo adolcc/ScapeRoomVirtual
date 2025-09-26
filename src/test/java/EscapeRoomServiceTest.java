@@ -6,6 +6,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import services.EscapeRoomService;
 
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -50,13 +51,13 @@ public class EscapeRoomServiceTest {
 
         assertEquals("El nombre elegido corresponde a un Escape Room existente.", e.getMessage());
     }
+
+    @Test
+    void givenValidInput_WhenCreatingEscapeRoom_ItPersistsInDatabase() {
+        escapeRoomService.createEscapeRoom("Ciudad Futura");
+
+        EscapeRoom persisted = escapeRoomService.getEscapeRoom("Ciudad Futura");
+        assertNotNull(persisted);
+        assertEquals("Ciudad Futura", persisted.getName());
+    }
 }
-/*
-given_when_then
-
-(\"" + escapeRoomService.getEscapeRooms().contains("La Prisión") + "\")
-
-No se admiten nombres vacíos ni duplicados.
-
-
-Debe guardarse en una bbdd.*/

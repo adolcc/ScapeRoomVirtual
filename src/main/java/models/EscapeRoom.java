@@ -21,6 +21,9 @@ public class EscapeRoom {
     public List<Room> getRooms() {
         return rooms;
     }
+    public void addRoom(Room room) {
+        rooms.add(room);
+    }
 
     @Override
     public boolean equals(Object o) {
@@ -33,10 +36,6 @@ public class EscapeRoom {
     @Override
     public int hashCode() {
         return Objects.hash(this.name.toLowerCase());
-    }
-
-    public void addRoom(Room room) {
-        rooms.add(room);
     }
 
 }

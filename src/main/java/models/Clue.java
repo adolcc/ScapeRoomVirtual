@@ -1,19 +1,19 @@
 package models;
 
 public class Clue {
-    private String tema;
-    private double precio;
+    private String theme;
+    private double price;
 
-    public Clue(String tema, double precio) {
-        this.tema = tema;
-        this.precio = precio;
+    public Clue(String theme, double price) {
+        this.theme = theme;
+        this.price = price;
     }
 
-    public String getTema() {
-        return tema;
+    public String getTheme() {
+        return theme;
     }
 
-    public double getPrecio() {
-        return precio;
+    public double getPrice() {
+        return price;
     }
 }

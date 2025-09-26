@@ -3,7 +3,7 @@ package models;
 import exceptions.*;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
+
 
 public class Room {
 
@@ -14,7 +14,7 @@ public class Room {
 
     public Room(String name, int level) {
         if (name == null || name.trim().isEmpty()) {
-            throw new EmptyRoomNameException("El nombre de la sala no puede estar vacío.");
+            throw new EmptyRoomNameException();
         }
         this.name = name.trim();
         this.level = level;
@@ -56,6 +56,7 @@ public class Room {
 
     @Override
     public int hashCode() {
-        return Objects.hash(name.toLowerCase());
+
+        return name.hashCode();
     }
 }
