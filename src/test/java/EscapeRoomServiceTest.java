@@ -56,7 +56,7 @@ public class EscapeRoomServiceTest {
     void givenValidInput_WhenCreatingEscapeRoom_ItPersistsInDatabase() {
         escapeRoomService.createEscapeRoom("Ciudad Futura");
 
-        EscapeRoom persisted = escapeRoomService.getEscapeRoom("Ciudad Futura");
+        EscapeRoom persisted = escapeRoomService.findByName("Ciudad Futura");
         assertNotNull(persisted);
         assertEquals("Ciudad Futura", persisted.getName());
     }
