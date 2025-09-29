@@ -1,31 +1,106 @@
-# IDE files - DO NOT COMMIT
+# =============================================
+# ARCHIVOS DE SISTEMA OPERATIVO
+# =============================================
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# =============================================
+# ARCHIVOS DE IDEs Y EDITORES
+# =============================================
+
+# VS Code
+.vscode/
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+*.code-workspace
+
+# IntelliJ IDEA
 .idea/
 *.iml
 *.iws
 *.ipr
 
-# Build files
-target/
-bin/
-build/
+# Archivos temporales de editores
+*.swp
+*.swo
+*~
 
-# Dependencies
-**/node_modules/
-**/.gradle/
-
-# Logs
-logs/
-*.log
-
-# OS files
-.DS_Store
-Thumbs.db
+# =============================================
+# JAVA - POR TU POM.XML Y TARGET/
+# =============================================
 
 # Maven
+target/
 pom.xml.tag
 pom.xml.releaseBackup
 pom.xml.versionsBackup
 
-# Application properties (si hay configuraciones locales)
+# Gradle
+.gradle/
+
+# =============================================
+# NODE.JS - POR TU PACKAGE.JSON
+# =============================================
+
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# =============================================
+# DOCKER
+# =============================================
+
+# Docker
+docker-compose.override.yml
+
+# =============================================
+# ARCHIVOS DE ENTORNO Y CONFIGURACIÓN
+# =============================================
+
+# Variables de entorno
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Configuraciones de aplicación
 application-local.properties
 application-dev.properties
+
+# =============================================
+# LOGS
+# =============================================
+
+logs/
+*.log
+
+# =============================================
+# BUILD Y DISTRIBUCIÓN
+# =============================================
+
+# Build outputs
+dist/
+build/
+out/
+bin/
+*.tsbuildinfo
+
+# Paquetes
+*.tgz
+*.tar.gz
+*.zip
+*.rar
+
