@@ -1,29 +1,29 @@
-package implementations;
+package implementation;
 
-import daos.EscapeRoomDAO;
-import dtos.EscapeRoomDTO;
-import exceptions.DuplicateEscapeRoomNameException;
-import exceptions.EscapeRoomNotFoundException;
+import service.DAO;
+import service.DTO;
+import exception.DuplicateEscapeRoomNameException;
+import exception.EscapeRoomNotFoundException;
 
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-public class EscapeRoomDAOImpl implements EscapeRoomDAO {
+public class DAOImpl implements DAO {
 
     private final Connection connection;
 
-    public EscapeRoomDAOImpl(Connection connection) {
+    public DAOImpl(Connection connection) {
         this.connection = connection;
     }
 
     @Override
-    public EscapeRoomDTO save(EscapeRoomDTO escapeRoomDTO) {
+    public DTO save(DTO DTO) {
         String sql = "INSERT INTO escape_rooms (name) VALUES (?)";
 
         try (PreparedStatement stmt = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
-            stmt.setString(1, escapeRoomDTO.getName());
+            stmt.setString(1, DTO.getName());
 
             int affectedRows = stmt.executeUpdate();
             if (affectedRows == 0) {
@@ -33,13 +33,13 @@ public class EscapeRoomDAOImpl implements EscapeRoomDAO {
 
             try (ResultSet generatedKeys = stmt.getGeneratedKeys()) {
                 if (generatedKeys.next()) {
-                    escapeRoomDTO.setId(generatedKeys.getInt(1));
+                    DTO.setId(generatedKeys.getInt(1));
                 } else {
                     throw new SQLException("Ocurrió un fallo durante la creación del Escape Room -> " +
                             "no se pudo obtener el ID.");
                 }
             }
-            return escapeRoomDTO;
+            return DTO;
 
         } catch (SQLException e) {
             if (e.getErrorCode() == 1062) {
@@ -49,15 +49,15 @@ public class EscapeRoomDAOImpl implements EscapeRoomDAO {
         }
     }
 
-    private EscapeRoomDTO mapResultSetToDTO(ResultSet rs) throws SQLException {
-        return new EscapeRoomDTO(
+    private DTO mapResultSetToDTO(ResultSet rs) throws SQLException {
+        return new DTO(
                 rs.getInt("id"),
                 rs.getString("nombre")
         );
     }
 
     @Override
-    public Optional<EscapeRoomDTO> findById(Integer id) {
+    public Optional<DTO> findById(Integer id) {
         String sql = "SELECT id, name FROM escape_rooms WHERE id = ?";
 
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
@@ -76,7 +76,7 @@ public class EscapeRoomDAOImpl implements EscapeRoomDAO {
     }
 
     @Override
-    public EscapeRoomDTO findByName(String name) {
+    public DTO findByName(String name) {
         String sql = "SELECT id, name FROM escape_rooms WHERE name = ?";
 
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
@@ -95,9 +95,9 @@ public class EscapeRoomDAOImpl implements EscapeRoomDAO {
     }
 
     @Override
-    public List<EscapeRoomDTO> findAll() {
+    public List<DTO> findAll() {
         String sql = "SELECT id, name FROM escape_rooms";
-        List<EscapeRoomDTO> escapeRooms = new ArrayList<>();
+        List<DTO> escapeRooms = new ArrayList<>();
 
         try (PreparedStatement stmt = connection.prepareStatement(sql);
              ResultSet rs = stmt.executeQuery()) {

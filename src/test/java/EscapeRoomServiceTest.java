@@ -1,10 +1,10 @@
-import exceptions.DuplicateEscapeRoomNameException;
-import exceptions.EmptyEscapeRoomNameException;
-import exceptions.NullEscapeRoomNameException;
-import models.EscapeRoom;
+import exception.DuplicateEscapeRoomNameException;
+import exception.EmptyEscapeRoomNameException;
+import exception.NullEscapeRoomNameException;
+import model.EscapeRoom;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import services.EscapeRoomService;
+import service.EscapeRoomService;
 
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThrows;
