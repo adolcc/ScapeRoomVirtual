@@ -1,14 +1,14 @@
-package dtos;
+package service;
 
 import java.util.Objects;
 
-public class EscapeRoomDTO {
+public class DTO {
     private Integer id;
     private String name;
 
-    public EscapeRoomDTO(){}
+    public DTO(){}
 
-    public EscapeRoomDTO(Integer id, String name) {
+    public DTO(Integer id, String name) {
         this.id = id;
         this.name = name;
     }
@@ -22,7 +22,7 @@ public class EscapeRoomDTO {
     public boolean equals(Object obj) {
         if (this == obj) return true;
         if (obj == null || getClass() != obj.getClass()) return false;
-        EscapeRoomDTO other = (EscapeRoomDTO) obj;
+        DTO other = (DTO) obj;
         return Objects.equals(this.id, other.id) && Objects.equals(this.name, other.name);
     }
 
@@ -33,6 +33,6 @@ public class EscapeRoomDTO {
 
     @Override
     public String toString() {
-        return "EscapeRoomDTO{id=" + this.id + ", nombre='" + this.name + "'}";
+        return "DTO{id=" + this.id + ", nombre='" + this.name + "'}";
     }
 }

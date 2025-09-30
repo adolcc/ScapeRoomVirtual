@@ -1,6 +1,4 @@
-package services;
-
-import configurations.DatabaseConfig;
+package database;
 
 import java.nio.file.Files;
 import java.nio.file.Paths;

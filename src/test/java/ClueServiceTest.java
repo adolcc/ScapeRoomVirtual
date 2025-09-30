@@ -1,10 +1,10 @@
-import exceptions.DuplicateClueNameException;
-import exceptions.EmptyClueNameException;
-import exceptions.NullClueNameException;
-import models.Clue;
+import exception.DuplicateClueNameException;
+import exception.EmptyClueNameException;
+import exception.NullClueNameException;
+import model.Clue;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import services.ClueService;
+import service.ClueService;
 
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThrows;

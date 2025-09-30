@@ -1,4 +1,4 @@
-package exceptions;
+package exception;
 
 public class EmptyClueNameException extends RuntimeException {
     public EmptyClueNameException() {

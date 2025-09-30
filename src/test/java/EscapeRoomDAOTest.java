@@ -1,29 +1,29 @@
-import daos.EscapeRoomDAO;
-import dtos.EscapeRoomDTO;
-import exceptions.EscapeRoomNotFoundException;
-import implementations.EscapeRoomDAOImpl;
+import service.DAO;
+import service.DTO;
+import exception.EscapeRoomNotFoundException;
+import implementation.DAOImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import services.DatabaseSetup;
+import database.DatabaseSetup;
 
 import java.sql.SQLException;
 import static org.junit.jupiter.api.Assertions.*;
 
 class EscapeRoomDAOTest {
-    private EscapeRoomDAO escapeRoomDAO;
+    private DAO DAO;
     private DatabaseSetup testDatabase;
 
     @BeforeEach
     void setUp() throws SQLException {
         testDatabase = new DatabaseSetup();
         testDatabase.initializeDatabase();
-        escapeRoomDAO = new EscapeRoomDAOImpl(testDatabase.getConnection());
+        DAO = new DAOImpl(testDatabase.getConnection());
         testDatabase.cleanDatabase();
     }
 
     @Test
     void givenNewEscapeRoom_WhenSavingDTO_thenSuccess() {
-        EscapeRoomDTO savedDto = escapeRoomDAO.save(new EscapeRoomDTO(null, "Ciudad Futura"));
+        DTO savedDto = DAO.save(new DTO(null, "Ciudad Futura"));
 
         assertNotNull(savedDto.getId());
         assertEquals("Ciudad Futura", savedDto.getName());
@@ -31,7 +31,7 @@ class EscapeRoomDAOTest {
         assertNotNull(savedDto.getId());
         assertEquals("Ciudad Futura", savedDto.getName());
 
-        EscapeRoomDTO foundDto = escapeRoomDAO.findByName("Ciudad Futura");
+        DTO foundDto = DAO.findByName("Ciudad Futura");
         assertNotNull(foundDto);
         assertEquals(savedDto.getId(), foundDto.getId());
     }
@@ -39,7 +39,7 @@ class EscapeRoomDAOTest {
     @Test
     void givenNoExistingName_WhenFindingByName_thenThrowException() {
         Exception e = assertThrows(EscapeRoomNotFoundException.class,
-                () -> escapeRoomDAO.findByName("No Existe"));
+                () -> DAO.findByName("No Existe"));
         assertEquals("El Escape Room solicitado no existe.", e.getMessage());
     }
 

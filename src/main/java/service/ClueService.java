@@ -1,9 +1,9 @@
-package services;
+package service;
 
-import exceptions.DuplicateClueNameException;
-import exceptions.EmptyClueNameException;
-import exceptions.NullClueNameException;
-import models.Clue;
+import exception.DuplicateClueNameException;
+import exception.EmptyClueNameException;
+import exception.NullClueNameException;
+import model.Clue;
 
 import java.util.HashSet;
 import java.util.Set;
