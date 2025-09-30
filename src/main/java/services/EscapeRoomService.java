@@ -43,7 +43,7 @@ public class EscapeRoomService {
         EscapeRoom escapeRoom = escapeRoomSet.stream()
                 .filter(er -> er.getName().equalsIgnoreCase(escapeRoomName))
                 .findFirst()
-                .orElseThrow(() -> new RuntimeException("Escape Room no encontrado"));
+                .orElseThrow(()-> new EscapeRoomNotFoundException());
 
         if (escapeRoom.getRooms().contains(room)) {
             throw new DuplicateRoomNameException();
