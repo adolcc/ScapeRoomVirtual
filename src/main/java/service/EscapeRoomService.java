@@ -1,9 +1,8 @@
 package service;
 
-import exception.DuplicateEscapeRoomNameException;
-import exception.EmptyEscapeRoomNameException;
-import exception.NullEscapeRoomNameException;
+import exception.*;
 import model.EscapeRoom;
+import model.Room;
 
 import java.util.HashSet;
 import java.util.Set;

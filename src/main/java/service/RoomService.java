@@ -1,9 +1,10 @@
 package service;
 
-import exceptions.DuplicateRoomNameException;
-import exceptions.EmptyRoomNameException;
-import exceptions.NullEscapeRoomNameException;
-import models.Room;
+
+import exception.DuplicateRoomNameException;
+import exception.EmptyRoomNameException;
+import exception.NullEscapeRoomNameException;
+import model.Room;
 
 import java.util.HashSet;
 import java.util.Set;
