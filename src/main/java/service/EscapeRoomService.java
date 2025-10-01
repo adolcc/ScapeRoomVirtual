@@ -3,47 +3,39 @@ package service;
 import exception.*;
 import model.EscapeRoom;
 import model.Room;
+import repository.dao.EscapeRoomDAOImpl;
+import repository.dao.GenericDAO;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.List;
+import java.util.Optional;
 
 public class EscapeRoomService {
 
-    private Set<EscapeRoom> escapeRoomSet;
+    private final GenericDAO<EscapeRoom, Long> escapeRoomDAO;
 
-    public EscapeRoomService(){
-        this.escapeRoomSet = new HashSet<>();
+    public EscapeRoomService() {
+        this.escapeRoomDAO = new EscapeRoomDAOImpl();
     }
 
-    public void checkNotNullName(String name) {
-        if(name == null) {
-            throw new NullEscapeRoomNameException();
-        }
+    public EscapeRoomService(GenericDAO<EscapeRoom, Long> escapeRoomDAO) {
+        this.escapeRoomDAO = escapeRoomDAO;
     }
 
-    public void checkNotEmptyName(String name) {
-        if(name.trim().isEmpty()) {
-            throw new EmptyEscapeRoomNameException();
-        }
-    }
-
-    public void checkNotDuplicateName(String name) {
-        if(escapeRoomSet.contains(new EscapeRoom(name))) {
+    private void checkNotDuplicateName(String name) {
+        if (escapeRoomDAO.findByName(name).isPresent()) {
             throw new DuplicateEscapeRoomNameException();
         }
     }
 
-    public void createEscapeRoom(String name) {
-        checkNotNullName(name);
-        checkNotEmptyName(name);
+    public EscapeRoom createEscapeRoom(String name) {
         checkNotDuplicateName(name);
-        escapeRoomSet.add(new EscapeRoom(name));
+        EscapeRoom escapeRoom = new EscapeRoom(name);
+        return escapeRoomDAO.save(escapeRoom);
     }
+
     public void addRoomToEscapeRoom(String escapeRoomName, Room room) {
-        EscapeRoom escapeRoom = escapeRoomSet.stream()
-                .filter(er -> er.getName().equalsIgnoreCase(escapeRoomName))
-                .findFirst()
-                .orElseThrow(()-> new EscapeRoomNotFoundException());
+        EscapeRoom escapeRoom = escapeRoomDAO.findByName(escapeRoomName)
+                .orElseThrow(EscapeRoomNotFoundException::new);
 
         if (escapeRoom.getRooms().contains(room)) {
             throw new DuplicateRoomNameException();
@@ -56,17 +48,28 @@ public class EscapeRoomService {
         }
 
         escapeRoom.addRoom(room);
+        escapeRoomDAO.save(escapeRoom);
     }
 
-    public Set<EscapeRoom> getEscapeRooms() {
-        return escapeRoomSet;
+    public List<EscapeRoom> getEscapeRooms() {
+        return escapeRoomDAO.findAll();
     }
 
-    public EscapeRoom getEscapeRoom(String name) {
-        return escapeRoomSet.stream()
-                .filter(er -> er.getName().equalsIgnoreCase(name))
-                .findFirst()
-                .orElseThrow(() -> new RuntimeException("Escape Room no encontrado"));
+    public Optional<EscapeRoom> getEscapeRoom(String name) {
+        return escapeRoomDAO.findByName(name);
+    }
+
+    public Optional<EscapeRoom> getEscapeRoom(Long id) {
+        return escapeRoomDAO.findById(id);
+    }
+
+    public boolean deleteEscapeRoom(Long id) {
+        return escapeRoomDAO.delete(id);
+    }
+
+    public boolean deleteEscapeRoom(String name) {
+        Optional<EscapeRoom> escapeRoom = escapeRoomDAO.findByName(name);
+        return escapeRoom.map(er -> escapeRoomDAO.delete(er.getId())).orElse(false);
     }
 
 }

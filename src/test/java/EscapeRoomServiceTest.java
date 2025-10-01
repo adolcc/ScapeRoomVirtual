@@ -6,7 +6,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import service.EscapeRoomService;
 
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -51,14 +50,4 @@ public class EscapeRoomServiceTest {
 
         assertEquals("El nombre elegido corresponde a un Escape Room existente.", e.getMessage());
     }
-/*
-    @Test
-    void givenValidInput_WhenCreatingEscapeRoom_ItPersistsInDatabase() {
-        escapeRoomService.createEscapeRoom("Ciudad Futura");
-
-        EscapeRoom persisted = escapeRoomService.findByName("Ciudad Futura");
-        assertNotNull(persisted);
-        assertEquals("Ciudad Futura", persisted.getName());
-    }
-    */
 }
