@@ -1,4 +1,4 @@
-package exceptions;
+package exception;
 
 public class InsufficientDecorationsException extends RuntimeException {
     public InsufficientDecorationsException() {
