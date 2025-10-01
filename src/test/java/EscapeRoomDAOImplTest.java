@@ -6,8 +6,9 @@ import repository.dao.GenericDAO;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
-import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.jupiter.api.Assertions.*;
 
 class EscapeRoomDAOImplTest {
     private GenericDAO<EscapeRoom, Long> escapeRoomDAO;
@@ -24,8 +25,8 @@ class EscapeRoomDAOImplTest {
     @Test
     void givenNewEscapeRoom_whenSave_thenShouldPersist() {
 
-        assertThat(savedEscapeRoom.getId()).inNotNull();
-        assertThat(savedEscapeRoom.getName()).isEqualTo("Ciudad Futura");
+        assertNotNull(savedEscapeRoom.getId());
+        assertEquals("Ciudad Futura", savedEscapeRoom.getName());
     }
 
     @Test
@@ -35,30 +36,30 @@ class EscapeRoomDAOImplTest {
 
         Optional<EscapeRoom> found = escapeRoomDAO.findById(savedId);
 
-        assertThat(found).isPresent();
-        assertThat(found.get().getName()).isEqualTo("Ciudad Futura");
+        assertTrue(found.isPresent());
+        assertEquals("Ciudad Futura", found.get().getName());
     }
 
     @Test
     void givenSavedEscapeRoom_whenFindByName_thenReturnsCorrectEscapeRoom() {
         Optional<EscapeRoom> found = escapeRoomDAO.findByName("Ciudad Futura");
 
-        assertThat(found).isPresent();
-        assertThat(found.get().getName()).isEqualTo("Ciudad Futura");
+        assertTrue(found.isPresent());
+        assertEquals("Ciudad Futura", found.get().getName());
     }
 
     @Test
     void givenNonExistingId_whenFindById_thenShouldReturnEmpty() {
         Optional<EscapeRoom> found = escapeRoomDAO.findById(999L);
 
-        assertThat(found).isEmpty();
+        assertFalse(found.isPresent());
     }
 
     @Test
     void givenNonExistingName_whenFindByName_thenShouldReturnEmpty() {
         Optional<EscapeRoom> found = escapeRoomDAO.findByName("No Existe");
 
-        assertThat(found).isEmpty();
+        assertFalse(found.isPresent());
     }
 
     @Test
@@ -68,12 +69,16 @@ class EscapeRoomDAOImplTest {
 
         List<EscapeRoom> allEscapeRooms = escapeRoomDAO.findAll();
 
-        assertThat(allEscapeRooms).hasSize(3);
+        assertEquals(3, allEscapeRooms.size());
 
         List<String> names = allEscapeRooms.stream()
                 .map(EscapeRoom::getName)
-                .toList();
-        assertThat(names).containsExactlyInAnyOrder("Ciudad Futura", "El Templo de Orión", "La Casa Encantada");
+                .collect(Collectors.toList());
+
+        assertTrue(names.contains("Ciudad Futura"));
+        assertTrue(names.contains("El Templo de Orión"));
+        assertTrue(names.contains("La Casa Encantada"));
+
     }
 
     @Test
@@ -81,8 +86,8 @@ class EscapeRoomDAOImplTest {
 
         escapeRoomDAO.delete(savedEscapeRoom.getId());
 
-        assertThat(escapeRoomDAO.findById(savedEscapeRoom.getId())).isEmpty();
-        assertThat(escapeRoomDAO.existsByName("Ciudad Futura")).isFalse();
+        assertFalse(escapeRoomDAO.findById(savedEscapeRoom.getId()).isPresent());
+        assertFalse(escapeRoomDAO.findByName("Ciudad Futura").isPresent());
     }
 
 }
