@@ -1,4 +1,6 @@
-package service;
+package repository.dao;
+
+import repository.dto.DTO;
 
 import java.util.List;
 import java.util.Optional;

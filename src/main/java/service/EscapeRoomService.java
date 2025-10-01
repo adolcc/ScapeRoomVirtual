@@ -40,8 +40,35 @@ public class EscapeRoomService {
         checkNotDuplicateName(name);
         escapeRoomSet.add(new EscapeRoom(name));
     }
+    public void addRoomToEscapeRoom(String escapeRoomName, Room room) {
+        EscapeRoom escapeRoom = escapeRoomSet.stream()
+                .filter(er -> er.getName().equalsIgnoreCase(escapeRoomName))
+                .findFirst()
+                .orElseThrow(()-> new EscapeRoomNotFoundException());
+
+        if (escapeRoom.getRooms().contains(room)) {
+            throw new DuplicateRoomNameException();
+        }
+        if (room.getClues().size() < 2) {
+            throw new InsufficientCluesException();
+        }
+        if (room.getDecorations().size() < 2) {
+            throw new InsufficientDecorationsException();
+        }
+
+        escapeRoom.addRoom(room);
+    }
 
     public Set<EscapeRoom> getEscapeRooms() {
         return escapeRoomSet;
     }
+
+    public EscapeRoom getEscapeRoom(String name) {
+        return escapeRoomSet.stream()
+                .filter(er -> er.getName().equalsIgnoreCase(name))
+                .findFirst()
+                .orElseThrow(() -> new RuntimeException("Escape Room no encontrado"));
+    }
+
 }
+

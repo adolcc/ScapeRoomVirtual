@@ -1,10 +1,10 @@
-import service.DAO;
-import service.DTO;
+import repository.dao.DAO;
+import repository.dto.DTO;
 import exception.EscapeRoomNotFoundException;
-import implementation.DAOImpl;
+import repository.implementation.DAOImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import database.DatabaseSetup;
+import repository.database.DatabaseSetup;
 
 import java.sql.SQLException;
 import static org.junit.jupiter.api.Assertions.*;

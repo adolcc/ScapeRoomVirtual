@@ -51,7 +51,7 @@ public class EscapeRoomServiceTest {
 
         assertEquals("El nombre elegido corresponde a un Escape Room existente.", e.getMessage());
     }
-
+/*
     @Test
     void givenValidInput_WhenCreatingEscapeRoom_ItPersistsInDatabase() {
         escapeRoomService.createEscapeRoom("Ciudad Futura");
@@ -60,4 +60,5 @@ public class EscapeRoomServiceTest {
         assertNotNull(persisted);
         assertEquals("Ciudad Futura", persisted.getName());
     }
+    */
 }

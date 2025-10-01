@@ -1,7 +1,7 @@
-package implementation;
+package repository.implementation;
 
-import service.DAO;
-import service.DTO;
+import repository.dao.DAO;
+import repository.dto.DTO;
 import exception.DuplicateEscapeRoomNameException;
 import exception.EscapeRoomNotFoundException;
 
