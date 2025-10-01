@@ -1,4 +1,4 @@
-package database;
+package repository.database;
 
 import java.nio.file.Files;
 import java.nio.file.Paths;

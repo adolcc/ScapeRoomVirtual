@@ -1,4 +1,4 @@
-package service;
+package repository.dto;
 
 import java.util.Objects;
 
