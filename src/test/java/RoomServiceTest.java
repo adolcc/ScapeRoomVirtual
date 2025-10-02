@@ -28,7 +28,8 @@ public class RoomServiceTest {
 
         escapeRoomService.addRoomToEscapeRoom("La Prisión", room);
 
-        assertTrue(escapeRoomService.getEscapeRoom("La Prisión").getRooms().contains(room));
+        assertTrue(escapeRoomService.getEscapeRoom("La Prisión").get().getRooms().contains(room));
+
     }
 
     @Test
@@ -84,7 +85,7 @@ public class RoomServiceTest {
         room.addClue(new Clue("Pista 2", 15.0));
         room.addDecoration(new Decoration("Solo una decoración", "Tela", 20.0));
 
-        Exception e = assertThrows(exceptions.InsufficientDecorationsException.class, () -> {
+        Exception e = assertThrows(exception.InsufficientDecorationsException.class, () -> {
             escapeRoomService.addRoomToEscapeRoom("La Prisión", room);
         });
 
