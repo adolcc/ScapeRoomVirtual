@@ -5,13 +5,10 @@ import java.util.Objects;
 public class Clue {
     private String name;
     private double price;
-    public Clue(String name,double price) {
+
+    public Clue(String name, double price) {
         this.name = name;
-        this.price= price;
-    }
-    public Clue ( String name){
-        this.name = name;
-        this.price = 0.0;
+        this.price = price;
     }
 
     public String getName() {
@@ -21,10 +18,12 @@ public class Clue {
     public void setName(String name) {
         this.name = name;
     }
-    public double getPrice(){
+
+    public double getPrice() {
         return price;
     }
-    public void setPrice(){
+
+    public void setPrice(double price) {
         this.price = price;
     }
 
@@ -41,10 +40,4 @@ public class Clue {
         return Objects.hash(name);
     }
 
-    @Override
-    public String toString() {
-        return "Clue{" +
-                "name='" + name + '\'' +", price=" + price +
-                '}';
-    }
 }

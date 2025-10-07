@@ -1,4 +1,3 @@
-/*
 import exception.*;
 import model.*;
 import org.junit.jupiter.api.BeforeEach;
@@ -8,7 +7,7 @@ import service.RoomService;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class RoomCreationTest {
+public class RoomServiceTest {
 
     private EscapeRoomService escapeRoomService;
     private RoomService roomService;
@@ -44,9 +43,11 @@ public class RoomCreationTest {
     @Test
     void givenDuplicateRoomName_whenCreating_thenThrowDuplicateRoomNameException() {
         roomService.createAndValidateRoom("Room Egipcio", 3);
-        assertThrows(DuplicateRoomNameException.class, () -> {
+        DuplicateRoomNameException e = assertThrows(DuplicateRoomNameException.class, () -> {
             roomService.createAndValidateRoom("Room Egipcio", 2);
         });
+
+        assertEquals("Ya existe una sala con ese nombre en el Escape Room.", e.getMessage());
     }
 
     @Test
@@ -55,9 +56,11 @@ public class RoomCreationTest {
         room.addClue(new Clue("Solo una pista", 10.0));
         room.addDecoration(new Decoration("Cuadro", "Tela", 20.0));
         room.addDecoration(new Decoration("Mesa", "Madera", 30.0));
-        assertThrows(InsufficientCluesException.class, () -> {
-            roomService.validateRoomForEscapeRoom(room);
+        Exception e = assertThrows(InsufficientCluesException.class, () -> {
+            roomService.addRoomToEscapeRoom("La Prisión", room);
         });
+
+        assertEquals("La sala debe contener al menos dos pistas.", e.getMessage());
     }
 
     @Test
@@ -73,9 +76,10 @@ public class RoomCreationTest {
 
     @Test
     void givenNullRoomName_whenCreating_thenThrowNullEscapeRoomNameException() {
-        assertThrows(NullEscapeRoomNameException.class, () -> {
+        NullEscapeRoomNameException e = assertThrows(NullEscapeRoomNameException.class, () -> {
             roomService.createAndValidateRoom(null, 2);
         });
+
+        assertEquals("La sala debe contener al menos dos objetos de decoración.", e.getMessage());
     }
 }
-*/
