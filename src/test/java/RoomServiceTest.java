@@ -1,6 +1,7 @@
 import exception.DuplicateRoomNameException;
 import exception.EmptyRoomNameException;
 import exception.InsufficientCluesException;
+import exception.InsufficientDecorationsException;
 import model.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -85,7 +86,7 @@ public class RoomServiceTest {
         room.addClue(new Clue("Pista 2", 15.0));
         room.addDecoration(new Decoration("Solo una decoración", "Tela", 20.0));
 
-        Exception e = assertThrows(exception.InsufficientDecorationsException.class, () -> {
+        Exception e = assertThrows(InsufficientDecorationsException.class, () -> {
             escapeRoomService.addRoomToEscapeRoom("La Prisión", room);
         });
 
