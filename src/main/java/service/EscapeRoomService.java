@@ -33,23 +33,6 @@ public class EscapeRoomService {
         return escapeRoomDAO.save(escapeRoom);
     }
 
-    public void addRoomToEscapeRoom(String escapeRoomName, Room room) {
-        EscapeRoom escapeRoom = escapeRoomDAO.findByName(escapeRoomName)
-                .orElseThrow(EscapeRoomNotFoundException::new);
-
-        if (escapeRoom.getRooms().contains(room)) {
-            throw new DuplicateRoomNameException();
-        }
-        if (room.getClues().size() < 2) {
-            throw new InsufficientCluesException();
-        }
-        if (room.getDecorations().size() < 2) {
-            throw new InsufficientDecorationsException();
-        }
-
-        escapeRoom.addRoom(room);
-        escapeRoomDAO.save(escapeRoom);
-    }
 
     public List<EscapeRoom> getEscapeRooms() {
         return escapeRoomDAO.findAll();
@@ -73,4 +56,5 @@ public class EscapeRoomService {
     }
 
 }
+
 

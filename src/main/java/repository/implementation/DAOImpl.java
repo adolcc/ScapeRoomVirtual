@@ -1,6 +1,10 @@
+
+/*
 package repository.implementation;
 
-import repository.dao.DAO;
+import model.EscapeRoom;
+import model.Room;
+import repository.dao;
 import repository.dto.DTO;
 import exception.DuplicateEscapeRoomNameException;
 import exception.EscapeRoomNotFoundException;
@@ -10,6 +14,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import static repository.database.DatabaseConfig.getConnection;
+
 public class DAOImpl implements DAO {
 
     private final Connection connection;
@@ -18,8 +24,7 @@ public class DAOImpl implements DAO {
         this.connection = connection;
     }
 
-    @Override
-    public DTO save(DTO DTO) {
+    public DTO save(EscapeRoom DTO) {
         String sql = "INSERT INTO escape_rooms (name) VALUES (?)";
 
         try (PreparedStatement stmt = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
@@ -126,4 +131,54 @@ public class DAOImpl implements DAO {
             throw new RuntimeException("Error al eliminar el Escape Room.");
         }
     }
+    // MÉTODOS PARA ROOM
+    public void saveRoom(Room room) throws SQLException {
+        String sql = "INSERT INTO rooms (name, level, escape_room_name) VALUES (?, ?, ?)";
+        try (Connection conn = getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setString(1, room.getName());
+            stmt.setInt(2, room.getLevel());
+            stmt.setString(3, "La Prisión"); // O el nombre del escape room correspondiente
+            stmt.executeUpdate();
+        }
+    }
+
+    public List<Room> findAllRooms() throws SQLException {
+        List<Room> rooms = new ArrayList<>();
+        String sql = "SELECT name, level FROM rooms";
+        try (Connection conn = getConnection();
+             Statement stmt = conn.createStatement();
+             ResultSet rs = stmt.executeQuery(sql)) {
+            while (rs.next()) {
+                Room room = new Room(rs.getString("name"), rs.getInt("level"));
+                rooms.add(room);
+            }
+        }
+        return rooms;
+    }
+
+    public Optional<Room> findRoomByName(String name) throws SQLException {
+        String sql = "SELECT name, level FROM rooms WHERE name = ?";
+        try (Connection conn = getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setString(1, name);
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    Room room = new Room(rs.getString("name"), rs.getInt("level"));
+                    return Optional.of(room);
+                }
+            }
+        }
+        return Optional.empty();
+    }
+
+    public void deleteRoomByName(String name) throws SQLException {
+        String sql = "DELETE FROM rooms WHERE name = ?";
+        try (Connection conn = getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setString(1, name);
+            stmt.executeUpdate();
+        }
+    }
 }
+*/

@@ -4,9 +4,14 @@ import java.util.Objects;
 
 public class Clue {
     private String name;
-
-    public Clue(String name) {
+    private double price;
+    public Clue(String name,double price) {
         this.name = name;
+        this.price= price;
+    }
+    public Clue ( String name){
+        this.name = name;
+        this.price = 0.0;
     }
 
     public String getName() {
@@ -15,6 +20,12 @@ public class Clue {
 
     public void setName(String name) {
         this.name = name;
+    }
+    public double getPrice(){
+        return price;
+    }
+    public void setPrice(){
+        this.price = price;
     }
 
     @Override
@@ -33,7 +44,7 @@ public class Clue {
     @Override
     public String toString() {
         return "Clue{" +
-                "name='" + name + '\'' +
+                "name='" + name + '\'' +", price=" + price +
                 '}';
     }
 }

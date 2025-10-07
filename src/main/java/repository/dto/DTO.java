@@ -1,3 +1,4 @@
+/*
 package repository.dto;
 
 import java.util.Objects;
@@ -36,3 +37,4 @@ public class DTO {
         return "DTO{id=" + this.id + ", nombre='" + this.name + "'}";
     }
 }
+*/

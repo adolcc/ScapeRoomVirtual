@@ -1,49 +1,105 @@
 package service;
 
 
-import exception.DuplicateRoomNameException;
-import exception.EmptyRoomNameException;
-import exception.NullEscapeRoomNameException;
+import exception.*;
+import model.EscapeRoom;
 import model.Room;
+import repository.dao.GenericDAO;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.Optional;
 
 public class RoomService {
 
-    private Set<Room> roomSet;
+    private GenericDAO<Room, Long> roomDAO;
+    private GenericDAO<EscapeRoom, Long> escapeRoomDAO;
 
     public RoomService() {
-        this.roomSet = new HashSet<>();
     }
 
-    public void checkNotNullName(String name) {
+    public RoomService(GenericDAO<Room, Long> roomDAO, GenericDAO<EscapeRoom, Long> escapeRoomDAO) {
+        this.roomDAO = roomDAO;
+        this.escapeRoomDAO = escapeRoomDAO;
+    }
+
+    public Room createAndValidateRoom(String name, int level) {
         if (name == null) {
             throw new NullEscapeRoomNameException();
         }
-    }
 
-    public void checkNotEmptyName(String name) {
-        name = name.trim();
-        if (name.isEmpty()) {
+        String trimmedName = name.trim();
+        if (trimmedName.isEmpty()) {
             throw new EmptyRoomNameException();
         }
+
+        Optional<Room> existingRoom = roomDAO.findByName(trimmedName);
+        if (existingRoom.isPresent()) {
+            throw new DuplicateRoomNameException();
+        }
+
+        Room room = new Room(trimmedName, level);
+        return roomDAO.save(room);
     }
 
-    public void checkNotDuplicateName(String name) {
-        if (roomSet.contains(new Room(name, 1))) { // nivel ficticio para comparación
+    public void addRoomToEscapeRoom(String escapeRoomName, Room room) {
+        if (escapeRoomDAO == null || roomDAO == null) {
+            throw new IllegalStateException("DAOs no han sido inicializados");
+        }
+
+        Optional<EscapeRoom> escapeRoomOpt = escapeRoomDAO.findByName(escapeRoomName);
+        if (escapeRoomOpt.isEmpty()) {
+            throw new EscapeRoomNotFoundException();
+        }
+
+        EscapeRoom escapeRoom = escapeRoomOpt.get();
+
+        if (escapeRoom.getRooms().contains(room)) {
             throw new DuplicateRoomNameException();
+        }
+
+        validateRoomForEscapeRoom(room);
+
+        escapeRoom.addRoom(room);
+        escapeRoomDAO.save(escapeRoom);
+    }
+
+    public void validateRoomForEscapeRoom(Room room) {
+        if (room.getClues() == null || room.getClues().size() < 2) {
+            throw new InsufficientCluesException();
+        }
+        if (room.getDecorations() == null || room.getDecorations().size() < 2) {
+            throw new InsufficientDecorationsException();
         }
     }
 
-    public void createRoom(String name, int level) {
-        checkNotNullName(name);
-        checkNotEmptyName(name);
-        checkNotDuplicateName(name);
-        roomSet.add(new Room(name.trim(), level));
+    public Optional<Room> findRoomByName(String name) {
+        return roomDAO.findByName(name);
     }
 
-    public Set<Room> getRooms() {
-        return roomSet;
+    public Optional<Room> findRoomById(Long id) {
+        return roomDAO.findById(id);
+    }
+
+    public boolean deleteRoom(Long id) {
+        return roomDAO.delete(id);
+    }
+
+    public java.util.List<Room> getAllRooms() {
+        return roomDAO.findAll();
+    }
+
+    public GenericDAO<Room, Long> getRoomDAO() {
+        return roomDAO;
+    }
+
+    public void setRoomDAO(GenericDAO<Room, Long> roomDAO) {
+        this.roomDAO = roomDAO;
+    }
+
+    public GenericDAO<EscapeRoom, Long> getEscapeRoomDAO() {
+        return escapeRoomDAO;
+    }
+
+    public void setEscapeRoomDAO(GenericDAO<EscapeRoom, Long> escapeRoomDAO) {
+        this.escapeRoomDAO = escapeRoomDAO;
     }
 }
