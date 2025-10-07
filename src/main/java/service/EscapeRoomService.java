@@ -17,10 +17,6 @@ public class EscapeRoomService {
         this.escapeRoomDAO = new EscapeRoomDAOImpl();
     }
 
-    public EscapeRoomService(GenericDAO<EscapeRoom, Long> escapeRoomDAO) {
-        this.escapeRoomDAO = escapeRoomDAO;
-    }
-
     private void checkNotDuplicateName(String name) {
         if (escapeRoomDAO.findByName(name).isPresent()) {
             throw new DuplicateEscapeRoomNameException();
