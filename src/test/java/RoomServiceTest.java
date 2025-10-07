@@ -1,12 +1,15 @@
-import exceptions.*;
-import models.*;
+import exception.DuplicateRoomNameException;
+import exception.EmptyRoomNameException;
+import exception.InsufficientCluesException;
+import exception.InsufficientDecorationsException;
+import model.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import services.EscapeRoomService;
+import service.EscapeRoomService;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class RoomCreationTest {
+public class RoomServiceTest {
 
     private EscapeRoomService escapeRoomService;
 
@@ -26,7 +29,8 @@ public class RoomCreationTest {
 
         escapeRoomService.addRoomToEscapeRoom("La Prisión", room);
 
-        assertTrue(escapeRoomService.getEscapeRoom("La Prisión").getRooms().contains(room));
+        assertTrue(escapeRoomService.getEscapeRoom("La Prisión").get().getRooms().contains(room));
+
     }
 
     @Test
