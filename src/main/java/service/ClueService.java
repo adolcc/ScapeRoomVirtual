@@ -29,16 +29,16 @@ public class ClueService {
     }
 
     public void checkNotDuplicateName(String name) {
-        if (clueSet.contains(new Clue(name))) {
+        if (clueSet.contains(new Clue(name, 0))) {
             throw new DuplicateClueNameException();
         }
     }
 
-    public void createClue(String name) {
+    public void createClue(String name, double price) {
         checkNotNullName(name);
         checkNotEmptyName(name);
         checkNotDuplicateName(name);
-        clueSet.add(new Clue(name));
+        clueSet.add(new Clue(name, price));
     }
 
     public Set<Clue> getClues() {
