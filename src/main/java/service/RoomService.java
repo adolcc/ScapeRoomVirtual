@@ -1,9 +1,8 @@
 package service;
 
 
-import exception.DuplicateRoomNameException;
-import exception.EmptyRoomNameException;
-import exception.NullEscapeRoomNameException;
+import exception.*;
+import model.Decoration;
 import model.Room;
 
 import java.util.HashSet;
@@ -41,6 +40,18 @@ public class RoomService {
         checkNotEmptyName(name);
         checkNotDuplicateName(name);
         roomSet.add(new Room(name.trim(), level));
+    }
+
+    public void addDecorationToRoom(String roomName, Decoration decoration) {
+        Room room = roomDAO.findByName(roomName)
+                .orElseThrow(RoomNotFoundException::new);
+
+        if (room.getDecorations().contains(decoration)) {
+            throw new DuplicateNameException();
+        }
+
+        room.addDecoration(decoration);
+        roomDAO.save(room);
     }
 
     public Set<Room> getRooms() {
