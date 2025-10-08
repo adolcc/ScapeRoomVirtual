@@ -2,6 +2,9 @@ import exception.*;
 import model.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import repository.dao.EscapeRoomDAOImpl;
+import repository.dao.GenericDAO;
+import repository.dao.RoomDAOimpl;
 import service.EscapeRoomService;
 import service.RoomService;
 
@@ -12,12 +15,18 @@ public class RoomServiceTest {
     private EscapeRoomService escapeRoomService;
     private RoomService roomService;
 
+
     @BeforeEach
     void setUp() {
-        escapeRoomService = new EscapeRoomService();
+        escapeRoomService= new EscapeRoomService();
         roomService = new RoomService();
+
         escapeRoomService.createEscapeRoom("La Prisión");
+
+        EscapeRoom escapeRoomForRoomService = new EscapeRoom("La Prisión");
+        roomService.getEscapeRoomDAO().save(escapeRoomForRoomService);
     }
+
 
     @Test
     void givenValidRoom_whenCreating_thenRoomIsAddedToEscapeRoom() {
@@ -27,17 +36,16 @@ public class RoomServiceTest {
         room.addClue(new Clue("Mapa antiguo", 25.0));
         room.addDecoration(new Decoration("Estatua", "Piedra", 50.0));
         room.addDecoration(new Decoration("Antorcha", "Metal", 40.0));
-
-        roomService.validateRoomForEscapeRoom(room);
-        escapeRoomService.toString();
-        assertTrue(escapeRoomService.getEscapeRoom("La Prisión").get().getRooms().contains(room));
+        roomService.addRoomToEscapeRoom("La Prisión",room);
+        assertTrue(roomService.findRoomByName("Room Egipcio").isPresent());
     }
 
     @Test
     void givenEmptyRoomName_whenCreating_thenThrowEmptyRoomNameException() {
-        assertThrows(EmptyRoomNameException.class, () -> {
+        EmptyRoomNameException e =assertThrows(EmptyRoomNameException.class, () -> {
             roomService.createAndValidateRoom("    ", 2);
         });
+        assertEquals("El nombre de la sala no puede estar vacío.", e.getMessage());
     }
 
     @Test
@@ -56,8 +64,8 @@ public class RoomServiceTest {
         room.addClue(new Clue("Solo una pista", 10.0));
         room.addDecoration(new Decoration("Cuadro", "Tela", 20.0));
         room.addDecoration(new Decoration("Mesa", "Madera", 30.0));
-        Exception e = assertThrows(InsufficientCluesException.class, () -> {
-            roomService.addRoomToEscapeRoom("La Prisión", room);
+        InsufficientCluesException e = assertThrows(InsufficientCluesException.class, () -> {
+            roomService.validateRoomForEscapeRoom(room);
         });
 
         assertEquals("La sala debe contener al menos dos pistas.", e.getMessage());
@@ -80,6 +88,6 @@ public class RoomServiceTest {
             roomService.createAndValidateRoom(null, 2);
         });
 
-        assertEquals("La sala debe contener al menos dos objetos de decoración.", e.getMessage());
+        assertEquals("El nombre del Escape Room no puede ser nulo.", e.getMessage());
     }
 }

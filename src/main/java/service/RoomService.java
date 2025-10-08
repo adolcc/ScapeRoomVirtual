@@ -4,7 +4,9 @@ package service;
 import exception.*;
 import model.EscapeRoom;
 import model.Room;
+import repository.dao.EscapeRoomDAOImpl;
 import repository.dao.GenericDAO;
+import repository.dao.RoomDAOimpl;
 
 import java.util.Optional;
 
@@ -14,6 +16,8 @@ public class RoomService {
     private GenericDAO<EscapeRoom, Long> escapeRoomDAO;
 
     public RoomService() {
+        this.roomDAO = new RoomDAOimpl();
+        this.escapeRoomDAO = new EscapeRoomDAOImpl();
     }
 
     public RoomService(GenericDAO<Room, Long> roomDAO, GenericDAO<EscapeRoom, Long> escapeRoomDAO) {
@@ -60,6 +64,7 @@ public class RoomService {
 
         escapeRoom.addRoom(room);
         escapeRoomDAO.save(escapeRoom);
+        roomDAO.save(room);
     }
 
     public void validateRoomForEscapeRoom(Room room) {
