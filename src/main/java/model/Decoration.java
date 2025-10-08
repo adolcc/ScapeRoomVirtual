@@ -28,13 +28,22 @@ public class Decoration {
     public String getName() {
         return this.name;
     }
-/*    public String getMaterial() {
-        return this.material;
-    } */
-/*    public double getPrice() { return this.price; } */
-    public Long getId() { return this.id; }
 
-    public void setId(Long id) { this.id = id; }
+    public String getMaterial() {
+        return this.material;
+    }
+
+    public double getPrice() {
+        return this.price;
+    }
+
+    public Long getId() {
+        return this.id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
 
     private void validateName(String name) {
         if (name == null) {
@@ -54,14 +63,16 @@ public class Decoration {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if ( o == null || getClass() != o.getClass()) return false;
+        if (o == null || getClass() != o.getClass()) return false;
         Decoration other = (Decoration) o;
 
         return this.name.equalsIgnoreCase(other.getName());
     }
 
     @Override
-    public int hashCode() { return Objects.hash(this.name != null ? this.name.toLowerCase() : null); }
+    public int hashCode() {
+        return Objects.hash(this.name != null ? this.name.toLowerCase() : null);
+    }
 
 
 }
