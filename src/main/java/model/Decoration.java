@@ -72,7 +72,6 @@ public class Decoration {
     @Override
     public int hashCode() {
         return Objects.hash(this.name != null ? this.name.toLowerCase() : null);
-
     }
 }
 

@@ -83,7 +83,7 @@ public class RoomInventoryTest {
         roomInventory.addClue(clue);
 
         String breakdown = roomInventory.getPriceBreakdown();
-        assertTrue(breakdown.contains("25.00"));
+        assertTrue(breakdown.contains("SalaMisterio- 5.00"));
         assertTrue(breakdown.contains("5.00"));
         assertTrue(breakdown.contains("30.00"));
     }

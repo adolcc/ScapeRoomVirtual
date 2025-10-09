@@ -5,10 +5,11 @@ import java.util.Objects;
 public class Clue {
     private String name;
     private double price;
-
+    private  Long id;
     public Clue(String name, double price) {
         this.name = name;
         this.price = price;
+        this.id = null;
     }
 
     public String getName() {
@@ -41,7 +42,7 @@ public class Clue {
     }
 
     public String getId() {
-        return getId();
+        return id;
     }
 
     public char[] getContent() {
