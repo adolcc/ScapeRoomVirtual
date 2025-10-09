@@ -3,11 +3,13 @@ package service;
 
 import exception.*;
 import model.EscapeRoom;
+import model.Decoration;
 import model.Room;
 import repository.dao.EscapeRoomDAOImpl;
 import repository.dao.GenericDAO;
 import repository.dao.RoomDAOimpl;
 
+import java.util.List;
 import java.util.Optional;
 
 public class RoomService {
@@ -61,7 +63,7 @@ public class RoomService {
         return roomDAO.delete(id);
     }
 
-    public java.util.List<Room> getAllRooms() {
+    public List<Room> getAllRooms() {
         return roomDAO.findAll();
     }
 
@@ -80,4 +82,17 @@ public class RoomService {
     public void setEscapeRoomDAO(GenericDAO<EscapeRoom, Long> escapeRoomDAO) {
         this.escapeRoomDAO = escapeRoomDAO;
     }
+  
+    public void addDecorationToRoom(String roomName, Decoration decoration) {
+        Room room = roomDAO.findByName(roomName)
+                .orElseThrow(RoomNotFoundException::new);
+
+        if (room.getDecorations().contains(decoration)) {
+            throw new DuplicateNameException();
+        }
+
+        room.addDecoration(decoration);
+        roomDAO.save(room);
+    }
+
 }

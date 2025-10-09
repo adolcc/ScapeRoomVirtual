@@ -21,15 +21,6 @@ public class EscapeRoom {
         this.id = null;
     }
 
-    private void validateName(String name) {
-        if (name == null) {
-            throw new NullEscapeRoomNameException();
-        }
-        if (name.trim().isEmpty()) {
-            throw new EmptyEscapeRoomNameException();
-        }
-    }
-
     public String getName() {
         return this.name;
     }
@@ -38,11 +29,19 @@ public class EscapeRoom {
     }
     public Long getId() { return this.id; }
 
-    public void setName(String name) { this.name = name; }
     public void addRoom(Room room) {
         rooms.add(room);
     }
     public void setId(Long id) { this.id = id; }
+
+    private void validateName(String name) {
+        if (name == null) {
+            throw new NullEscapeRoomNameException();
+        }
+        if (name.trim().isEmpty()) {
+            throw new EmptyEscapeRoomNameException();
+        }
+    }
 
     @Override
     public boolean equals(Object o) {

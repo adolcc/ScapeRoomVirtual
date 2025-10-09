@@ -23,7 +23,6 @@ public class EscapeRoomService {
 
     }
 
-
     public EscapeRoomService(GenericDAO<EscapeRoom, Long> escapeRoomDAO) {
         this.escapeRoomDAO = escapeRoomDAO;
     }
