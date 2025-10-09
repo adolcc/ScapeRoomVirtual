@@ -26,47 +26,20 @@ public class RoomService {
     }
 
     public Room createAndValidateRoom(String name, int level) {
-        if (name == null) {
+        if (name == null || name.isEmpty()) {
             throw new NullEscapeRoomNameException();
         }
 
-        String trimmedName = name.trim();
-        if (trimmedName.isEmpty()) {
-            throw new EmptyRoomNameException();
-        }
 
-        Optional<Room> existingRoom = roomDAO.findByName(trimmedName);
+
+        Optional<Room> existingRoom = roomDAO.findByName(name);
         if (existingRoom.isPresent()) {
             throw new DuplicateRoomNameException();
         }
 
-        Room room = new Room(trimmedName, level);
+        Room room = new Room(name, level);
         return roomDAO.save(room);
     }
-
-    public void addRoomToEscapeRoom(String escapeRoomName, Room room) {
-        if (escapeRoomDAO == null || roomDAO == null) {
-            throw new IllegalStateException("DAOs no han sido inicializados");
-        }
-
-        Optional<EscapeRoom> escapeRoomOpt = escapeRoomDAO.findByName(escapeRoomName);
-        if (escapeRoomOpt.isEmpty()) {
-            throw new EscapeRoomNotFoundException();
-        }
-
-        EscapeRoom escapeRoom = escapeRoomOpt.get();
-
-        if (escapeRoom.getRooms().contains(room)) {
-            throw new DuplicateRoomNameException();
-        }
-
-        validateRoomForEscapeRoom(room);
-
-        escapeRoom.addRoom(room);
-        escapeRoomDAO.save(escapeRoom);
-        roomDAO.save(room);
-    }
-
     public void validateRoomForEscapeRoom(Room room) {
         if (room.getClues() == null || room.getClues().size() < 2) {
             throw new InsufficientCluesException();

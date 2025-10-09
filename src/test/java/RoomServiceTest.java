@@ -36,7 +36,7 @@ public class RoomServiceTest {
         room.addClue(new Clue("Mapa antiguo", 25.0));
         room.addDecoration(new Decoration("Estatua", "Piedra", 50.0));
         room.addDecoration(new Decoration("Antorcha", "Metal", 40.0));
-        roomService.addRoomToEscapeRoom("La Prisión",room);
+        escapeRoomService.addRoomToEscapeRoom("La Prisión",room);
         assertTrue(roomService.findRoomByName("Room Egipcio").isPresent());
     }
 

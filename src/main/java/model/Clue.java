@@ -40,4 +40,11 @@ public class Clue {
         return Objects.hash(name);
     }
 
+    public String getId() {
+        return getId();
+    }
+
+    public char[] getContent() {
+        return getContent();
+    }
 }
