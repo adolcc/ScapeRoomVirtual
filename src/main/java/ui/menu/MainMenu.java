@@ -1,7 +1,5 @@
 package ui.menu;
 
-import javax.swing.text.View;
-
 public class MainMenu extends Menu {
 
     private CreateMenu createMenu;
