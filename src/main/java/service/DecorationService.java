@@ -1,5 +1,6 @@
 package service;
 
+import exception.DecorationNotFoundException;
 import exception.DuplicateNameException;
 import model.Decoration;
 import repository.dao.DecorationDAOImpl;
@@ -35,7 +36,7 @@ public class DecorationService {
             decoration.setRoomId(roomId);
             return decorationDAO.save(decoration);
         }
-        throw new IllegalArgumentException("No se encontró la decoración con ID: " + decorationId + ".");
+        throw new DecorationNotFoundException("No se encontró la decoración con ID: " + decorationId + ".");
     }
 
     public Decoration removeDecorationFromRoom(Long decorationId) {
@@ -45,7 +46,7 @@ public class DecorationService {
             decoration.setRoomId(null);
             return decorationDAO.save(decoration);
         }
-        throw new IllegalArgumentException("No se encontró la decoración con ID: " + decorationId + ".");
+        throw new DecorationNotFoundException("No se encontró la decoración con ID: " + decorationId + ".");
     }
 
     public List<Decoration> getDecorations() {
@@ -65,6 +66,4 @@ public class DecorationService {
         Optional<Decoration> decoration = decorationDAO.findByName(name);
         return decoration.map(d -> decorationDAO.delete(d.getId())).orElse(false);
     }
-
-
 }
