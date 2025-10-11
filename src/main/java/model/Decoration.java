@@ -12,6 +12,7 @@ public class Decoration {
     private String material;
     private double price;
     private Long id;
+    private Long roomId;
 
     public Decoration(String name, String material, double price) {
         validateName(name);
@@ -22,6 +23,18 @@ public class Decoration {
         this.material = material;
         this.price = price;
         this.id = null;
+    }
+
+    public Decoration(String name, String material, double price, Long roomId) {
+        validateName(name);
+        validateName(material);
+        validatePrice(price);
+
+        this.name = name;
+        this.material = material;
+        this.price = price;
+        this.id = null;
+        this.roomId = roomId;
     }
 
 
@@ -39,6 +52,10 @@ public class Decoration {
 
     public Long getId() {
         return this.id;
+    }
+
+    public Long getRoomId() {
+        return this.roomId;
     }
 
     public void setId(Long id) {
