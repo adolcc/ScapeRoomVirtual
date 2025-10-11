@@ -24,7 +24,7 @@ public class DecorationDAOImpl implements GenericDAO<Decoration, Long> {
             if (decoration.getRoomId() != null) {
                 stmt.setLong(4, decoration.getRoomId());
             } else {
-                stmt.setLong(4, Types.BIGINT);
+                stmt.setNull(4, Types.BIGINT);
             }
 
             int affectedRows = stmt.executeUpdate();
@@ -135,10 +135,10 @@ public class DecorationDAOImpl implements GenericDAO<Decoration, Long> {
         decoration.setId(rs.getLong("id"));
 
         Long roomId = rs.getLong("room_id");
-        if (rs.wasNull()) {
-            decoration.setRoomId(null);
-        } else {
+        if (!rs.wasNull()) {
             decoration.setRoomId(roomId);
+        } else {
+            decoration.setRoomId(null);
         }
         return decoration;
     }

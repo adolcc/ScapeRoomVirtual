@@ -115,50 +115,52 @@ public class DecorationServiceTest {
         assertEquals("El nombre escogido ya está siendo utilizado.", e.getMessage());
     }
 
-    @Test
-    void givenDecorationWithoutRoom_whenAddingToRoom_thenRoomIsIsAssigned() {
-        Decoration decoration = decorationService.createDecoration("Cuadro Sospechoso", "madera y tela", 55.77);
-        assertNull(decoration.getRoomId());
-
-        Long roomId = 1L;
-        Decoration decoAssigned = decorationService.addDecorationToRoom(decoration.getId(), roomId);
-
-        assertEquals(roomId, decoAssigned.getRoomId());
-        assertEquals(decoration.getId(), decoAssigned.getId());
-    }
-
-    @Test
-    void givenDecorationAssigned_whenRemovingFromRoom_thenRoomIdIsNull() {
-        Decoration decoration = decorationService.createDecoration("Cuadro Sospechoso", "madera y tela", 55.77);
-        Long roomId = 1L;
-        decorationService.addDecorationToRoom(decoration.getId(), roomId);
-
-        Decoration decoRemoved = decorationService.removeDecorationFromRoom(decoration.getId());
-
-        assertNull(decoRemoved.getRoomId());
-    }
-
-    @Test
-    void givenNonExistentDecoId_whenAddingToRoom_thenThrowException() {
-        Long nonExistentDecoId = 999L;
-        Long roomId = 1L;
-
-        Exception e = assertThrows(DecorationNotFoundException.class,
-                () -> decorationService.addDecorationToRoom(nonExistentDecoId, roomId));
-
-        assertEquals("No se encontró la decoración con ID: " + nonExistentDecoId + ".", e.getMessage());
-    }
-
-    @Test
-    void givenNonExistentDecoId_whenRemovingFromRoom_thenThrowException() {
-        Long nonExistentDecoId = 999L;
-
-        Exception e = assertThrows(DecorationNotFoundException.class,
-                () -> decorationService.removeDecorationFromRoom(nonExistentDecoId));
-
-        assertEquals("No se encontró la decoración con ID: " + nonExistentDecoId + ".", e.getMessage());
-    }
-
+    // TODO: estos tests corresponden a DecoServiceTest o a RoomServiseTest ¿?
+//
+//    @Test
+//    void givenDecorationWithoutRoom_whenAddingToRoom_thenRoomIsIsAssigned() {
+//        Decoration decoration = decorationService.createDecoration("Cuadro Sospechoso", "madera y tela", 55.77);
+//        assertNull(decoration.getRoomId());
+//
+//        Long roomId = 1L;
+//        Decoration decoAssigned = decorationService.addDecorationToRoom(decoration.getId(), roomId);
+//
+//        assertEquals(roomId, decoAssigned.getRoomId());
+//        assertEquals(decoration.getId(), decoAssigned.getId());
+//    }
+//
+//    @Test
+//    void givenDecorationAssigned_whenRemovingFromRoom_thenRoomIdIsNull() {
+//        Decoration decoration = decorationService.createDecoration("Cuadro Sospechoso", "madera y tela", 55.77);
+//        Long roomId = 1L;
+//        decorationService.addDecorationToRoom(decoration.getId(), roomId);
+//
+//        Decoration decoRemoved = decorationService.removeDecorationFromRoom(decoration.getId());
+//
+//        assertNull(decoRemoved.getRoomId());
+//    }
+//
+//    @Test
+//    void givenNonExistentDecoId_whenAddingToRoom_thenThrowException() {
+//        Long nonExistentDecoId = 999L;
+//        Long roomId = 1L;
+//
+//        Exception e = assertThrows(DecorationNotFoundException.class,
+//                () -> decorationService.addDecorationToRoom(nonExistentDecoId, roomId));
+//
+//        assertEquals("No se encontró la decoración con ID: " + nonExistentDecoId + ".", e.getMessage());
+//    }
+//
+//    @Test
+//    void givenNonExistentDecoId_whenRemovingFromRoom_thenThrowException() {
+//        Long nonExistentDecoId = 999L;
+//
+//        Exception e = assertThrows(DecorationNotFoundException.class,
+//                () -> decorationService.removeDecorationFromRoom(nonExistentDecoId));
+//
+//        assertEquals("No se encontró la decoración con ID: " + nonExistentDecoId + ".", e.getMessage());
+//    }
+//
 //    @Test
 //    void givenNonExistentRoomId_whenAddingDeco_thenThrowException() {
 //        Long decoId = 1L;

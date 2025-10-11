@@ -94,6 +94,4 @@ public class Decoration {
     public int hashCode() {
         return Objects.hash(this.name != null ? this.name.toLowerCase() : null);
     }
-
-
 }
