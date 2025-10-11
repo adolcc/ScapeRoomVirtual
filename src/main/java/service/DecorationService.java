@@ -28,6 +28,26 @@ public class DecorationService {
         return decorationDAO.save(decoration);
     }
 
+    public Decoration addDecorationToRoom(Long decorationId, Long roomId) {
+        Optional<Decoration> decorationOp = decorationDAO.findById(decorationId);
+        if (decorationOp.isPresent()) {
+            Decoration decoration = decorationOp.get();
+            decoration.setRoomId(roomId);
+            return decorationDAO.save(decoration);
+        }
+        throw new IllegalArgumentException("No se encontró la decoración con ID: " + decorationId + ".");
+    }
+
+    public Decoration removeDecorationFromRoom(Long decorationId) {
+        Optional<Decoration> decorationOp = decorationDAO.findById(decorationId);
+        if (decorationOp.isPresent()) {
+            Decoration decoration = decorationOp.get();
+            decoration.setRoomId(null);
+            return decorationDAO.save(decoration);
+        }
+        throw new IllegalArgumentException("No se encontró la decoración con ID: " + decorationId + ".");
+    }
+
     public List<Decoration> getDecorations() {
         return decorationDAO.findAll();
     }
