@@ -62,6 +62,10 @@ public class Decoration {
         this.id = id;
     }
 
+    public void setRoomId(Long roomId) {
+        this.roomId = roomId;
+    }
+
     private void validateName(String name) {
         if (name == null) {
             throw new NullNameException();
