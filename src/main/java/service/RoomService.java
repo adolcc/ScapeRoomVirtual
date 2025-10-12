@@ -43,7 +43,7 @@ public class RoomService {
     }
 
     public void addDecorationToRoom(String roomName, Decoration decoration) {
-        Room room = roomDAO.findByName(roomName)
+        Room room = RoomDAO.findByName(roomName)
                 .orElseThrow(RoomNotFoundException::new);
 
         if (room.getDecorations().contains(decoration)) {
