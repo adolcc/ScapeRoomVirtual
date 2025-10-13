@@ -84,4 +84,11 @@ public class Room {
 
         }
 
+    public double getPrice() {
+        return getPrice();
+    }
+
+    public int getDifficultyLevel() {
+        return getDifficultyLevel();
+    }
 }
