@@ -45,6 +45,4 @@ public class DecorationService {
         Optional<Decoration> decoration = decorationDAO.findByName(name);
         return decoration.map(d -> decorationDAO.delete(d.getId())).orElse(false);
     }
-
-
 }
