@@ -41,19 +41,38 @@ public class RoomService {
         checkNotDuplicateName(name);
         roomSet.add(new Room(name.trim(), level));
     }
-/*
-    public void addDecorationToRoom(String roomName, Decoration decoration) {
-        Room room = RoomDAO.findByName(roomName)
-                .orElseThrow(RoomNotFoundException::new);
+// TODO: esperando implementación de RoomDAO
+//
+//    public Decoration addDecorationToRoom(Long decorationId, Long roomId) {
+//        Room room = roomDAO.findById(roomId)
+//                .orElseThrow(() -> new RoomNotFoundException());
+//
+//        Decoration decoration = decorationDAO.findById(decorationId)
+//                .orElseThrow(() -> new DecorationNotFoundException());
+//
+//        decoration.setRoomId(roomId);
+//        return decorationDAO.save(decoration);
+//    }
+//
+//    public Decoration removeDecorationFromRoom(Long roomId, Long decorationId) {
+//        Room room = roomDAO.findById(roomId)
+//                .orElseThrow(() -> new RoomNotFoundException());
+//
+//        Decoration decoration = decorationDAO.findById(decorationId)
+//                .orElseThrow(() -> new DecorationNotFoundException());
+//
+//        if (!roomId.equals(decoration.getRoomId())) {
+//            throw new IllegalArgumentException("La decoración indicada no está asociada a la sala solicitada.");
+//        }
+//
+//        decoration.setRoomId(null);
+//        return decorationDAO.save(decoration);
+//    }
+//
+//    public List<Decoration> getRoomDecoration(Long roomId) { necesario ¿?
+//        decorationDAO.findByRoomId(roomId);
+//    }
 
-        if (room.getDecorations().contains(decoration)) {
-            throw new DuplicateNameException();
-        }
-
-        room.addDecoration(decoration);
-        roomDAO.save(room);
-    }
-*/
     public Set<Room> getRooms() {
         return roomSet;
     }

@@ -5,10 +5,19 @@ import java.util.Objects;
 public class Clue {
     private String name;
     private double price;
+    private Long id;
 
     public Clue(String name, double price) {
         this.name = name;
         this.price = price;
+    }
+
+    public Long getId(){
+        return id;
+    }
+
+    public void setId(Long id){
+        this.id = id;
     }
 
     public String getName() {
