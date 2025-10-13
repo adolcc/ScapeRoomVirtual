@@ -1,14 +1,13 @@
 package repository.dao;
 
-
-
 import model.Room;
 import java.util.*;
 
 public class RoomDAOimpl implements GenericDAO<Room, Long> {
 
-    private final Map<Long, Room> database = new HashMap<>();
-    private Long nextId = 1L;
+        private final Map<Long, Room> database = new HashMap<>();
+        private Long nextId = 1L;
+    private Long escapeRoomId;
 
     @Override
     public Room save(Room room) {
@@ -43,5 +42,10 @@ public class RoomDAOimpl implements GenericDAO<Room, Long> {
             return true;
         }
         return false;
+    }
+    public List<Room> findByEscapeRoomId(Long escapeRoomId) {
+        return database.values().stream()
+                .filter(room -> escapeRoomId.equals(room.getEscapeRoomId()))
+                .toList();
     }
 }
