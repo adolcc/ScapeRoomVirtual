@@ -6,7 +6,6 @@ public class Clue {
     private String name;
     private double price;
     private Long id;
-    private EscapeRoom escapeRoom;
 
     public Clue(String name, double price) {
         this.name = name;
@@ -35,14 +34,6 @@ public class Clue {
 
     public void setPrice(double price) {
         this.price = price;
-    }
-
-    public EscapeRoom getEscapeRoom() {
-        return escapeRoom;
-    }
-
-    public void setEscapeRoom(EscapeRoom escapeRoom) {
-        this.escapeRoom = escapeRoom;
     }
 
     @Override
