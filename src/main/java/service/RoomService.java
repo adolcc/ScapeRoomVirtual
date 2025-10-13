@@ -41,7 +41,7 @@ public class RoomService {
         checkNotDuplicateName(name);
         roomSet.add(new Room(name.trim(), level));
     }
-
+/*
     public void addDecorationToRoom(String roomName, Decoration decoration) {
         Room room = RoomDAO.findByName(roomName)
                 .orElseThrow(RoomNotFoundException::new);
@@ -53,7 +53,7 @@ public class RoomService {
         room.addDecoration(decoration);
         roomDAO.save(room);
     }
-
+*/
     public Set<Room> getRooms() {
         return roomSet;
     }

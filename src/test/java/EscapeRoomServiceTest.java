@@ -2,9 +2,13 @@ import exception.DuplicateEscapeRoomNameException;
 import exception.EmptyEscapeRoomNameException;
 import exception.NullEscapeRoomNameException;
 import model.EscapeRoom;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import repository.database.DatabaseSetup;
 import service.EscapeRoomService;
+
+import java.sql.SQLException;
 
 import static org.junit.Assert.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -13,10 +17,19 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 public class EscapeRoomServiceTest {
 
     private EscapeRoomService escapeRoomService;
+    private DatabaseSetup dbSetup;
 
     @BeforeEach
-    void setUp() {
+    void setUp() throws SQLException {
+        dbSetup = new DatabaseSetup();
+        dbSetup.cleanDatabase();
+
         escapeRoomService = new EscapeRoomService();
+    }
+
+    @AfterEach
+    void tearDown() throws SQLException {
+        dbSetup.cleanDatabase();
     }
 
     @Test
