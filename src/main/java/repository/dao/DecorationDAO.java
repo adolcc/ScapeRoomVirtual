@@ -7,7 +7,7 @@ import repository.database.DatabaseConfig;
 import java.sql.*;
 import java.util.*;
 
-public class DecorationDAOImpl implements GenericDAO<Decoration, Long> {
+public class DecorationDAO implements GenericDAO<Decoration, Long> {
 
     @Override
     public Decoration save(Decoration decoration) {

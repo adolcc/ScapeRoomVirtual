@@ -2,7 +2,7 @@ package service;
 
 import exception.DuplicateNameException;
 import model.Decoration;
-import repository.dao.DecorationDAOImpl;
+import repository.dao.DecorationDAO;
 import repository.dao.GenericDAO;
 
 import java.util.List;
@@ -13,7 +13,7 @@ public class DecorationService {
     private final GenericDAO<Decoration, Long> decorationDAO;
 
     public DecorationService() {
-        this.decorationDAO = new DecorationDAOImpl();
+        this.decorationDAO = new DecorationDAO();
     }
 
     private void checkNotDuplicateName(String name) {

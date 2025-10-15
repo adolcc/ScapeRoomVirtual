@@ -11,7 +11,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.*;
 
-public class EscapeRoomDAOImpl implements GenericDAO<EscapeRoom, Long> {
+public class EscapeRoomDAO implements GenericDAO<EscapeRoom, Long> {
 
     @Override
     public EscapeRoom save(EscapeRoom escapeRoom) {

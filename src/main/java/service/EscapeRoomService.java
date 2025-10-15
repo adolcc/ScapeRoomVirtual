@@ -3,7 +3,7 @@ package service;
 import exception.*;
 import model.EscapeRoom;
 import model.Room;
-import repository.dao.EscapeRoomDAOImpl;
+import repository.dao.EscapeRoomDAO;
 import repository.dao.GenericDAO;
 
 import java.util.List;
@@ -14,7 +14,7 @@ public class EscapeRoomService {
     private final GenericDAO<EscapeRoom, Long> escapeRoomDAO;
 
     public EscapeRoomService() {
-        this.escapeRoomDAO = new EscapeRoomDAOImpl();
+        this.escapeRoomDAO = new EscapeRoomDAO();
     }
 
     private void checkNotDuplicateName(String name) {
