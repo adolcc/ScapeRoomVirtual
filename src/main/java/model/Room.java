@@ -11,8 +11,10 @@ public class Room {
     private int level;
     private List<Clue> clues;
     private List<Decoration> decorations;
+    private Long id;
+    private Long escapeRoomId;
 
-    public Room(String name, int level) {
+    public Room(String name, int level, double price) {
         if (name == null || name.trim().isEmpty()) {
             throw new EmptyRoomNameException();
         }
@@ -20,6 +22,7 @@ public class Room {
         this.level = level;
         this.clues = new ArrayList<>();
         this.decorations = new ArrayList<>();
+        this.price = price;
     }
 
     public String getName() {
@@ -46,17 +49,47 @@ public class Room {
         decorations.add(decoration);
     }
 
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public Long getEscapeRoomId() {
+        return escapeRoomId;
+    }
+
+    public void setEscapeRoomId(Long escapeRoomId) {
+        this.escapeRoomId = escapeRoomId;
+    }
+
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof Room)) return false;
         Room room = (Room) o;
-        return name.equalsIgnoreCase(room.name);
+        if (id != null) {
+            return id.equals(room.id);
+        } else {
+            return name.equalsIgnoreCase(room.name);
+        }
     }
 
-    @Override
-    public int hashCode() {
 
-        return name.hashCode();
+        @Override
+        public int hashCode () {
+            return id != null ? id.hashCode() : name.toLowerCase().hashCode();
+
+        }
+
+    public double getPrice() {
+        return getPrice();
+    }
+
+    public int getDifficultyLevel() {
+        return getDifficultyLevel();
     }
 }

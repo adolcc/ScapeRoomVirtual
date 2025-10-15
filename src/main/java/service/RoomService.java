@@ -4,6 +4,8 @@ package service;
 import exception.*;
 import model.Decoration;
 import model.Room;
+import repository.dao.DecorationDAO;
+import repository.dao.RoomDAO;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -11,6 +13,8 @@ import java.util.Set;
 public class RoomService {
 
     private Set<Room> roomSet;
+    private RoomDAO roomDAO;
+    private DecorationDAO decorationDAO;
 
     public RoomService() {
         this.roomSet = new HashSet<>();
@@ -42,16 +46,30 @@ public class RoomService {
         roomSet.add(new Room(name.trim(), level));
     }
 
-    public void addDecorationToRoom(String roomName, Decoration decoration) {
-        Room room = roomDAO.findByName(roomName)
+    public Decoration addDecorationToRoom(Long decorationId, Long roomId) {
+        Room room = roomDAO.findById(roomId)
                 .orElseThrow(RoomNotFoundException::new);
 
-        if (room.getDecorations().contains(decoration)) {
-            throw new DuplicateNameException();
+        Decoration decoration = decorationDAO.findById(decorationId)
+                .orElseThrow(() -> new DecorationNotFoundException());
+
+        decoration.setRoomId(roomId);
+        return decorationDAO.save(decoration);
+    }
+
+    public Decoration removeDecorationFromRoom(Long roomId, Long decorationId) {
+        Room room = roomDAO.findById(roomId)
+                .orElseThrow(RoomNotFoundException::new);
+
+        Decoration decoration = decorationDAO.findById(decorationId)
+                .orElseThrow(() -> new DecorationNotFoundException());
+
+        if (!roomId.equals(decoration.getRoomId())) {
+            throw new IllegalArgumentException("La decoración indicada no está asociada a la sala solicitada.");
         }
 
-        room.addDecoration(decoration);
-        roomDAO.save(room);
+        decoration.setRoomId(null);
+        return decorationDAO.save(decoration);
     }
 
     public Set<Room> getRooms() {

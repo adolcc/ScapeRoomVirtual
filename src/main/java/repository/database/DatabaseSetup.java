@@ -9,14 +9,18 @@ import java.sql.Statement;
 public class DatabaseSetup {
 
     public Connection getConnection() throws SQLException {
-        return DatabaseConfig.getTestConnection();
+        return DatabaseConfig.getConnection();
     }
 
     public void cleanDatabase() throws SQLException {
         try (Connection conn = getConnection();
              Statement stmt = conn.createStatement()) {
-            stmt.execute("DELETE FROM escape_rooms");
-            stmt.execute("ALTER TABLE escape_rooms AUTO_INCREMENT = 1");
+            stmt.execute("SET FOREIGN_KEY_CHECKS = 0");
+            stmt.execute("DELETE FROM decoration");
+            stmt.execute("DELETE FROM clue");
+            stmt.execute("DELETE FROM room");
+            stmt.execute("DELETE FROM escape_room");
+            stmt.execute("SET FOREIGN_KEY_CHECKS = 1");
         }
     }
 
@@ -24,8 +28,8 @@ public class DatabaseSetup {
         try (Connection conn = getConnection();
              Statement stmt = conn.createStatement()) {
 
-            stmt.execute("CREATE DATABASE IF NOT EXISTS escape_room_test");
-            stmt.execute("USE escape_rooms_test");
+            stmt.execute("CREATE DATABASE IF NOT EXISTS escape_room_db");
+            stmt.execute("USE escape_room_db");
 
             executeInitScript(conn);
 
@@ -36,7 +40,7 @@ public class DatabaseSetup {
 
     private void executeInitScript(Connection conn) {
         try {
-            String initScript = new String(Files.readAllBytes(Paths.get("init.sql")));
+            String initScript = new String(Files.readAllBytes(Paths.get("src/main/resources/init.sql")));
 
             String[] statements = initScript.split(";");
 
@@ -49,19 +53,49 @@ public class DatabaseSetup {
                 }
             }
         } catch (Exception e) {
-            createMinimalTable(conn);
+            createMinimalTables(conn);
         }
     }
 
-    private void createMinimalTable(Connection conn) {
+    private void createMinimalTables(Connection conn) {
         try (Statement stmt = conn.createStatement()) {
-            stmt.execute("CREATE TABLE IF NOT EXISTS escape_rooms (\n" +
-                    "id INT AUTO_INCREMENT PRIMARY KEY,\n" +
-                    "name VARCHAR(255) NOT NULL UNIQUE,\n" +
-                    "created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP\n" +
-                    ")\n");
+            stmt.execute("CREATE TABLE IF NOT EXISTS escape_room (" +
+                    "id BIGINT AUTO_INCREMENT PRIMARY KEY, " +
+                    "name VARCHAR(255) NOT NULL UNIQUE, " +
+                    "created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP)");
+
+            stmt.execute("CREATE TABLE IF NOT EXISTS room (" +
+                    "id BIGINT AUTO_INCREMENT PRIMARY KEY, " +
+                    "escape_room_id BIGINT, " +
+                    "name VARCHAR(255) NOT NULL, " +
+                    "difficulty_level INT, " +
+                    "price DECIMAL(10,2), " +
+                    "FOREIGN KEY (escape_room_id) REFERENCES escape_room(id) ON DELETE CASCADE)");
+
+            stmt.execute("CREATE TABLE IF NOT EXISTS clue (" +
+                    "id BIGINT AUTO_INCREMENT PRIMARY KEY, " +
+                    "room_id BIGINT, " +
+                    "price DECIMAL(10,2), " +
+                    "FOREIGN KEY (room_id) REFERENCES room(id) ON DELETE CASCADE)");
+
+            stmt.execute("CREATE TABLE IF NOT EXISTS decoration (" +
+                    "id BIGINT AUTO_INCREMENT PRIMARY KEY, " +
+                    "room_id BIGINT, " +
+                    "name VARCHAR(255) NOT NULL, " +
+                    "material VARCHAR(255), " +
+                    "price DECIMAL(10,2), " +
+                    "FOREIGN KEY (room_id) REFERENCES room(id) ON DELETE CASCADE)");
+
         } catch (SQLException e) {
             throw new RuntimeException("Error al intentar hacer una estructura de tabla mínima.");
+        }
+    }
+
+    public boolean testConnection() {
+        try (Connection conn = getConnection()) {
+            return conn.isValid(2);
+        } catch (SQLException e) {
+            return false;
         }
     }
 
