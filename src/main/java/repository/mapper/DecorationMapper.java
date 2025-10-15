@@ -17,12 +17,10 @@ public class DecorationMapper implements GeneralMapper<Decoration> {
         return INSTANCE;
     }
 
-  //  private DecorationMapper() {}
-
     @Override
     public Decoration fromResultSet(ResultSet rs) throws SQLException {
         if (rs == null) {
-            throw new IllegalArgumentException("El set no puede ser vacío.");
+            throw new IllegalArgumentException("El set no puede estar vacío.");
         }
 
         Decoration decoration = new Decoration(
@@ -57,6 +55,7 @@ public class DecorationMapper implements GeneralMapper<Decoration> {
         }
     }
 
+    @Override
     public void validateEntity(Decoration decoration) {
         if (decoration == null) {
             throw new IllegalArgumentException("La decoración no puede estar vacía.");
