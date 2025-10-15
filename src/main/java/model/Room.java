@@ -13,6 +13,7 @@ public class Room {
     private List<Decoration> decorations;
     private Long id;
     private Long escapeRoomId;
+    private double price;
 
     public Room(String name, int level, double price) {
         if (name == null || name.trim().isEmpty()) {
@@ -64,8 +65,12 @@ public class Room {
     public void setEscapeRoomId(Long escapeRoomId) {
         this.escapeRoomId = escapeRoomId;
     }
-
-
+    public Room (String name, int level){
+        this(name,0,0);
+    }
+    public void setPrice(double price) {
+        this.price = price;
+    }
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -86,10 +91,10 @@ public class Room {
         }
 
     public double getPrice() {
-        return getPrice();
+        return price;
     }
 
     public int getDifficultyLevel() {
-        return getDifficultyLevel();
+        return level;
     }
 }

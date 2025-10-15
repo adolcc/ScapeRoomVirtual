@@ -6,18 +6,17 @@ import model.Decoration;
 import model.Room;
 import repository.dao.DecorationDAO;
 import repository.dao.RoomDAO;
+import java.util.List;
 
-import java.util.HashSet;
-import java.util.Set;
 
 public class RoomService {
 
-    private Set<Room> roomSet;
     private RoomDAO roomDAO;
     private DecorationDAO decorationDAO;
 
-    public RoomService() {
-        this.roomSet = new HashSet<>();
+    public RoomService(RoomDAO roomDAO, DecorationDAO decorationDAO){
+        this.roomDAO = roomDAO;
+        this.decorationDAO = decorationDAO;
     }
 
     public void checkNotNullName(String name) {
@@ -34,24 +33,24 @@ public class RoomService {
     }
 
     public void checkNotDuplicateName(String name) {
-        if (roomSet.contains(new Room(name, 1))) { // nivel ficticio para comparación
-            throw new DuplicateRoomNameException();
+       if (roomDAO.findByName(name).isPresent()) {
+        throw new DuplicateRoomNameException();
         }
     }
 
-    public void createRoom(String name, int level) {
+    public Room createRoom(String name,int level, double price){
         checkNotNullName(name);
         checkNotEmptyName(name);
         checkNotDuplicateName(name);
-        roomSet.add(new Room(name.trim(), level));
+        Room room = new Room (name.trim(), level, price);
+        return roomDAO.save(room);
     }
-
     public Decoration addDecorationToRoom(Long decorationId, Long roomId) {
         Room room = roomDAO.findById(roomId)
                 .orElseThrow(RoomNotFoundException::new);
 
         Decoration decoration = decorationDAO.findById(decorationId)
-                .orElseThrow(() -> new DecorationNotFoundException());
+                .orElseThrow();
 
         decoration.setRoomId(roomId);
         return decorationDAO.save(decoration);
@@ -62,7 +61,7 @@ public class RoomService {
                 .orElseThrow(RoomNotFoundException::new);
 
         Decoration decoration = decorationDAO.findById(decorationId)
-                .orElseThrow(() -> new DecorationNotFoundException());
+                .orElseThrow();
 
         if (!roomId.equals(decoration.getRoomId())) {
             throw new IllegalArgumentException("La decoración indicada no está asociada a la sala solicitada.");
@@ -72,7 +71,7 @@ public class RoomService {
         return decorationDAO.save(decoration);
     }
 
-    public Set<Room> getRooms() {
-        return roomSet;
+    public List<Room> getRooms() {
+        return roomDAO.findAll();
     }
 }

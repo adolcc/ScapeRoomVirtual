@@ -121,7 +121,11 @@ import java.util.Optional;
         }
 
         private Room mapResultSetToRoom(ResultSet rs) throws SQLException {
-            Room room = new Room(rs.getString("name"), rs.getInt("difficulty_level"));
+            Room room = new Room(
+                    rs.getString("name"),
+                    rs.getInt("difficulty_level"),
+                    rs.getDouble("price")
+            );
             room.setId(rs.getLong("id"));
             return room;
         }
