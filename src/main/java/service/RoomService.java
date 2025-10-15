@@ -7,16 +7,16 @@ import model.Room;
 import repository.dao.DecorationDAO;
 import repository.dao.RoomDAO;
 import java.util.List;
-
+import java.util.Optional;
 
 public class RoomService {
 
-    private RoomDAO roomDAO;
-    private DecorationDAO decorationDAO;
+    private final RoomDAO roomDAO;
+    private final DecorationDAO decorationDAO;
 
-    public RoomService(RoomDAO roomDAO, DecorationDAO decorationDAO){
-        this.roomDAO = roomDAO;
-        this.decorationDAO = decorationDAO;
+    public RoomService(){
+        this.roomDAO = new RoomDAO();
+        this.decorationDAO =new DecorationDAO();
     }
 
     public void checkNotNullName(String name) {
@@ -42,8 +42,12 @@ public class RoomService {
         checkNotNullName(name);
         checkNotEmptyName(name);
         checkNotDuplicateName(name);
+
         Room room = new Room (name.trim(), level, price);
         return roomDAO.save(room);
+    }
+    public Room createRoom(String name, int level){
+        return  createRoom(name, level, 0.0);
     }
     public Decoration addDecorationToRoom(Long decorationId, Long roomId) {
         Room room = roomDAO.findById(roomId)
@@ -74,4 +78,20 @@ public class RoomService {
     public List<Room> getRooms() {
         return roomDAO.findAll();
     }
+    public Optional<Room> getRoom(String name) {
+        return roomDAO.findByName(name);
+    }
+    public Optional<Room> getRoom(Long id) {
+        return roomDAO.findById(id);
+    }
+    public boolean deleteRoom(Long id) {
+        return roomDAO.delete(id);
+    }
+
+    public boolean deleteRoom(String name) {
+        Optional<Room> room = roomDAO.findByName(name);
+        return room.map(r -> roomDAO.delete(r.getId())).orElse(false);
+    }
+
+
 }

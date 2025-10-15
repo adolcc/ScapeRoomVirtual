@@ -1,95 +1,181 @@
-import exception.DuplicateRoomNameException;
-import exception.EmptyRoomNameException;
-import exception.InsufficientCluesException;
-import exception.InsufficientDecorationsException;
+import exception.*;
 import model.*;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import service.EscapeRoomService;
+import repository.database.DatabaseSetup;
+import service.RoomService;
+
+
+import java.sql.SQLException;
+import java.util.List;
+import java.util.Optional;
+
 
 import static org.junit.jupiter.api.Assertions.*;
 
 public class RoomServiceTest {
 
-    private EscapeRoomService escapeRoomService;
+    private RoomService roomService;
+    private DatabaseSetup dbSetup;
 
     @BeforeEach
-    void setUp() {
-        escapeRoomService = new EscapeRoomService();
-        escapeRoomService.createEscapeRoom("La Prisión");
+    void setUp() throws SQLException {
+        dbSetup = new DatabaseSetup();
+        dbSetup.cleanDatabase();
+        roomService = new RoomService();
+
+    }
+    @AfterEach
+    void tearDown() throws SQLException {
+        dbSetup.cleanDatabase();
     }
 
     @Test
-    void givenValidRoom_whenCreating_thenRoomIsAddedToEscapeRoom() {
-        Room room = new Room("Room Egipcio", 3);
-        room.addClue(new Clue("Jeroglífico", 30.0));
-        room.addClue(new Clue("Mapa antiguo", 25.0));
-        room.addDecoration(new Decoration("Estatua", "Piedra", 50.0));
-        room.addDecoration(new Decoration("Antorcha", "Metal", 40.0));
+    void givenValidRoom_whenCreating_thenRoomIsCreated() {
+        String name = "Room Egipcio";
+        int level = 3;
+        double price = 100.0;
 
-        escapeRoomService.addRoomToEscapeRoom("La Prisión", room);
+        Room room = roomService.createRoom(name, level, price);
 
-        assertTrue(escapeRoomService.getEscapeRoom("La Prisión").get().getRooms().contains(room));
+        assertNotNull(room);
+        assertEquals(name, room.getName());
+        assertEquals(level, room.getLevel());
+        assertEquals(price, room.getPrice());
 
     }
+    @Test
+    void givenValidRoomWithoutPrice_whenCreating_thenRoomIsCreated() {
+        String name = "Room Medieval";
+        int level = 2;
+        Room room = roomService.createRoom(name, level);
 
+        assertNotNull(room);
+        assertEquals(name, room.getName());
+        assertEquals(level, room.getLevel());
+        assertEquals(0.0, room.getPrice());
+    }
+    @Test
+    void givenNullRoomName_whenCreating_thenThrowNullEscapeRoomNameException() {
+        String name = null;
+        int level = 3;
+        double price = 100.0;
+
+        assertThrows(NullEscapeRoomNameException.class, () -> {
+            roomService.createRoom(name, level, price);
+        });
+    }
     @Test
     void givenEmptyRoomName_whenCreating_thenThrowEmptyRoomNameException() {
+        String name = "   ";
+        int level = 3;
+        double price = 100.0;
 
-            Exception e = assertThrows(EmptyRoomNameException.class, () -> {
-                new Room("    ", 2);
-            });
-
-            assertEquals("El nombre de la sala no puede estar vacío.", e.getMessage());
-        }
-
+        assertThrows(EmptyRoomNameException.class, () -> {
+            roomService.createRoom(name, level, price);
+        });
+    }
     @Test
     void givenDuplicateRoomName_whenCreating_thenThrowDuplicateRoomNameException() {
-        Room room1 = new Room("Room Egipcio", 3);
-        room1.addClue(new Clue("Pista 1", 10.0));
-        room1.addClue(new Clue("Pista 2", 15.0));
-        room1.addDecoration(new Decoration("Cuadro", "Tela", 20.0));
-        room1.addDecoration(new Decoration("Mesa", "Madera", 30.0));
-        escapeRoomService.addRoomToEscapeRoom("La Prisión", room1);
+        String name = "Room Egipcio";
+        int level1 = 3;
+        int level2 = 5;
+        double price = 100.0;
 
-        Room room2 = new Room("Room Egipcio", 2);
-        room2.addClue(new Clue("Pista A", 12.0));
-        room2.addClue(new Clue("Pista B", 18.0));
-        room2.addDecoration(new Decoration("Lámpara", "Cristal", 25.0));
-        room2.addDecoration(new Decoration("Silla", "Metal", 35.0));
-
-        Exception e = assertThrows(DuplicateRoomNameException.class, () -> {
-            escapeRoomService.addRoomToEscapeRoom("La Prisión", room2);
+        roomService.createRoom(name, level1, price);
+        assertThrows(DuplicateRoomNameException.class, () -> {
+            roomService.createRoom(name, level2, price);
         });
-
-        assertEquals("Ya existe una sala con ese nombre en el Escape Room.", e.getMessage());
     }
-
     @Test
-    void givenRoomWithLessThanTwoClues_whenCreating_thenThrowInsufficientCluesException() {
-        Room room = new Room("Room Incompleto", 1);
-        room.addClue(new Clue("Solo una pista", 10.0));
-        room.addDecoration(new Decoration("Cuadro", "Tela", 20.0));
-        room.addDecoration(new Decoration("Mesa", "Madera", 30.0));
+    void givenRoomNameWithSpaces_whenCreating_thenNameIsTrimmed() {
+        String nameWithSpaces = "  Room Egipcio  ";
+        String expectedName = "Room Egipcio";
+        int level = 3;
+        double price = 100.0;
 
-        Exception e = assertThrows(InsufficientCluesException.class, () -> {
-            escapeRoomService.addRoomToEscapeRoom("La Prisión", room);
-        });
-
-        assertEquals("La sala debe contener al menos dos pistas.", e.getMessage());
+        Room room = roomService.createRoom(nameWithSpaces, level, price);
+        assertEquals(expectedName, room.getName());
     }
-
     @Test
-    void givenRoomWithLessThanTwoDecorations_whenCreating_thenThrowInsufficientDecorationsException() {
-        Room room = new Room("Room Incompleto", 1);
-        room.addClue(new Clue("Pista 1", 10.0));
-        room.addClue(new Clue("Pista 2", 15.0));
-        room.addDecoration(new Decoration("Solo una decoración", "Tela", 20.0));
+    void givenMultipleRooms_whenGettingRooms_thenAllRoomsAreReturned() {
+        roomService.createRoom("Room 1", 1, 50.0);
+        roomService.createRoom("Room 2", 2, 75.0);
+        roomService.createRoom("Room 3", 3, 100.0);
 
-        Exception e = assertThrows(InsufficientDecorationsException.class, () -> {
-            escapeRoomService.addRoomToEscapeRoom("La Prisión", room);
-        });
-
-        assertEquals("La sala debe contener al menos dos objetos de decoración.", e.getMessage());
+        List<Room> rooms = roomService.getRooms();
+        assertFalse(rooms.isEmpty());
+        assertEquals(3, rooms.size());
     }
+    @Test
+    void givenExistingRoomName_whenGettingRoomByName_thenRoomIsReturned() {
+        String name = "Room Egipcio";
+        int level = 3;
+        double price = 100.0;
+        roomService.createRoom(name, level, price);
+
+        Optional<Room> foundRoom = roomService.getRoom(name);
+        assertTrue(foundRoom.isPresent());
+        assertEquals(name, foundRoom.get().getName());
+        assertEquals(level, foundRoom.get().getLevel());
+        assertEquals(price, foundRoom.get().getPrice());
+    }
+    @Test
+    void givenNonExistingRoomName_whenGettingRoomByName_thenEmptyIsReturned() {
+        String name = "Non Existing Room";
+
+        Optional<Room> foundRoom = roomService.getRoom(name);
+        assertFalse(foundRoom.isPresent());
+    }@Test
+    void givenExistingRoomId_whenGettingRoomById_thenRoomIsReturned() {
+        Room createdRoom = roomService.createRoom("Room Egipcio", 3, 100.0);
+        Long roomId = createdRoom.getId();
+
+        Optional<Room> foundRoom = roomService.getRoom(roomId);
+        assertTrue(foundRoom.isPresent());
+        assertEquals(roomId, foundRoom.get().getId());
+        assertEquals("Room Egipcio", foundRoom.get().getName());
+    }
+    @Test
+    void givenNonExistingRoomId_whenGettingRoomById_thenEmptyIsReturned() {
+        Long nonExistingId = 999L;
+
+        Optional<Room> foundRoom = roomService.getRoom(nonExistingId);
+        assertFalse(foundRoom.isPresent());
+    }
+    @Test
+    void givenExistingRoomId_whenDeletingRoomById_thenRoomIsDeleted() {
+        Room createdRoom = roomService.createRoom("Room Egipcio", 3, 100.0);
+        Long roomId = createdRoom.getId();
+
+        boolean isDeleted = roomService.deleteRoom(roomId);
+        assertTrue(isDeleted);
+        Optional<Room> foundRoom = roomService.getRoom(roomId);
+        assertFalse(foundRoom.isPresent());
+    }
+    @Test
+    void givenNonExistingRoomId_whenDeletingRoomById_thenFalse() {
+        Long nonExistingId = 999L;
+
+        boolean isDeleted = roomService.deleteRoom(nonExistingId);
+        assertFalse(isDeleted);
+    }
+    @Test
+    void givenExistingRoomName_whenDeletingRoomByName_thenRoomIsDeleted() {
+        roomService.createRoom("Room Egipcio", 3, 100.0);
+
+        boolean isDeleted = roomService.deleteRoom("Room Egipcio");
+        assertTrue(isDeleted);
+        Optional<Room> foundRoom = roomService.getRoom("Room Egipcio");
+        assertFalse(foundRoom.isPresent());
+    }
+    @Test
+    void givenNonExistingRoomName_whenDeletingRoomByName_thenFalse() {
+        String nonExistingName = "Non Existing Room";
+
+        boolean isDeleted = roomService.deleteRoom(nonExistingName);
+        assertFalse(isDeleted);
+    }
+
 }
