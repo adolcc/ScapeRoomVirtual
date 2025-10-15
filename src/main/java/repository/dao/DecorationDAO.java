@@ -1,31 +1,30 @@
 package repository.dao;
 
+import exception.EmptyNameException;
 import exception.PersistenceException;
 import model.Decoration;
 import repository.database.DatabaseConfig;
+import repository.mapper.DecorationMapper;
+import repository.mapper.GeneralMapper;
 
 import java.sql.*;
 import java.util.*;
 
 public class DecorationDAO implements GenericDAO<Decoration, Long> {
 
+    private final GeneralMapper<Decoration> mapper = DecorationMapper.getInstance();
+
     @Override
     public Decoration save(Decoration decoration) {
+        mapper.validateEntity(decoration);
+
         String sql = "INSERT INTO decoration (name, material, price, room_id) VALUES (?, ?, ?, ?)";
 
         try (Connection conn = DatabaseConfig.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql, PreparedStatement.
                      RETURN_GENERATED_KEYS)) {
 
-            stmt.setString(1, decoration.getName());
-            stmt.setString(2, decoration.getMaterial());
-            stmt.setDouble(3, decoration.getPrice());
-
-            if (decoration.getRoomId() != null) {
-                stmt.setLong(4, decoration.getRoomId());
-            } else {
-                stmt.setNull(4, Types.BIGINT);
-            }
+            mapper.toPreparedStatement(decoration, stmt);
 
             int affectedRows = stmt.executeUpdate();
 
@@ -34,43 +33,64 @@ public class DecorationDAO implements GenericDAO<Decoration, Long> {
             }
 
             setGeneratedId(decoration, stmt);
-            return decoration;
 
         } catch (SQLException e) {
             throw new PersistenceException("Error al guardar la decoración: " + decoration.getName() + ".");
         }
+        return decoration;
     }
 
     @Override
     public Optional<Decoration> findById(Long id) {
+        if (id == null || id <= 0) {
+            throw new IllegalArgumentException("El ID debe ser un número positivo.");
+        }
+
         String sql = "SELECT id, name, material, price, room_id FROM decoration WHERE" +
                 " id = ?";
+        Optional<Decoration> decoration = Optional.empty();
 
         try (Connection conn = DatabaseConfig.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
 
             stmt.setLong(1, id);
-            return executeQueryAndMapToDecoration(stmt);
+
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    decoration = Optional.of(mapper.fromResultSet(rs));
+                }
+            }
         } catch (SQLException e) {
             throw new PersistenceException("Error al buscar la decoración con ID = " + id);
         }
+        return decoration;
     }
 
     @Override
     public Optional<Decoration> findByName(String name) {
+        if (name == null || name.trim().isEmpty()) {
+            throw new EmptyNameException();
+        }
+
         String sql = "SELECT id, name, material, price, room_id FROM decoration WHERE" +
                 " name = ?";
+        Optional<Decoration> decoration = Optional.empty();
 
         try (Connection conn = DatabaseConfig.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
 
             stmt.setString(1, name);
-            return executeQueryAndMapToDecoration(stmt);
 
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    decoration = Optional.of(mapper.fromResultSet(rs));
+                }
+            }
         } catch (SQLException e) {
             throw new PersistenceException("Error al buscar la decoración por nombre: "
                     + name + ".");
         }
+        return decoration;
     }
 
     @Override
@@ -83,28 +103,34 @@ public class DecorationDAO implements GenericDAO<Decoration, Long> {
              ResultSet rs = stmt.executeQuery()) {
 
             while (rs.next()) {
-                decorations.add(mapResultSetToDecoration(rs));
+                decorations.add(mapper.fromResultSet(rs));
             }
-            return decorations;
         } catch (SQLException e) {
             throw new PersistenceException("Error al buscar todas las decoraciones.");
         }
+        return decorations;
     }
 
     @Override
     public boolean delete(Long id) {
+        if (id == null || id <= 0) {
+            throw new IllegalArgumentException("El ID debe ser un número positivo.");
+        }
+
         String sql = "DELETE FROM decoration WHERE id = ?";
+
+        int affectedRows;
 
         try (Connection conn = DatabaseConfig.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
 
             stmt.setLong(1, id);
-            int affectedRows = stmt.executeUpdate();
-            return affectedRows > 0;
+            affectedRows = stmt.executeUpdate();
 
         } catch (SQLException e) {
             throw new PersistenceException("Error al borrar la decoración con ID: " + id);
         }
+        return affectedRows > 0;
     }
 
     private void setGeneratedId(Decoration decoration, PreparedStatement stmt) throws SQLException {
@@ -115,31 +141,5 @@ public class DecorationDAO implements GenericDAO<Decoration, Long> {
                 throw new PersistenceException("No se pudo obtener el ID generado para la decoración.");
             }
         }
-    }
-
-    private Optional<Decoration> executeQueryAndMapToDecoration(PreparedStatement stmt) throws SQLException {
-        try (ResultSet rs = stmt.executeQuery()) {
-            if (rs.next()) {
-                return Optional.of(mapResultSetToDecoration(rs));
-            }
-            return Optional.empty();
-        }
-    }
-
-    private Decoration mapResultSetToDecoration(ResultSet rs) throws SQLException {
-        Decoration decoration = new Decoration(
-                rs.getString("name"),
-                rs.getString("material"),
-                rs.getDouble("price")
-        );
-        decoration.setId(rs.getLong("id"));
-
-        Long roomId = rs.getLong("room_id");
-        if (!rs.wasNull()) {
-            decoration.setRoomId(roomId);
-        } else {
-            decoration.setRoomId(null);
-        }
-        return decoration;
     }
 }
