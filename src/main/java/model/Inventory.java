@@ -10,19 +10,30 @@ public class Inventory {
     private List<Decoration> decorations;
     private double totalInventoryValue;
 
-    public Inventory(){
+    public Inventory() {
         this.rooms = new ArrayList<>();
         this.clues = new ArrayList<>();
         this.decorations = new ArrayList<>();
         this.totalInventoryValue = 0.0;
     }
 
-    public List<Room> getRooms() { return rooms; }
-    public List<Clue> getClues() { return clues; }
-    public List<Decoration> getDecorationItems() { return decorations; }
-    public double getTotalInventoryValue() { return totalInventoryValue; }
+    public List<Room> getRooms() {
+        return rooms;
+    }
 
-    public void addRoom (Room room){
+    public List<Clue> getClues() {
+        return clues;
+    }
+
+    public List<Decoration> getDecorationItems() {
+        return decorations;
+    }
+
+    public double getTotalInventoryValue() {
+        return totalInventoryValue;
+    }
+
+    public void addRoom(Room room) {
         rooms.add(room);
         updateTotalValue();
         System.out.println("Sala añadida: " + room.getName());
@@ -31,22 +42,27 @@ public class Inventory {
     public void addClue(Clue clue) {
         clues.add(clue);
         updateTotalValue();
-        System.out.println("Pista añadida: " + clue);
+        System.out.println("Pista añadida: " + clue.getName());
     }
+
     public void addDecorationItem(Decoration item) {
+        decorations.add(item);
         updateTotalValue();
-        System.out.println("Objeto de decoración añadido: " + item.getMaterial());
+        System.out.println("Objeto de decoración añadido: " + item.getName());
     }
+
     public void removeRoom(String roomName) {
         rooms.removeIf(room -> room.getName().equalsIgnoreCase(roomName));
         updateTotalValue();
         System.out.println("Sala eliminada: " + roomName);
     }
-    public void removeClue(String clueTheme) {
-        clues.removeIf(clue -> clue.getClue().equalsIgnoreCase(clueTheme));
+
+    public void removeClue(String clueName) {
+        clues.removeIf(clue -> clue.getName().equalsIgnoreCase(clueName));
         updateTotalValue();
-        System.out.println("Pista eliminada: " + clueTheme);
+        System.out.println("Pista eliminada: " + clueName);
     }
+
     private void updateTotalValue() {
         totalInventoryValue = 0.0;
 
@@ -61,14 +77,20 @@ public class Inventory {
         }
 
     }
-    public void removeDecorationItem(String material) {
-        Decoration.removeIf(item -> item.getmaterial().equalsIgnoreCase(material));
+
+    public void removeDecorationItem(String name) {
+        decorations.removeIf(item -> item.getName().equalsIgnoreCase(item.getName()));
         updateTotalValue();
-        System.out.println("Objeto de decoración eliminado: " + material);
+        System.out.println("Objeto de decoración eliminado: " + name );
     }
 
     public void showInventory() {
-    }
+        System.out.println("==INVENTARIO==");
+        System.out.println(" Total de salas:" + rooms.size());
+        System.out.println(" total de pistas:" + clues.size());
+        System.out.println(" total de decoraciones:" + decorations.size());
+        System.out.println(" Valor total inventario:" + totalInventoryValue);
 
+    }
 }
 
