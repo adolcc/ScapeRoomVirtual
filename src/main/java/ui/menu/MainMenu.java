@@ -2,20 +2,20 @@ package ui.menu;
 
 public class MainMenu extends Menu {
 
-    private CreationHandler creationHandler;
-    private AdditionHandler additionHandler;
-    private RemovalHandler removalHandler;
-    private ViewHandler viewHandler;
-    private NotificationHandler notificationHandler;
-    private TicketHandler ticketHandler;
+    private CreationHandlerMenu creationHandler;
+    private AdditionHandlerMenu additionHandler;
+    private RemovalHandlerMenu removalHandler;
+    private ViewHandlerMenu viewHandler;
+    private NotificationHandlerMenu notificationHandler;
+    private TicketHandlerMenu ticketHandler;
 
     public MainMenu() {
-        this.creationHandler = new CreationHandler();
-        this.additionHandler = new AdditionHandler();
-        this.removalHandler = new RemovalHandler();
-        this.viewHandler = new ViewHandler();
-        this.notificationHandler = new NotificationHandler();
-        this.ticketHandler = new TicketHandler();
+        this.creationHandler = new CreationHandlerMenu();
+        this.additionHandler = new AdditionHandlerMenu();
+        this.removalHandler = new RemovalHandlerMenu();
+        this.viewHandler = new ViewHandlerMenu();
+        this.notificationHandler = new NotificationHandlerMenu();
+        this.ticketHandler = new TicketHandlerMenu();
     }
 
     @Override
@@ -26,8 +26,8 @@ public class MainMenu extends Menu {
             showHeader("ESCAPE ROOM MASTER");
             System.out.println("1. 🆕 Crear.");
             System.out.println("2. ➕ Añadir.");
-            System.out.println("3. 🗑️  Eliminar.");
-            System.out.println("4. 👁️  Ver.");
+            System.out.println("3. 🗑️ Eliminar.");
+            System.out.println("4. 👁️ Ver.");
             System.out.println("5. 📤 Enviar.");
             System.out.println("6. 🎫 Gestión de Tickets.");
             System.out.println("0. 🚪 Salir.");
