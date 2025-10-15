@@ -177,5 +177,34 @@ public class RoomServiceTest {
         boolean isDeleted = roomService.deleteRoom(nonExistingName);
         assertFalse(isDeleted);
     }
+    @Test
+    void givenInvalidPrice_whenCreatingRoom_thenThrowInvalidPriceException() {
+        String name = "Room Test";
+        int level = 3;
+        double invalidPrice = 0.0;
 
+        assertThrows(InvalidPriceException.class, () -> {
+            roomService.createRoom(name, level, invalidPrice);
+        });
+    }
+    @Test
+    void givenNegativePrice_whenCreatingRoom_thenThrowInvalidPriceException() {
+        String name = "Room Test";
+        int level = 3;
+        double negativePrice = -50.0;
+
+        assertThrows(InvalidPriceException.class, () -> {
+            roomService.createRoom(name, level, negativePrice);
+        });
+    }
+    @Test
+    void givenZeroPrice_whenCreatingRoom_thenRoomIsCreated() {
+        String name = "Free Room";
+        int level = 1;
+        double zeroPrice = 0.0;
+
+        Room room = roomService.createRoom(name, level, zeroPrice);
+        assertNotNull(room);
+        assertEquals(zeroPrice, room.getPrice());
+    }
 }

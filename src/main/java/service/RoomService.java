@@ -26,8 +26,7 @@ public class RoomService {
     }
 
     public void checkNotEmptyName(String name) {
-        name = name.trim();
-        if (name.isEmpty()) {
+        if (name.trim().isEmpty()) {
             throw new EmptyRoomNameException();
         }
     }
@@ -38,10 +37,17 @@ public class RoomService {
         }
     }
 
+    private void checkValidPrice(double price) {
+        if (price < 0) {
+            throw new InvalidPriceException();
+        }
+    }
+
     public Room createRoom(String name,int level, double price){
         checkNotNullName(name);
         checkNotEmptyName(name);
         checkNotDuplicateName(name);
+        checkValidPrice(price);
 
         Room room = new Room (name.trim(), level, price);
         return roomDAO.save(room);
@@ -54,7 +60,7 @@ public class RoomService {
                 .orElseThrow(RoomNotFoundException::new);
 
         Decoration decoration = decorationDAO.findById(decorationId)
-                .orElseThrow();
+                .orElseThrow(DecorationNotFoundException::new);
 
         decoration.setRoomId(roomId);
         return decorationDAO.save(decoration);
@@ -65,7 +71,7 @@ public class RoomService {
                 .orElseThrow(RoomNotFoundException::new);
 
         Decoration decoration = decorationDAO.findById(decorationId)
-                .orElseThrow();
+                .orElseThrow(DecorationNotFoundException::new);
 
         if (!roomId.equals(decoration.getRoomId())) {
             throw new IllegalArgumentException("La decoración indicada no está asociada a la sala solicitada.");
@@ -92,6 +98,4 @@ public class RoomService {
         Optional<Room> room = roomDAO.findByName(name);
         return room.map(r -> roomDAO.delete(r.getId())).orElse(false);
     }
-
-
 }

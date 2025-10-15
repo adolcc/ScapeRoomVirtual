@@ -19,6 +19,9 @@ public class Room {
         if (name == null || name.trim().isEmpty()) {
             throw new EmptyRoomNameException();
         }
+        if (price <=0){
+            throw new InvalidPriceException();
+        }
         this.name = name.trim();
         this.level = level;
         this.clues = new ArrayList<>();
