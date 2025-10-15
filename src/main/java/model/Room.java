@@ -13,6 +13,7 @@ public class Room {
     private List<Decoration> decorations;
     private Long id;
     private Long escapeRoomId;
+    private double price;
 
     public Room(String name, int level, double price) {
         if (name == null || name.trim().isEmpty()) {
