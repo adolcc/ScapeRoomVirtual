@@ -14,7 +14,7 @@ public class Room {
     private Long id;
     private Long escapeRoomId;
 
-    public Room(String name, int level) {
+    public Room(String name, int level, double price) {
         if (name == null || name.trim().isEmpty()) {
             throw new EmptyRoomNameException();
         }
@@ -22,6 +22,7 @@ public class Room {
         this.level = level;
         this.clues = new ArrayList<>();
         this.decorations = new ArrayList<>();
+        this.price = price;
     }
 
     public String getName() {
