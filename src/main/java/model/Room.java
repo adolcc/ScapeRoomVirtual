@@ -11,8 +11,9 @@ public class Room {
     private int level;
     private List<Clue> clues;
     private List<Decoration> decorations;
+    private double price;
 
-    public Room(String name, int level) {
+    public Room(String name, int level, double price) {
         if (name == null || name.trim().isEmpty()) {
             throw new EmptyRoomNameException();
         }
@@ -20,6 +21,7 @@ public class Room {
         this.level = level;
         this.clues = new ArrayList<>();
         this.decorations = new ArrayList<>();
+        this.price = price;
     }
 
     public String getName() {
