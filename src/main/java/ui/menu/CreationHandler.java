@@ -5,14 +5,14 @@ import service.DecorationService;
 import service.EscapeRoomService;
 import service.RoomService;
 
-public class CreateMenu extends Menu {
+public class CreationHandler extends Menu {
 
     EscapeRoomService escapeRoomService;
     RoomService roomService;
     ClueService clueService;
     DecorationService decorationService;
 
-    public CreateMenu() {
+    public CreationHandler() {
         this.escapeRoomService = new EscapeRoomService();
         this.roomService = new RoomService();
         this.clueService = new ClueService();
@@ -21,20 +21,18 @@ public class CreateMenu extends Menu {
 
     @Override
     public void display() {
-        while (!exit) {
+        do {
             clearScreen();
             showHeader("CREAR . . .");
-
             System.out.println("1. 🏰 Nuevo Escape Room.");
             System.out.println("2. 🚪 Nueva sala.");
             System.out.println("3. 🔍 Nueva pista.");
             System.out.println("4. 🖼️  Nuevo objeto de decoración.");
             System.out.println("0. ↩️  Volver al menú principal.");
             System.out.println("════════════════════════════════════════");
-
             int option = readIntInput("Selecciona una opción: ");
             handleOption(option);
-        }
+        } while (!exit);
     }
 
     @Override
@@ -74,8 +72,8 @@ public class CreateMenu extends Menu {
         System.out.println("\n🎯 Creando nueva sala . . .");
         String name = readStringInput("Nombre de la sala: ");
         int level = readIntInput("Nivel de la Sala (1 a 5): ");
-    //    double ticketPrice = readDoubleInput("Precio de la sala: ");
-        roomService.createRoom(name, level /*, ticketPrice FALTA AÑADIR PRECIO DE TICKET A SALA ¡¡¡!!! */);
+        double ticketPrice = readDoubleInput("Precio de la sala: ");
+        roomService.createRoom(name, level, ticketPrice);
         System.out.println("✅ Sala '" + name + "' creada exitosamente.");
         pressEnterToContinue();
     }

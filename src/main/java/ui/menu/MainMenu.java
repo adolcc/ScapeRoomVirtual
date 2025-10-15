@@ -2,25 +2,25 @@ package ui.menu;
 
 public class MainMenu extends Menu {
 
-    private CreateMenu createMenu;
-    private AddMenu addMenu;
-    private DeleteMenu deleteMenu;
-    private ViewMenu viewMenu;
-    private SendMenu sendMenu;
-    private TicketMenu ticketMenu;
+    private CreationHandler creationHandler;
+    private AdditionHandler additionHandler;
+    private RemovalHandler removalHandler;
+    private ViewHandler viewHandler;
+    private NotificationHandler notificationHandler;
+    private TicketHandler ticketHandler;
 
     public MainMenu() {
-        this.createMenu = new CreateMenu();
-        this.addMenu = new AddMenu();
-        this.deleteMenu = new DeleteMenu();
-        this.viewMenu = new ViewMenu();
-        this.sendMenu = new SendMenu();
-        this.ticketMenu = new TicketMenu();
+        this.creationHandler = new CreationHandler();
+        this.additionHandler = new AdditionHandler();
+        this.removalHandler = new RemovalHandler();
+        this.viewHandler = new ViewHandler();
+        this.notificationHandler = new NotificationHandler();
+        this.ticketHandler = new TicketHandler();
     }
 
     @Override
     public void display() {
-        while (!exit) {
+        do {
             clearScreen();
             System.out.println("Bienvenido al Sistema de Gestión del Escape Room.");
             showHeader("ESCAPE ROOM MASTER");
@@ -35,29 +35,29 @@ public class MainMenu extends Menu {
 
             int option = readIntInput("Selecciona una opción: ");
             handleOption(option);
-        }
+        } while (!exit);
     }
 
     @Override
     public void handleOption(int option) {
         switch (option) {
             case 1:
-                createMenu.display();
+                creationHandler.display();
                 break;
             case 2:
-                addMenu.display();
+                additionHandler.display();
                 break;
             case 3:
-                deleteMenu.diplay();
+                removalHandler.diplay();
                 break;
             case 4:
-                viewMenu.display();
+                viewHandler.display();
                 break;
             case 5:
-                sendMenu.display();
+                notificationHandler.display();
                 break;
             case 6:
-                ticketMenu.display();
+                ticketHandler.display();
                 break;
             case 0:
                 exit = true;
