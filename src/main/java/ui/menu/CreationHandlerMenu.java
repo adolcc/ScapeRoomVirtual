@@ -5,14 +5,14 @@ import service.DecorationService;
 import service.EscapeRoomService;
 import service.RoomService;
 
-public class CreationHandler extends Menu {
+public class CreationHandlerMenu extends Menu {
 
     EscapeRoomService escapeRoomService;
     RoomService roomService;
     ClueService clueService;
     DecorationService decorationService;
 
-    public CreationHandler() {
+    public CreationHandlerMenu() {
         this.escapeRoomService = new EscapeRoomService();
         this.roomService = new RoomService();
         this.clueService = new ClueService();
@@ -27,8 +27,8 @@ public class CreationHandler extends Menu {
             System.out.println("1. 🏰 Nuevo Escape Room.");
             System.out.println("2. 🚪 Nueva sala.");
             System.out.println("3. 🔍 Nueva pista.");
-            System.out.println("4. 🖼️  Nuevo objeto de decoración.");
-            System.out.println("0. ↩️  Volver al menú principal.");
+            System.out.println("4. 🖼️ Nuevo objeto de decoración.");
+            System.out.println("0. ↩️ Volver al menú principal.");
             System.out.println("════════════════════════════════════════");
             int option = readIntInput("Selecciona una opción: ");
             handleOption(option);
