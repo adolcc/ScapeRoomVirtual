@@ -189,12 +189,9 @@ public class RoomServiceTest {
     }
     @Test
     void givenNegativePrice_whenCreatingRoom_thenThrowInvalidPriceException() {
-        String name = "Room Test";
-        int level = 3;
-        double negativePrice = -50.0;
 
         assertThrows(InvalidPriceException.class, () -> {
-            roomService.createRoom(name, level, negativePrice);
+            roomService.createRoom("Test Room", 1, -10.0);
         });
     }
     @Test

@@ -19,19 +19,19 @@ public class RoomService {
         this.decorationDAO =new DecorationDAO();
     }
 
-    public void checkNotNullName(String name) {
+    private void checkNotNullName(String name) {
         if (name == null) {
             throw new NullEscapeRoomNameException();
         }
     }
 
-    public void checkNotEmptyName(String name) {
+    private void checkNotEmptyName(String name) {
         if (name.trim().isEmpty()) {
             throw new EmptyRoomNameException();
         }
     }
 
-    public void checkNotDuplicateName(String name) {
+    private void checkNotDuplicateName(String name) {
        if (roomDAO.findByName(name).isPresent()) {
         throw new DuplicateRoomNameException();
         }
@@ -57,29 +57,16 @@ public class RoomService {
     }
     public Decoration addDecorationToRoom(Long decorationId, Long roomId) {
         Room room = roomDAO.findById(roomId)
-                .orElseThrow(RoomNotFoundException::new);
+                .orElseThrow(() -> new RoomNotFoundException("Sala inexistente." + roomId));
 
         Decoration decoration = decorationDAO.findById(decorationId)
-                .orElseThrow(DecorationNotFoundException::new);
+                .orElseThrow(() -> new DecorationNotFoundException("Decoración no encontrada con ID: " + decorationId));
 
         decoration.setRoomId(roomId);
         return decorationDAO.save(decoration);
     }
 
-    public Decoration removeDecorationFromRoom(Long roomId, Long decorationId) {
-        Room room = roomDAO.findById(roomId)
-                .orElseThrow(RoomNotFoundException::new);
 
-        Decoration decoration = decorationDAO.findById(decorationId)
-                .orElseThrow(DecorationNotFoundException::new);
-
-        if (!roomId.equals(decoration.getRoomId())) {
-            throw new IllegalArgumentException("La decoración indicada no está asociada a la sala solicitada.");
-        }
-
-        decoration.setRoomId(null);
-        return decorationDAO.save(decoration);
-    }
 
     public List<Room> getRooms() {
         return roomDAO.findAll();
