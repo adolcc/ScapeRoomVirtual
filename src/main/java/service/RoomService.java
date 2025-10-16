@@ -54,19 +54,19 @@ public class RoomService {
     }
     public Decoration addDecorationToRoom(String roomName, String decorationName) {
         Room room = roomDAO.findByName(roomName)
-                .orElseThrow(() -> new RoomNotFoundException("Sala inexistente");
+                .orElseThrow(() -> new RoomNotFoundException("Sala inexistente"));
 
-        Decoration decoration = decorationDAO.findByNAme(decorationName)
-                .orElseThrow(() -> new DecorationNotFoundException("Decoración no encontrada");
+        Decoration decoration = decorationDAO.findByName(decorationName)
+                .orElseThrow(() -> new DecorationNotFoundException("Decoración no encontrada"));
         Long roomId = room.getId();
         decoration.setRoomId(roomId);
         return decorationDAO.save(decoration);
     }
-    public decoration removeDecorationFromRoom(String roomName, String decorationName) {
-        Room room = roomDAO.findByName(roomName).orElseThrow(RoomNotFoundException::new);
-        Decoration decoration = decorationDAO.findByName(decorationName).orElseThrow(DecorationNotfoundException::new);
-    if (!decoration.getRoomId().equals(room.getId)){
-        throw new IlegalArgumentException("La decoracion indicada no está asociada a la sala solicitada.");
+    public Decoration removeDecorationFromRoom(String roomName, String decorationName) {
+        Room room = roomDAO.findByName(roomName).orElseThrow(() -> new RoomNotFoundException("Sala inexistente"+roomName));
+        Decoration decoration = decorationDAO.findByName(decorationName).orElseThrow(() -> new DecorationNotFoundException("Decoración no encontrada"+decorationName));
+    if (!decoration.getRoomId().equals(room.getId())) {
+        throw new IllegalArgumentException("La decoracion indicada no está asociada a la sala solicitada.");
     }
         decoration.setRoomId(null);
         return decorationDAO.save(decoration);

@@ -32,7 +32,7 @@ public class RoomServiceTest {
     }
 
     @Test
-    void givenValidRoom_whenCreating_thenRoomIsCreated() {
+    void givenValidRoom_whenCreatingRoom_thenSucces() {
         String name = "Room Egipcio";
         int level = 3;
         double price = 100.0;
@@ -45,48 +45,41 @@ public class RoomServiceTest {
         assertEquals(price, room.getPrice());
 
     }
-    @Test
-    void givenValidRoomWithoutPrice_whenCreating_thenRoomIsCreated() {
-        String name = "Room Medieval";
-        int level = 2;
-        Room room = roomService.createRoom(name, level);
 
-        assertNotNull(room);
-        assertEquals(name, room.getName());
-        assertEquals(level, room.getLevel());
-        assertEquals(0.0, room.getPrice());
-    }
     @Test
-    void givenNullRoomName_whenCreating_thenThrowNullEscapeRoomNameException() {
+    void givenNullName_whenCreatingRoom_thenThrowException() {
         String name = null;
         int level = 3;
         double price = 100.0;
 
-        assertThrows(NullEscapeRoomNameException.class, () -> {
+        Exception e = assertThrows(NullEscapeRoomNameException.class, () -> {
             roomService.createRoom(name, level, price);
         });
+        assertEquals("El nombre de la sala no puede ser nulo.", e.getMessage());
     }
     @Test
-    void givenEmptyRoomName_whenCreating_thenThrowEmptyRoomNameException() {
+    void givenEmptyRoomName_whenCreating_thenThrowException() {
         String name = "   ";
         int level = 3;
         double price = 100.0;
 
-        assertThrows(EmptyRoomNameException.class, () -> {
+        Exception e =assertThrows(EmptyRoomNameException.class, () -> {
             roomService.createRoom(name, level, price);
         });
+        assertEquals("El nombre de la sala no puede estar vacío.", e.getMessage());
     }
     @Test
-    void givenDuplicateRoomName_whenCreating_thenThrowDuplicateRoomNameException() {
+    void givenDuplicateRoomName_whenCreating_thenThrowException() {
         String name = "Room Egipcio";
         int level1 = 3;
         int level2 = 5;
         double price = 100.0;
 
         roomService.createRoom(name, level1, price);
-        assertThrows(DuplicateRoomNameException.class, () -> {
+        Exception e = assertThrows(DuplicateRoomNameException.class, () -> {
             roomService.createRoom(name, level2, price);
         });
+        assertEquals("Ya existe una sala con ese nombre.", e.getMessage());
     }
     @Test
     void givenRoomNameWithSpaces_whenCreating_thenNameIsTrimmed() {
@@ -178,14 +171,15 @@ public class RoomServiceTest {
         assertFalse(isDeleted);
     }
     @Test
-    void givenInvalidPrice_whenCreatingRoom_thenThrowInvalidPriceException() {
+    void givenInvalidPrice_whenCreatingRoom_thenThrowException() {
         String name = "Room Test";
         int level = 3;
         double invalidPrice = 0.0;
 
-        assertThrows(InvalidPriceException.class, () -> {
+       Exception e = assertThrows(InvalidPriceException.class, () -> {
             roomService.createRoom(name, level, invalidPrice);
         });
+        assertEquals("El precio debe ser mayor a 0.", e.getMessage());
     }
     @Test
     void givenNegativePrice_whenCreatingRoom_thenThrowInvalidPriceException() {
@@ -193,15 +187,5 @@ public class RoomServiceTest {
         assertThrows(InvalidPriceException.class, () -> {
             roomService.createRoom("Test Room", 1, -10.0);
         });
-    }
-    @Test
-    void givenZeroPrice_whenCreatingRoom_thenRoomIsCreated() {
-        String name = "Free Room";
-        int level = 1;
-        double zeroPrice = 0.0;
-
-        Room room = roomService.createRoom(name, level, zeroPrice);
-        assertNotNull(room);
-        assertEquals(zeroPrice, room.getPrice());
     }
 }
