@@ -80,8 +80,9 @@ public class RemovalHandlerMenu extends Menu {
     private void deleteClue() {
         String name = readStringInput("Ingrese el nombre de la Pista a eliminar:");
         System.out.println("\n🗑️  Eliminando pista " + name + " . . .");
-        clueService.deleteClue(name);
-        System.out.println("✅ Pista eliminada exitosamente.");
+    //    clueService.deleteClue(name);
+    //    System.out.println("✅ Pista eliminada exitosamente.");
+        System.out.println(" ❌ En desarrollo . . .");
         pressEnterToContinue();
     }
 
