@@ -68,9 +68,7 @@ public class Room {
     public void setEscapeRoomId(Long escapeRoomId) {
         this.escapeRoomId = escapeRoomId;
     }
-    public Room (String name, int level){
-        this(name,0,0);
-    }
+    
     public void setPrice(double price) {
         this.price = price;
     }
@@ -94,10 +92,10 @@ public class Room {
         }
 
     public double getPrice() {
-        return price;
+        return this.price;
     }
 
     public int getDifficultyLevel() {
-        return level;
+        return this.level;
     }
 }
