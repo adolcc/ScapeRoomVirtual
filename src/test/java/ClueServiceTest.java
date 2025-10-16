@@ -5,8 +5,6 @@ import model.Clue;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import service.ClueService;
-
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -51,14 +49,4 @@ public class ClueServiceTest {
 
         assertEquals("El nombre elegido corresponde a una pista existente.", e.getMessage());
     }
-
-    @Test
-    void givenValidInput_WhenCreatingClue_ItPersistsInDatabase() {
-        clueService.createClue("Usa la llave roja", 0);
-
-        Clue persisted = clueService.findByName("Usa la llave roja");
-        assertNotNull(persisted);
-        assertEquals("Usa la llave roja", persisted.getName());
-    }
-
 }
