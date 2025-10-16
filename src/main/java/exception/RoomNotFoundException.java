@@ -1,7 +1,7 @@
 package exception;
 
 public class RoomNotFoundException extends RuntimeException {
-    public RoomNotFoundException(String s) {
-        super("Sala inexistente.");
+    public RoomNotFoundException(String message) {
+        super(message);
     }
 }
