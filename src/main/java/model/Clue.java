@@ -6,6 +6,7 @@ public class Clue {
     private String name;
     private double price;
     private Long id;
+    private Long roomId;
 
     public Clue(String name, double price) {
         this.name = name;
@@ -36,17 +37,23 @@ public class Clue {
         this.price = price;
     }
 
+    public Long getRoomId() {
+        return roomId;
+    }
+
+    public void setRoomId(Long roomId) {
+        this.roomId = roomId;
+    }
+
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Clue clue = (Clue) o;
-        return Objects.equals(name, clue.name);
+        return Double.compare(price, clue.price) == 0 && Objects.equals(name, clue.name) && Objects.equals(id, clue.id) && Objects.equals(roomId, clue.roomId);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(name);
+        return Objects.hash(name, price, id, roomId);
     }
-
 }

@@ -1,66 +1,151 @@
 package repository.dao;
 
+import exception.EmptyClueNameException;
+import exception.PersistenceException;
 import model.Clue;
+import repository.database.DatabaseConfig;
+import repository.mapper.ClueMapper;
+import repository.mapper.GeneralMapper;
+import service.RoomService;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
 public class ClueDAO implements GenericDAO<Clue, Long> {
 
-    private final Map<Long, Clue> clueDB = new HashMap<>();
-    private long nextId = 1;
+    private final GeneralMapper<Clue> mapper = ClueMapper.getInstance();
+    private final RoomService roomService;
+
+    public ClueDAO(RoomService roomService) {
+        this.roomService = roomService;
+    }
 
     @Override
-    public Clue save(Clue entity) {
-        if (entity == null) {
-            throw new IllegalArgumentException("La pista no puede ser nula");
-        }
+    public Clue save(Clue clue) {
+        mapper.validateEntity(clue);
 
-        if (entity.getPrice() <= 0) {
-            throw new IllegalArgumentException("El precio de la pista debe ser mayor que cero");
-        }
+        String sql = "INSERT INTO clue (name, price, room_id) VALUES (?, ?, ?)";
 
-        if (entity.getEscapeRoom() == null) {
-            throw new IllegalArgumentException("La pista debe estar asociada a una sala");
-        }
+        try (Connection conn = DatabaseConfig.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql, PreparedStatement.RETURN_GENERATED_KEYS)) {
 
-        if (entity.getId() == null) {
-            entity.setId(nextId++);
+            mapper.toPreparedStatement(clue, stmt);
+
+            int affectedRows = stmt.executeUpdate();
+
+            if (affectedRows == 0) {
+                throw new PersistenceException("Error al crear la Pista: no se modificó la tabla.");
+            }
+
+            setGeneratedId(clue, stmt);
+
+        } catch (SQLException e) {
+            throw new PersistenceException("Error al guardar la pista: " + clue.getName() + ".");
         }
-        clueDB.put(entity.getId(), entity);
-        return entity;
+        return clue;
     }
 
     @Override
     public Optional<Clue> findById(Long id) {
-        return Optional.ofNullable(clueDB.get(id));
+        if (id == null || id <= 0) {
+            throw new IllegalArgumentException("El ID debe ser un número positivo.");
+        }
+
+        String sql = "SELECT id, name, price, room_id FROM clue WHERE id = ?";
+        Optional<Clue> clue = Optional.empty();
+
+        try (Connection conn = DatabaseConfig.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setLong(1, id);
+
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    clue = Optional.of(mapper.fromResultSet(rs));
+                }
+            }
+        } catch (SQLException e) {
+            throw new PersistenceException("Error al buscar la pista con ID = " + id + ".");
+        }
+        return clue;
     }
 
     @Override
     public Optional<Clue> findByName(String name) {
-        if (name == null) {
-            return Optional.empty();
+        if (name == null || name.trim().isEmpty()) {
+            throw new EmptyClueNameException();
         }
-        return clueDB.values()
-                .stream()
-                .filter(clue -> name.equals(clue.getName()))
-                .findFirst();
+
+        String sql = "SELECT id, name, price, room_id FROM clue WHERE name = ?";
+        Optional<Clue> clue = Optional.empty();
+
+        try (Connection conn = DatabaseConfig.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setString(1, name);
+
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    clue = Optional.of(mapper.fromResultSet(rs));
+                }
+            }
+        } catch (SQLException e) {
+            throw new PersistenceException("Error al buscar pista por nombre: " + name + ".");
+        }
+        return clue;
     }
 
     @Override
     public List<Clue> findAll() {
-        return new ArrayList<>(clueDB.values());
+        String sql = "SELECT id, name, price, room_id FROM clue";
+        List<Clue> clues = new ArrayList<>();
+
+        try (Connection conn = DatabaseConfig.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql);
+             ResultSet rs = stmt.executeQuery()) {
+
+            while (rs.next()) {
+                clues.add(mapper.fromResultSet(rs));
+            }
+        } catch (SQLException e) {
+            throw new PersistenceException("Error al buscar todas las pistas.");
+        }
+        return clues;
     }
 
     @Override
     public boolean delete(Long id) {
-        if (id == null || !clueDB.containsKey(id)) {
-            return false;
+        if (id == null || id <= 0) {
+            throw new IllegalArgumentException("El ID debe ser un número positivo.");
         }
-        clueDB.remove(id);
-        return true;
+
+        String sql = "DELETE FROM clue WHERE id = ?";
+        int affectedRows;
+
+        try (Connection conn = DatabaseConfig.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setLong(1, id);
+            affectedRows = stmt.executeUpdate();
+
+        } catch (SQLException e) {
+            throw new PersistenceException("Error al borrar la pista con ID: " + id);
+        }
+        return affectedRows > 0;
+    }
+
+    private void setGeneratedId(Clue clue, PreparedStatement stmt) throws SQLException {
+        try (ResultSet generatedKeys = stmt.getGeneratedKeys()) {
+            if (generatedKeys.next()) {
+                clue.setId(generatedKeys.getLong(1));
+            } else {
+                throw new PersistenceException("No se pudo obtener el ID generado para la pista.");
+            }
+        }
     }
 }
