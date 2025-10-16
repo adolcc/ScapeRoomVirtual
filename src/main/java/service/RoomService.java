@@ -38,7 +38,7 @@ public class RoomService {
     }
 
     private void checkValidPrice(double price) {
-        if (price < 0) {
+        if (price <= 0) {
             throw new InvalidPriceException();
         }
     }
@@ -52,22 +52,26 @@ public class RoomService {
         Room room = new Room (name.trim(), level, price);
         return roomDAO.save(room);
     }
-    public Room createRoom(String name, int level){
-        return  createRoom(name, level, 0.0);
-    }
-    public Decoration addDecorationToRoom(Long decorationId, Long roomId) {
-        Room room = roomDAO.findById(roomId)
-                .orElseThrow(() -> new RoomNotFoundException("Sala inexistente." + roomId));
+    public Decoration addDecorationToRoom(String roomName, String decorationName) {
+        Room room = roomDAO.findByName(roomName)
+                .orElseThrow(() -> new RoomNotFoundException("Sala inexistente");
 
-        Decoration decoration = decorationDAO.findById(decorationId)
-                .orElseThrow(() -> new DecorationNotFoundException("Decoración no encontrada con ID: " + decorationId));
-
+        Decoration decoration = decorationDAO.findByNAme(decorationName)
+                .orElseThrow(() -> new DecorationNotFoundException("Decoración no encontrada");
+        Long roomId = room.getId();
         decoration.setRoomId(roomId);
         return decorationDAO.save(decoration);
     }
-
-
-
+    public decoration removeDecorationFromRoom(String roomName, String decorationName) {
+        Room room = roomDAO.findByName(roomName).orElseThrow(RoomNotFoundException::new);
+        Decoration decoration = decorationDAO.findByName(decorationName).orElseThrow(DecorationNotfoundException::new);
+    if (!decoration.getRoomId().equals(room.getId)){
+        throw new IlegalArgumentException("La decoracion indicada no está asociada a la sala solicitada.");
+    }
+        decoration.setRoomId(null);
+        return decorationDAO.save(decoration);
+    }
+        
     public List<Room> getRooms() {
         return roomDAO.findAll();
     }
@@ -85,4 +89,5 @@ public class RoomService {
         Optional<Room> room = roomDAO.findByName(name);
         return room.map(r -> roomDAO.delete(r.getId())).orElse(false);
     }
+
 }
