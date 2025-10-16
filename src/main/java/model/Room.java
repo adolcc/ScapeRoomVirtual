@@ -19,6 +19,9 @@ public class Room {
         if (name == null || name.trim().isEmpty()) {
             throw new EmptyRoomNameException();
         }
+        if (price <=0){
+            throw new InvalidPriceException();
+        }
         this.name = name.trim();
         this.level = level;
         this.clues = new ArrayList<>();
@@ -65,8 +68,10 @@ public class Room {
     public void setEscapeRoomId(Long escapeRoomId) {
         this.escapeRoomId = escapeRoomId;
     }
-
-
+    
+    public void setPrice(double price) {
+        this.price = price;
+    }
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -87,10 +92,10 @@ public class Room {
         }
 
     public double getPrice() {
-        return getPrice();
+        return this.price;
     }
 
     public int getDifficultyLevel() {
-        return getDifficultyLevel();
+        return this.level;
     }
 }
