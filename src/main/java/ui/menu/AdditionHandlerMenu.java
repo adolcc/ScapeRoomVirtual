@@ -1,7 +1,11 @@
 package ui.menu;
 
+import exception.DecorationNotFoundException;
+import exception.EscapeRoomNotFoundException;
+import exception.RoomNotFoundException;
 import model.Clue;
 import model.Decoration;
+import model.EscapeRoom;
 import model.Room;
 import service.ClueService;
 import service.DecorationService;
@@ -63,29 +67,88 @@ public class AdditionHandlerMenu extends Menu {
     }
 
     private void addRoom() {
-        String escapeRoomName = readStringInput("🏰 Nombre del Escape Room: ");
-        escapeRoomService.getEscapeRoom(escapeRoomName);
-        String roomName = readStringInput("🚪 Nombre de la Sala: ");
-    //    escapeRoomService.addRoomToEscapeRoom(escapeRoomName, roomName);
-    //    System.out.println("✅ Sala " + roomName + " añadida al Escape Room " + escapeRoomName + ".");
-    //    todo -> modificar mét addRoomToEscapeRoom para que reciba roomName en lugar de Room
-        System.out.println(" ❌ En desarrollo . . .");
-          }
+        try {
+            String escapeRoomName = readStringInput("🏰 Nombre del Escape Room: ");
+            validateEscapeRoom(escapeRoomName);
+
+            String roomName = readStringInput("🚪 Nombre de la Sala: ");
+            Room room = validateRoom(roomName);
+
+            escapeRoomService.addRoomToEscapeRoom(escapeRoomName, room);
+            System.out.println("✅ Sala " + roomName + " añadida al Escape Room " + escapeRoomName + ".");
+
+        } catch (EscapeRoomNotFoundException e) {
+            System.out.println(e.getMessage());
+        }
+        pressEnterToContinue();
+    }
+
 
     private void addClue() {
-        String roomName = readStringInput("🚪 Nombre de la Sala: ");
-        roomService.getRoom(roomName);
-        String clueName = readStringInput("🔍 Nombre de la Pista: ");
-    //    clueService.getClue(clueName);
-    //    System.out.println("✅ Pista " + clueName + " añadida a la sala " + roomName + ".");
-    //    todo -> añadir getClue a CLueServie
+        try {
+            String roomName = readStringInput("🚪 Nombre de la Sala: ");
+            Room room = validateRoom(roomName);
+
+            String clueName = readStringInput("🔍 Nombre de la Pista: ");
+            Clue clue = validateClue(clueName);
+
+            //todo añadir addClueToRoom a RoomService
+            roomService.addClueToRoom(roomName, clueName);
+            System.out.println("✅ Pista " + clueName + " añadida a la Sala " + roomName + ".");
+
+        } catch (NotFoundException e) {
+            System.out.println(e.getMessage());
+        }
+        pressEnterToContinue();
     }
 
     private void addDecoration() {
-        String roomName = readStringInput("🚪 Nombre de la Sala: ");
-        roomService.getRoom(roomName);
-        String decorationName = readStringInput("🖼️ Nombre de la Decoración: ");
-        decorationService.getDecoration(decorationName);
-        System.out.println("✅ Decoración " + decorationName + " añadida a la sala " + roomName + ".");
+        try {
+            String roomName = readStringInput("🚪 Nombre de la Sala: ");
+            validateRoom(roomName);
+
+            String decorationName = readStringInput("🖼️ Nombre de la Decoración: ");
+            validateDecoration(decorationName);
+
+            roomService.addDecorationToRoom(roomName, decorationName);
+            System.out.println("✅ Decoración " + decorationName + " añadida a la sala " + roomName + ".");
+
+        } catch (DecorationNotFoundException e) {
+            System.out.println(e.getMessage());
+        }
+        pressEnterToContinue();
     }
+
+    private void validateEscapeRoom(String escapeRoomName) {
+        Optional<EscapeRoom> escapeRoomOpt = escapeRoomService.getEscapeRoom(escapeRoomName);
+        if (escapeRoomOpt.isEmpty()) {
+            throw new EscapeRoomNotFoundException();
+        }
+    }
+
+    private Room validateRoom(String roomName) {
+        Optional<Room> roomOpt = roomService.getRoom(roomName);
+        if (roomOpt.isEmpty()) {
+            throw new RoomNotFoundException("❌ No se encontró la sala: " + roomName);
+        }
+        return roomOpt.get();
+    }
+
+    private Clue validateClue(String clueName) {
+        //    todo -> añadir getClue a CLueServie y añadir/unificar excepciones
+        Optional<Clue> clueOpt = clueService.getClue(clueName);
+        if (clueOpt.isEmpty()) {
+            throw new NotFoundException("❌ No se encontró la pista: " + clueName);
+        }
+        return clueOpt.get();
+    }
+
+    private Decoration validateDecoration(String decorationName) {
+        Optional<Decoration> decoOpt = decorationService.getDecoration(decorationName);
+        if (decoOpt.isEmpty()) {
+            throw new DecorationNotFoundException("❌ No se encontró la decoración: " + decorationName);
+        }
+        return decoOpt.get();
+    }
+
 }
