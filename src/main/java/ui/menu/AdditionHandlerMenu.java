@@ -1,5 +1,6 @@
 package ui.menu;
 
+import exception.ClueNotFoundException;
 import exception.DecorationNotFoundException;
 import exception.EscapeRoomNotFoundException;
 import exception.RoomNotFoundException;
@@ -91,11 +92,10 @@ public class AdditionHandlerMenu extends Menu {
             String clueName = readStringInput("🔍 Nombre de la Pista: ");
             Clue clue = validateClue(clueName);
 
-            //todo añadir addClueToRoom a RoomService
             roomService.addClueToRoom(roomName, clueName);
             System.out.println("✅ Pista " + clueName + " añadida a la Sala " + roomName + ".");
 
-        } catch (NotFoundException e) {
+        } catch (ClueNotFoundException e) {
             System.out.println(e.getMessage());
         }
         pressEnterToContinue();
@@ -137,7 +137,7 @@ public class AdditionHandlerMenu extends Menu {
         //    todo -> añadir getClue a CLueServie y añadir/unificar excepciones
         Optional<Clue> clueOpt = clueService.getClue(clueName);
         if (clueOpt.isEmpty()) {
-            throw new NotFoundException("❌ No se encontró la pista: " + clueName);
+            throw new ClueNotFoundException("❌ No se encontró la pista: " + clueName);
         }
         return clueOpt.get();
     }
