@@ -2,7 +2,8 @@ package model;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
+import java.util.Optional;
+
 
 public class Inventory {
     private List<Room> rooms;
@@ -36,31 +37,32 @@ public class Inventory {
     public void addRoom(Room room) {
         rooms.add(room);
         updateTotalValue();
-        System.out.println("Sala añadida: " + room.getName());
     }
 
     public void addClue(Clue clue) {
         clues.add(clue);
         updateTotalValue();
-        System.out.println("Pista añadida: " + clue.getName());
     }
 
     public void addDecorationItem(Decoration item) {
         decorations.add(item);
         updateTotalValue();
-        System.out.println("Objeto de decoración añadido: " + item.getName());
     }
 
-    public void removeRoom(String roomName) {
-        rooms.removeIf(room -> room.getName().equalsIgnoreCase(roomName));
-        updateTotalValue();
-        System.out.println("Sala eliminada: " + roomName);
+    public boolean removeRoom(String roomName) {
+        boolean removed = rooms.removeIf(room -> room.getName().equalsIgnoreCase(roomName));
+        if (removed) {
+            updateTotalValue();
+        }
+        return removed;
     }
 
-    public void removeClue(String clueName) {
-        clues.removeIf(clue -> clue.getName().equalsIgnoreCase(clueName));
-        updateTotalValue();
-        System.out.println("Pista eliminada: " + clueName);
+    public boolean removeClue(String clueName) {
+        boolean removed = clues.removeIf(clue -> clue.getName().equalsIgnoreCase(clueName));
+        if (removed) {
+            updateTotalValue();
+        }
+        return removed;
     }
 
     private void updateTotalValue() {
@@ -78,19 +80,74 @@ public class Inventory {
 
     }
 
-    public void removeDecorationItem(String name) {
-        decorations.removeIf(item -> item.getName().equalsIgnoreCase(item.getName()));
-        updateTotalValue();
-        System.out.println("Objeto de decoración eliminado: " + name );
+    public boolean removeDecorationItem(String name) {
+        boolean removed = decorations.removeIf(item -> item.getName().equalsIgnoreCase(name));
+        if (removed) {
+            updateTotalValue();
+        }
+        return removed;
     }
 
-    public void showInventory() {
-        System.out.println("==INVENTARIO==");
-        System.out.println(" Total de salas:" + rooms.size());
-        System.out.println(" total de pistas:" + clues.size());
-        System.out.println(" total de decoraciones:" + decorations.size());
-        System.out.println(" Valor total inventario:" + totalInventoryValue);
+    public InventoryStats getInventoryStats() {
+        return new InventoryStats(
+                rooms.size(),
+                clues.size(),
+                decorations.size(),
+                totalInventoryValue);
 
+    }
+
+    public double getTotalAssetsByRoom(String roomName) {
+        Optional<Room> targetRoomOpt = rooms.stream()
+                .filter(room -> room.getName().equalsIgnoreCase(roomName))
+                .findFirst();
+
+        if (targetRoomOpt.isEmpty()) {
+            throw new IllegalArgumentException("Sala no encontrada: " + roomName);
+        }
+
+        Room targetRoom = targetRoomOpt.get();
+        double total = targetRoom.getPrice();
+
+        total += clues.stream()
+                .filter(clue -> targetRoom.getId().equals(clue.getRoomId()))
+                .mapToDouble(Clue::getPrice)
+                .sum();
+
+        total += decorations.stream()
+                .filter(decoration -> targetRoom.getId().equals(decoration.getRoomId()))
+                .mapToDouble(Decoration::getPrice)
+                .sum();
+
+        return total;
+    }
+
+    public double getTotalAssetsByEscapeRoom(List<Room> escapeRoomRooms) {
+        double total = 0.0;
+
+        for (Room room : escapeRoomRooms) {
+            total += getTotalAssetsByRoom(room.getName());
+        }
+
+        return total;
+    }
+
+    public Optional<Room> findRoomByName(String roomName) {
+        return rooms.stream()
+                .filter(room -> room.getName().equalsIgnoreCase(roomName))
+                .findFirst();
+    }
+
+    public Optional<Clue> findClueByName(String clueName) {
+        return clues.stream()
+                .filter(clue -> clue.getName().equalsIgnoreCase(clueName))
+                .findFirst();
+    }
+
+    public Optional<Decoration> findDecorationByName(String decorationName) {
+        return decorations.stream()
+                .filter(decoration -> decoration.getName().equalsIgnoreCase(decorationName))
+                .findFirst();
     }
 }
 
