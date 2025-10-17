@@ -6,6 +6,7 @@ public class Clue {
     private String name;
     private double price;
     private Long id;
+    private Long roomId;
 
     public Clue(String name, double price) {
         this.name = name;
@@ -35,7 +36,13 @@ public class Clue {
     public void setPrice(double price) {
         this.price = price;
     }
+    public Long getRoomId() {
+        return this.roomId;
+    }
 
+    public void setRoomId(Long roomId) {
+        this.roomId = roomId;
+    }
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

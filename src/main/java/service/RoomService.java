@@ -2,8 +2,10 @@ package service;
 
 
 import exception.*;
+import model.Clue;
 import model.Decoration;
 import model.Room;
+import repository.dao.ClueDAO;
 import repository.dao.DecorationDAO;
 import repository.dao.RoomDAO;
 import java.util.List;
@@ -13,10 +15,11 @@ public class RoomService {
 
     private final RoomDAO roomDAO;
     private final DecorationDAO decorationDAO;
-
+    private final ClueDAO clueDAO;
     public RoomService(){
         this.roomDAO = new RoomDAO();
         this.decorationDAO =new DecorationDAO();
+        this.clueDAO =new ClueDAO();
     }
 
     private void checkNotNullName(String name) {
@@ -70,6 +73,17 @@ public class RoomService {
     }
         decoration.setRoomId(null);
         return decorationDAO.save(decoration);
+    }
+    public Clue addClueToRoom(String roomName, String clueName) {
+        Room room = roomDAO.findByName(roomName)
+                .orElseThrow(() -> new RoomNotFoundException("Sala inexistente: " + roomName));
+
+        Clue clue = clueDAO.findByName(clueName)
+                .orElseThrow(() -> new ClueNotFoundException("Pista no encontrada: " + clueName));
+
+        Long roomId = room.getId();
+        clue.setRoomId(roomId);
+        return clueDAO.save(clue);
     }
         
     public List<Room> getRooms() {

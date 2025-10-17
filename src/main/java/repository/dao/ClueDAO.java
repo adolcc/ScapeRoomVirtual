@@ -23,10 +23,6 @@ public class ClueDAO implements GenericDAO<Clue, Long> {
             throw new IllegalArgumentException("El precio de la pista debe ser mayor que cero");
         }
 
-        if (entity.getEscapeRoom() == null) {
-            throw new IllegalArgumentException("La pista debe estar asociada a una sala");
-        }
-
         if (entity.getId() == null) {
             entity.setId(nextId++);
         }
