@@ -62,35 +62,76 @@ public class RemovalHandlerMenu extends Menu {
     }
 
     private void deleteEscapeRoom() {
-        String name = readStringInput("Ingrese el nombre del Escape Room a eliminar: ");
-        System.out.println("\n🗑️  Eliminando Escape Room " + name + " . . .");
-        escapeRoomService.deleteEscapeRoom(name);
-        System.out.println("✅ Escape Room eliminado exitosamente.");
+        try {
+            String name = readStringInput("Ingrese el nombre del Escape Room a eliminar: ");
+            System.out.println("\n🗑️  Eliminando Escape Room " + name + " . . .");
+
+            boolean deleted = escapeRoomService.deleteEscapeRoom(name);
+
+            if (deleted) {
+                System.out.println("✅ Escape Room eliminado exitosamente.");
+            } else {
+                System.out.println("❌ No se encontró el Escape Room: " + name);
+            }
+        } catch (Exception e) {
+            System.out.println("❌ Error al eliminar el Escape Room: " + e.getMessage());
+        }
         pressEnterToContinue();
     }
 
     private void deleteRoom() {
-        String name = readStringInput("Ingrese el nombre de la Sala a eliminar:");
-        System.out.println("\n🗑️  Eliminando sala " + name + " . . .");
-        roomService.deleteRoom(name);
-        System.out.println("✅ Sala eliminada exitosamente.");
+        try {
+            String name = readStringInput("Ingrese el nombre de la Sala a eliminar:");
+            System.out.println("\n🗑️  Eliminando sala " + name + " . . .");
+
+            boolean deleted = roomService.deleteRoom(name);
+
+            if (deleted) {
+                System.out.println("✅ Sala eliminada exitosamente.");
+            } else {
+                System.out.println("❌ No se encontró la sala: " + name);
+            }
+        } catch (Exception e) {
+            System.out.println("❌ Error al eliminar la sala: " + e.getMessage());
+        }
         pressEnterToContinue();
     }
 
+
     private void deleteClue() {
-        String name = readStringInput("Ingrese el nombre de la Pista a eliminar:");
-        System.out.println("\n🗑️  Eliminando pista " + name + " . . .");
-    //    clueService.deleteClue(name);
-    //    System.out.println("✅ Pista eliminada exitosamente.");
-        System.out.println(" ❌ En desarrollo . . .");
+        try {
+            String name = readStringInput("Ingrese el nombre de la Pista a eliminar:");
+            System.out.println("\n🗑️  Eliminando pista " + name + " . . .");
+
+            //todo -> añadir deleteClue en clueService
+            boolean deleted = clueService.deleteClue(name);
+
+            if (deleted) {
+                System.out.println("✅ Pista eliminada exitosamente.");
+            } else {
+                System.out.println("❌ No se encontró la pista: " + name);
+            }
+        } catch (Exception e) {
+            System.out.println("❌ Error al eliminar pista: " + e.getMessage());
+        }
         pressEnterToContinue();
     }
 
     private void deleteDecoration() {
-        String name = readStringInput("Ingrese el nombre del objeto de Decoración a eliminar:");
-        System.out.println("\n🗑️  Eliminando objeto de decoración " + name + " . . .");
-        decorationService.deleteDecoration(name);
-        System.out.println("✅ Objeto de decoración eliminado exitosamente.");
+        try {
+            String name = readStringInput("Ingrese el nombre del objeto de Decoración a eliminar:");
+            System.out.println("\n🗑️  Eliminando objeto de decoración " + name + " . . .");
+
+            boolean deleted = roomService.deleteRoom(name);
+
+            if (deleted) {
+                System.out.println("✅ Decoración eliminada exitosamente.");
+            } else {
+                System.out.println("❌ No se encontró la decoración: " + name);
+            }
+        } catch (Exception e) {
+            System.out.println("❌ Error al eliminar decoración: " + e.getMessage());
+        }
         pressEnterToContinue();
     }
 }
