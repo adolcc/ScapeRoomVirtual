@@ -3,7 +3,7 @@ package repository.dao;
 import model.Room;
 import exception.PersistenceException;
 import repository.database.DatabaseConfig;
-
+import repository.mapper.RoomMapper;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -11,16 +11,16 @@ import java.util.Optional;
 
     public class RoomDAO implements GenericDAO<Room, Long> {
 
+        private final RoomMapper mapper = RoomMapper.getInstance();
+
         @Override
         public Room save(Room room) {
-            String sql = "INSERT INTO room (name, difficulty_level, price) VALUES (?, ?, ?)";
+            String sql = "INSERT INTO room (name, difficulty_level, price,escape_room_id) VALUES (?, ?, ?,?)";
 
             try (Connection conn = DatabaseConfig.getConnection();
                  PreparedStatement stmt = conn.prepareStatement(sql, PreparedStatement.RETURN_GENERATED_KEYS)) {
 
-                stmt.setString(1, room.getName());
-                stmt.setInt(2, room.getDifficultyLevel());
-                stmt.setDouble(3, room.getPrice());
+                mapper.toPreparedStatement(room, stmt);
                 int affectedRows = stmt.executeUpdate();
 
                 if (affectedRows == 0) {
@@ -37,7 +37,7 @@ import java.util.Optional;
 
         @Override
         public Optional<Room> findById(Long id) {
-            String sql = "SELECT id, name, difficulty_level, price FROM room WHERE id = ?";
+            String sql = "SELECT id, name, difficulty_level, price, escape_room_id FROM room WHERE id = ?";
 
             try (Connection conn = DatabaseConfig.getConnection();
                  PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -75,7 +75,7 @@ import java.util.Optional;
                  ResultSet rs = stmt.executeQuery()) {
 
                 while (rs.next()) {
-                    Room room = mapResultSetToRoom(rs);
+                    Room room = mapper.fromResultSet(rs);
                     rooms.add(room);
                 }
                 return rooms;
@@ -114,19 +114,50 @@ import java.util.Optional;
         private Optional<Room> executeQueryAndMapToRoom(PreparedStatement stmt) throws SQLException {
             try (ResultSet rs = stmt.executeQuery()) {
                 if (rs.next()) {
-                    return Optional.of(mapResultSetToRoom(rs));
+                    return Optional.of(mapper.fromResultSet(rs));
                 }
                 return Optional.empty();
             }
         }
 
-        private Room mapResultSetToRoom(ResultSet rs) throws SQLException {
-            Room room = new Room(
-                    rs.getString("name"),
-                    rs.getInt("difficulty_level"),
-                    rs.getDouble("price")
-            );
-            room.setId(rs.getLong("id"));
-            return room;
+        public List<Room> findByEscapeRoomId(Long escapeRoomId) {
+            String sql = "SELECT id, name, difficulty_level, price, escape_room_id FROM room WHERE escape_room_id = ?";
+            List<Room> rooms = new ArrayList<>();
+
+            try (Connection conn = DatabaseConfig.getConnection();
+                 PreparedStatement stmt = conn.prepareStatement(sql)) {
+                stmt.setLong(1, escapeRoomId);
+                ResultSet rs = stmt.executeQuery();
+
+                while (rs.next()) {
+                    Room room = mapper.fromResultSet(rs);
+                    rooms.add(room);
+                }
+                return rooms;
+
+            } catch (SQLException e) {
+                throw new PersistenceException("Error al buscar salas por escape room ID: " + escapeRoomId);
+            }
         }
-    }
+            public boolean updateEscapeRoomRelation (Long roomId, Long escapeRoomId){
+                String sql = "UPDATE room SET escape_room_id = ? WHERE id = ?";
+
+                try (Connection conn = DatabaseConfig.getConnection();
+                     PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+                    if (escapeRoomId != null) {
+                        stmt.setLong(1, escapeRoomId);
+                    } else {
+                        stmt.setNull(1, Types.BIGINT);
+                    }
+                    stmt.setLong(2, roomId);
+
+                    int affectedRows = stmt.executeUpdate();
+                    return affectedRows > 0;
+
+                } catch (SQLException e) {
+                    throw new PersistenceException("Error al actualizar relación con escape room para sala ID: " + roomId);
+                }
+            }
+        }
+
