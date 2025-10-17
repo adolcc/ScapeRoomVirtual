@@ -48,7 +48,7 @@ public class MainMenu extends Menu {
                 additionHandler.display();
                 break;
             case 3:
-                removalHandler.diplay();
+                removalHandler.display();
                 break;
             case 4:
                 viewHandler.display();

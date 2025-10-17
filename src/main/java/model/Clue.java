@@ -36,6 +36,9 @@ public class Clue {
     public void setPrice(double price) {
         this.price = price;
     }
+    public Long getRoomId() {
+        return this.roomId;
+    }
 
     public Long getRoomId() {
         return roomId;
