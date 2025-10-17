@@ -46,9 +46,9 @@ public class RemovalHandlerMenu extends Menu {
             case 2:
                 deleteRoom();
                 break;
-            case 3:
-                deleteClue();
-                break;
+//            case 3:
+//                deleteClue();
+//                break;
             case 4:
                 deleteDecoration();
                 break;
@@ -97,25 +97,24 @@ public class RemovalHandlerMenu extends Menu {
         pressEnterToContinue();
     }
 
-
-    private void deleteClue() {
-        try {
-            String name = readStringInput("Ingrese el nombre de la Pista a eliminar:");
-            System.out.println("\n🗑️  Eliminando pista " + name + " . . .");
-
-            //todo -> añadir deleteClue en clueService
-            boolean deleted = clueService.deleteClue(name);
-
-            if (deleted) {
-                System.out.println("✅ Pista eliminada exitosamente.");
-            } else {
-                System.out.println("❌ No se encontró la pista: " + name);
-            }
-        } catch (Exception e) {
-            System.out.println("❌ Error al eliminar pista: " + e.getMessage());
-        }
-        pressEnterToContinue();
-    }
+//    private void deleteClue() {
+//        try {
+//            String name = readStringInput("Ingrese el nombre de la Pista a eliminar:");
+//            System.out.println("\n🗑️  Eliminando pista " + name + " . . .");
+//
+//            //todo -> añadir deleteClue en clueService
+//            boolean deleted = clueService.deleteClue(name);
+//
+//            if (deleted) {
+//                System.out.println("✅ Pista eliminada exitosamente.");
+//            } else {
+//                System.out.println("❌ No se encontró la pista: " + name);
+//            }
+//        } catch (Exception e) {
+//            System.out.println("❌ Error al eliminar pista: " + e.getMessage());
+//        }
+//        pressEnterToContinue();
+//    }
 
     private void deleteDecoration() {
         try {

@@ -20,8 +20,13 @@ public abstract class Menu {
     }
 
     protected void showHeader(String title) {
+        int totalWidth = 42;
+        int totalLength = title.length();
+        int leftPadding = (totalWidth - totalLength) / 2;
+        int rightPadding = totalWidth - totalLength - leftPadding;
+
         System.out.println("╔════════════════════════════════════════╗");
-        System.out.println("║           " + title + "           ║");
+        System.out.println("║" + " ".repeat(leftPadding) + title + " ".repeat(rightPadding) +"║");
         System.out.println("╚════════════════════════════════════════╝");
     }
 

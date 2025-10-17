@@ -1,5 +1,6 @@
 package ui.menu;
 
+import exception.ClueNotFoundException;
 import exception.DecorationNotFoundException;
 import exception.EscapeRoomNotFoundException;
 import exception.RoomNotFoundException;
@@ -49,9 +50,9 @@ public class AdditionHandlerMenu extends Menu {
             case 1:
                 addRoom();
                 break;
-            case 2:
-                addClue();
-                break;
+//            case 2:
+//                addClue();
+//                break;
             case 3:
                 addDecoration();
                 break;
@@ -83,23 +84,22 @@ public class AdditionHandlerMenu extends Menu {
     }
 
 
-    private void addClue() {
-        try {
-            String roomName = readStringInput("🚪 Nombre de la Sala: ");
-            Room room = validateRoom(roomName);
-
-            String clueName = readStringInput("🔍 Nombre de la Pista: ");
-            Clue clue = validateClue(clueName);
-
-            //todo añadir addClueToRoom a RoomService
-            roomService.addClueToRoom(roomName, clueName);
-            System.out.println("✅ Pista " + clueName + " añadida a la Sala " + roomName + ".");
-
-        } catch (NotFoundException e) {
-            System.out.println(e.getMessage());
-        }
-        pressEnterToContinue();
-    }
+//    private void addClue() {
+//        try {
+//            String roomName = readStringInput("🚪 Nombre de la Sala: ");
+//            Room room = validateRoom(roomName);
+//
+//            String clueName = readStringInput("🔍 Nombre de la Pista: ");
+//            Clue clue = validateClue(clueName);
+//
+//            roomService.addClueToRoom(roomName, clueName);
+//            System.out.println("✅ Pista " + clueName + " añadida a la Sala " + roomName + ".");
+//
+//        } catch (ClueNotFoundException e) {
+//            System.out.println(e.getMessage());
+//        }
+//        pressEnterToContinue();
+//    }
 
     private void addDecoration() {
         try {
@@ -133,14 +133,14 @@ public class AdditionHandlerMenu extends Menu {
         return roomOpt.get();
     }
 
-    private Clue validateClue(String clueName) {
-        //    todo -> añadir getClue a CLueServie y añadir/unificar excepciones
-        Optional<Clue> clueOpt = clueService.getClue(clueName);
-        if (clueOpt.isEmpty()) {
-            throw new NotFoundException("❌ No se encontró la pista: " + clueName);
-        }
-        return clueOpt.get();
-    }
+//    private Clue validateClue(String clueName) {
+//        //    todo -> añadir getClue a CLueServie y añadir/unificar excepciones
+//        Optional<Clue> clueOpt = clueService.getClue(clueName);
+//        if (clueOpt.isEmpty()) {
+//            throw new ClueNotFoundException("❌ No se encontró la pista: " + clueName);
+//        }
+//        return clueOpt.get();
+//    }
 
     private Decoration validateDecoration(String decorationName) {
         Optional<Decoration> decoOpt = decorationService.getDecoration(decorationName);
