@@ -121,15 +121,19 @@ public class ViewHandlerMenu extends Menu {
                     String escapeRoomName = "Sin asignar";
 
                     if (room.getEscapeRoomId() != null) {
-                        Optional<EscapeRoom> escapeRoom = escapeRoomService.getEscapeRoom(room.getEscapeRoomId());
-                        if (escapeRoom.isPresent()) {
-                            escapeRoomName = truncate(escapeRoom.get().getName(), 15);
+                        try {
+                            Optional<EscapeRoom> escapeRoom = escapeRoomService.getEscapeRoom(room.getEscapeRoomId());
+                            if (escapeRoom.isPresent()) {
+                                escapeRoomName = truncate(escapeRoom.get().getName(), 15);
+                            }
+                        } catch (Exception e) {
+                            escapeRoomName = "Error.";
                         }
                     }
 
                     System.out.printf("│ %-3d │ %-26s │ %-6d │ %-9.2f │ %-10d │ %-10d │ %-15s │%n",
-                            room.getId(),
-                            truncate(room.getName(), 26),
+                            room.getId() != null ? room.getId() : 0,
+                            truncate(room.getName() != null ? room.getName() : "N/A", 26),
                             room.getLevel(),
                             room.getPrice(),
                             clueCount,
@@ -138,10 +142,11 @@ public class ViewHandlerMenu extends Menu {
                 }
             }
             System.out.println("└─────┴────────────────────────────┴────────┴───────────┴────────────┴────────────┴─────────────────┘");
-            System.out.println("Total: " + rooms.size() + " salas");
+            System.out.println("Total: " + rooms.size() + " salas.");
 
         } catch (Exception e) {
             System.out.println("❌ Error al cargar las salas: " + e.getMessage());
+            System.err.println("Error técnico: " + e.getClass().getSimpleName());
         }
         pressEnterToContinue();
     }
