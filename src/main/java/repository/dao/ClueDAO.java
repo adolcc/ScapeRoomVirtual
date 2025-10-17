@@ -6,7 +6,6 @@ import model.Clue;
 import repository.database.DatabaseConfig;
 import repository.mapper.ClueMapper;
 import repository.mapper.GeneralMapper;
-import service.RoomService;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -19,11 +18,6 @@ import java.util.Optional;
 public class ClueDAO implements GenericDAO<Clue, Long> {
 
     private final GeneralMapper<Clue> mapper = ClueMapper.getInstance();
-    private final RoomService roomService;
-
-    public ClueDAO(RoomService roomService) {
-        this.roomService = roomService;
-    }
 
     @Override
     public Clue save(Clue clue) {
