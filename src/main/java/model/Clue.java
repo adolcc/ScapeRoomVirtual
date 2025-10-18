@@ -1,5 +1,9 @@
 package model;
 
+import exception.EmptyNameException;
+import exception.InvalidPriceException;
+import exception.NullNameException;
+
 import java.util.Objects;
 
 public class Clue {
@@ -9,6 +13,8 @@ public class Clue {
     private Long roomId;
 
     public Clue(String name, double price) {
+        validateName(name);
+        validatePrice(price);
         this.name = name;
         this.price = price;
     }
@@ -42,6 +48,21 @@ public class Clue {
 
     public void setRoomId(Long roomId) {
         this.roomId = roomId;
+    }
+
+    private void validateName(String name) {
+        if (name == null) {
+            throw new NullNameException();
+        }
+        if (name.trim().isEmpty()) {
+            throw new EmptyNameException();
+        }
+    }
+
+    private void validatePrice(double price) {
+        if (price <= 0) {
+            throw new InvalidPriceException();
+        }
     }
 
     @Override
