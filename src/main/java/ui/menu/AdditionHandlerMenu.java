@@ -128,7 +128,6 @@ public class AdditionHandlerMenu extends BaseHandlerMenu {
     }
 
     private Clue validateClue(String clueName) {
-        //    todo -> añadir getClue a CLueServie
         if (clueName == null || clueName.trim().isEmpty()) {
             throw new EmptyNameException();
         }
