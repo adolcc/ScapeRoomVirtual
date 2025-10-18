@@ -154,7 +154,6 @@ public class ViewHandlerMenu extends Menu {
     private void listClues() {
         try {
             // TODO: Cambiar a clueService.getClues() cuando esté implementado
-            // Set<Clue> clues = clueService.getClues();
             Set<Clue> clues = clueService.getClues();
 
             System.out.println("\n🔍 LISTADO DE PISTAS");
