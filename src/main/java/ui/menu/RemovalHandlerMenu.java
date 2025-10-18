@@ -85,7 +85,6 @@ public class RemovalHandlerMenu extends BaseHandlerMenu {
             String name = readStringInput("Ingrese el nombre de la Pista a eliminar:");
             System.out.println("\n🗑️  Eliminando pista " + name + " . . .");
 
-            //todo -> añadir deleteClue en clueService
             boolean deleted = clueService.deleteClue(name);
 
             if (deleted) {
