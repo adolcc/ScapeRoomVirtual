@@ -40,10 +40,6 @@ public class Clue {
         return this.roomId;
     }
 
-    public Long getRoomId() {
-        return roomId;
-    }
-
     public void setRoomId(Long roomId) {
         this.roomId = roomId;
     }

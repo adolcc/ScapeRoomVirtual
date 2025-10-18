@@ -216,11 +216,8 @@ public class ViewHandlerMenu extends BaseHandlerMenu {
         try {
             List<EscapeRoom> escapeRooms = escapeRoomService.getEscapeRooms();
             List<Room> rooms = roomService.getRooms();
-            Set<Clue> clues = clueService.getClues();
+            List<Clue> clues = clueService.getClues();
             List<Decoration> decorations = decorationService.getDecorations();
-
-            // TODO: Obtener pistas cuando esté implementado
-            // Set<Clue> clues = clueService.getClues();
 
             System.out.println("\n📊 RESUMEN GENERAL DEL INVENTARIO");
             System.out.println("╔════════════════════════════════════════════════╗");
@@ -243,8 +240,7 @@ public class ViewHandlerMenu extends BaseHandlerMenu {
         pressEnterToContinue();
     }
 
-    //TODO cambiar el Set de Clue cuando esté implementado.
-    private double calculateTotalValue(List<Room> rooms, Set<Clue> clues, List<Decoration> decorations) {
+    private double calculateTotalValue(List<Room> rooms, List<Clue> clues, List<Decoration> decorations) {
         double total = 0.0;
 
         for (Room room : rooms) {
