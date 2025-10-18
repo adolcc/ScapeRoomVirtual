@@ -1,8 +1,6 @@
 package service;
 
 import exception.DuplicateClueNameException;
-import exception.EmptyClueNameException;
-import exception.NullClueNameException;
 import model.Clue;
 import repository.dao.ClueDAO;
 import repository.dao.GenericDAO;
