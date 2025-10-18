@@ -18,5 +18,18 @@ public class InventoryStats {
     public int getClueCount() { return clueCount; }
     public int getDecorationCount() { return decorationCount; }
     public double getTotalValue() { return totalValue; }
+    public int getTotalItemsCount() {
+        return roomCount + clueCount + decorationCount;
+    }
+
+    public boolean isEmpty() {
+        return roomCount == 0 && clueCount == 0 && decorationCount == 0;
+    }
+
+    public double getAverageValuePerItem() {
+        int totalItems = getTotalItemsCount();
+        return totalItems > 0 ? totalValue / totalItems : 0.0;
+    }
 }
+
 

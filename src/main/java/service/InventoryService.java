@@ -1,102 +1,136 @@
 package service;
 
 import model.*;
+import repository.dao.ClueDAO;
+import repository.dao.DecorationDAO;
+import repository.dao.RoomDAO;
 
 import java.util.List;
-import java.util.stream.Collectors;
+
 
 public class InventoryService {
 
-    private Inventory inventory;
+    private final RoomDAO roomDAO;
+    private final ClueDAO clueDAO;
+    private final DecorationDAO decorationDAO;
 
-    public InventoryService() {
-        this.inventory = new Inventory();
-
-    }
-
-    public Room createNewRoom(String name, int difficultyLevel, double price) {
-        Room room = new Room(name, difficultyLevel,price);
-        inventory.addRoom(room);
-        return room;
+    public InventoryService(RoomDAO roomDAO, ClueDAO clueDAO, DecorationDAO decorationDAO) {
+        this.roomDAO = roomDAO;
+        this.clueDAO = clueDAO;
+        this.decorationDAO = decorationDAO;
 
     }
-    public Clue createNewClue(String theme, double price) {
-        Clue clue = new Clue(theme, price);
-        inventory.addClue(clue);
-        return clue;
 
-    }
-    public Decoration createNewDecoration(String name, String material, double price) {
-        Decoration decoration = new Decoration(name, material, price);
-        inventory.addDecorationItem(decoration);
-        return decoration;
+    public List<Room> loadAllRooms() {
+        return this.roomDAO.findAll();
     }
 
+    public List<Clue> loadAllClues() {
+        return this.clueDAO.findAll();
+    }
+
+    public List<Decoration> loadAllDecorations() {
+        return this.decorationDAO.findAll();
+    }
+
+    public InventoryStats getInventoryStats() {
+
+        List<Room> rooms = loadAllRooms();
+        List<Clue> clues = loadAllClues();
+        List<Decoration> decorations = loadAllDecorations();
+
+        return Inventory.generateStats(rooms, clues, decorations);
+    }
 
     public String generateInventorySummary() {
-        return String.format("Inventario - Salas: %d, Pistas: %d, Objetos: %d, Valor Total: %.2f€",
-                inventory.getRooms().size(),
-                inventory.getClues().size(),
-                inventory.getDecorationItems().size(),
-                inventory.getTotalInventoryValue());
-    }
-    public boolean removeRoomFromInventory(String roomName) {
-         return inventory.removeRoom(roomName);
+        List<Room> rooms = loadAllRooms();
+        List<Clue> clues = loadAllClues();
+        List<Decoration> decorations = loadAllDecorations();
 
+        return Inventory.generateSummary(rooms, clues, decorations);
     }
 
-    public  boolean removeClueFromInventory(String clueName) {
-         return inventory.removeClue(clueName);
-
-    }
-
-    public boolean removeDecorationItemFromInventory(String decorationName) {
-        return inventory.removeDecorationItem(decorationName);
-
-    }
-    public double getTotalAssetsByRoom(String roomName) {
-        return inventory.getTotalAssetsByRoom(roomName);
-    }
-    public double getTotalAssetsByEscapeRoom(List<Room> escapeRoomRooms) {
-        return inventory.getTotalAssetsByEscapeRoom(escapeRoomRooms);
-    }
-    public double getTotalInventoryValue() {
-        return inventory.getTotalInventoryValue();
-    }
-    public List<Room> getAllRooms() {
-        return inventory.getRooms();
-    }
-
-    public List<Clue> getAllClues() {
-        return inventory.getClues();
-    }
-    public List<Decoration> getAllDecorations() {
-        return inventory.getDecorationItems();
-    }
-    public Room findRoomByName(String roomName) {
-        return inventory.findRoomByName(roomName)
+    public double calculateTotalAssetsByRoom(String roomName) {
+        Room room = this.roomDAO.findByName(roomName)
                 .orElseThrow(() -> new IllegalArgumentException("Sala no encontrada: " + roomName));
-    } public Clue findClueByName(String clueName) {
-        return inventory.findClueByName(clueName)
+
+        List<Clue> allClues = loadAllClues();
+        List<Decoration> allDecorations = loadAllDecorations();
+
+        return Inventory.calculateAssetsByRoom(room, allClues, allDecorations);
+    }
+
+    public double calculateTotalAssetsByEscapeRoom(Long escapeRoomId) {
+        List<Room> escapeRoomRooms = this.roomDAO.findByEscapeRoomId(escapeRoomId);
+
+        if (escapeRoomRooms.isEmpty()) {
+            throw new IllegalArgumentException("No se encontraron salas para el Escape Room ID: " + escapeRoomId);
+        }
+
+        List<Clue> allClues = loadAllClues();
+        List<Decoration> allDecorations = loadAllDecorations();
+
+        return Inventory.calculateAssetsByRoomList(escapeRoomRooms, allClues, allDecorations);
+    }
+
+    public List<RoomAssets> getRoomAssetsDetails() {
+        List<Room> rooms = loadAllRooms();
+        List<Clue> clues = loadAllClues();
+        List<Decoration> decorations = loadAllDecorations();
+
+        return Inventory.getRoomAssetsDetails(rooms, clues, decorations);
+    }
+
+    public Room findRoomByName(String roomName) {
+        return this.roomDAO.findByName(roomName)
+                .orElseThrow(() -> new IllegalArgumentException("Sala no encontrada: " + roomName));
+    }
+
+    public Clue findClueByName(String clueName) {
+        return this.clueDAO.findByName(clueName)
                 .orElseThrow(() -> new IllegalArgumentException("Pista no encontrada: " + clueName));
     }
 
     public Decoration findDecorationByName(String decorationName) {
-        return inventory.findDecorationByName(decorationName)
+        return this.decorationDAO.findByName(decorationName)
                 .orElseThrow(() -> new IllegalArgumentException("Decoración no encontrada: " + decorationName));
     }
 
-    public InventoryStats getInventoryStats() {
-        return inventory.getInventoryStats();
+    public double getAverageRoomPrice() {
+        List<Room> rooms = loadAllRooms();
+        if (rooms.isEmpty()) return 0.0;
+
+        return rooms.stream()
+                .mapToDouble(Room::getPrice)
+                .average()
+                .orElse(0.0);
     }
 
-    public List<RoomAssets> getRoomAssetsDetails() {
-        return inventory.getRooms().stream()
-                .map(room -> new RoomAssets(
-                        room.getName(),
-                        inventory.getTotalAssetsByRoom(room.getName())
-                ))
-                .collect(Collectors.toList());
+    public Room getMostExpensiveRoom() {
+        List<Room> rooms = loadAllRooms();
+        return rooms.stream()
+                .max((r1, r2) -> Double.compare(r1.getPrice(), r2.getPrice()))
+                .orElseThrow(() -> new IllegalStateException("No hay salas disponibles"));
+    }
+    public Room getCheapestRoom() {
+        List<Room> rooms = loadAllRooms();
+        return Inventory.findCheapestRoom(rooms)
+                .orElseThrow(() -> new IllegalStateException("No hay salas disponibles"));
     }
 
+    public String getInventoryHealthStatus() {
+        InventoryStats stats = getInventoryStats();
+
+        if (stats.getTotalValue() == 0) {
+            return "CRÍTICO - Inventario vacío";
+        } else if (stats.getRoomCount() == 0) {
+            return "ALTO RIESGO - No hay salas";
+        } else if (stats.getTotalValue() < 1000) {
+            return "BAJO - Valor total insuficiente";
+        } else {
+            return "SALUDABLE - Inventario en buen estado";
+        }
+    }
 }
+
+
