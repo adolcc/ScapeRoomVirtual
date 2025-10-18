@@ -1,23 +1,6 @@
 package ui.menu;
 
-import service.ClueService;
-import service.DecorationService;
-import service.EscapeRoomService;
-import service.RoomService;
-
-public class RemovalHandlerMenu extends Menu {
-
-    EscapeRoomService escapeRoomService;
-    RoomService roomService;
-    ClueService clueService;
-    DecorationService decorationService;
-
-    public RemovalHandlerMenu() {
-        this.escapeRoomService = new EscapeRoomService();
-        this.roomService = new RoomService();
-        this.clueService = new ClueService();
-        this.decorationService = new DecorationService();
-    }
+public class RemovalHandlerMenu extends BaseHandlerMenu {
 
     @Override
     public void display() {
@@ -97,13 +80,11 @@ public class RemovalHandlerMenu extends Menu {
         pressEnterToContinue();
     }
 
-
     private void deleteClue() {
         try {
             String name = readStringInput("Ingrese el nombre de la Pista a eliminar:");
             System.out.println("\n🗑️  Eliminando pista " + name + " . . .");
 
-            //todo -> añadir deleteClue en clueService
             boolean deleted = clueService.deleteClue(name);
 
             if (deleted) {
@@ -122,7 +103,7 @@ public class RemovalHandlerMenu extends Menu {
             String name = readStringInput("Ingrese el nombre del objeto de Decoración a eliminar:");
             System.out.println("\n🗑️  Eliminando objeto de decoración " + name + " . . .");
 
-            boolean deleted = roomService.deleteRoom(name);
+            boolean deleted = decorationService.deleteDecoration(name);
 
             if (deleted) {
                 System.out.println("✅ Decoración eliminada exitosamente.");

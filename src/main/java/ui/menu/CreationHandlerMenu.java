@@ -1,24 +1,8 @@
 package ui.menu;
 
 import exception.*;
-import service.ClueService;
-import service.DecorationService;
-import service.EscapeRoomService;
-import service.RoomService;
 
-public class CreationHandlerMenu extends Menu {
-
-    EscapeRoomService escapeRoomService;
-    RoomService roomService;
-    ClueService clueService;
-    DecorationService decorationService;
-
-    public CreationHandlerMenu() {
-        this.escapeRoomService = new EscapeRoomService();
-        this.roomService = new RoomService();
-        this.clueService = new ClueService();
-        this.decorationService = new DecorationService();
-    }
+public class CreationHandlerMenu extends BaseHandlerMenu {
 
     @Override
     public void display() {
@@ -140,16 +124,21 @@ public class CreationHandlerMenu extends Menu {
         while (true) {
             try {
                 System.out.print(prompt);
-                while (!scan.hasNextDouble()) {
-                    System.out.println("❌ Por favor, ingresa un precio válido.");
-                    scan.next();
-                    System.out.print(prompt);
+                String input = scan.nextLine().trim();
+
+                input = input.replace(',', '.');
+
+                double value = Double.parseDouble(input);
+
+                if (value < 0) {
+                    System.out.println("❌ El precio no puede ser negativo.");
+                    continue;
                 }
-                double input = scan.nextDouble();
-                scan.nextLine();
-                return input;
+                return value;
+            } catch (NumberFormatException e) {
+                System.out.println("❌ Por favor, ingresa un precio válido.");
             } catch (Exception e) {
-                System.out.println("❌ Error al leer el precio: " + e.getMessage());
+                System.out.println("❌ Error inesperado al leer el precio.");
                 scan.nextLine();
             }
         }
