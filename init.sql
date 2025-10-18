@@ -9,6 +9,7 @@ CREATE TABLE IF NOT EXISTS room (
     escape_room_id BIGINT,
     name VARCHAR(255) NOT NULL,
     difficulty_level INT,
+    price DECIMAL(10,2),
     FOREIGN KEY (escape_room_id) REFERENCES escape_room(id) ON DELETE CASCADE
 );
 
