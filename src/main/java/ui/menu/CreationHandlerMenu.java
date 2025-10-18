@@ -1,24 +1,8 @@
 package ui.menu;
 
 import exception.*;
-import service.ClueService;
-import service.DecorationService;
-import service.EscapeRoomService;
-import service.RoomService;
 
-public class CreationHandlerMenu extends Menu {
-
-    EscapeRoomService escapeRoomService;
-    RoomService roomService;
-    ClueService clueService;
-    DecorationService decorationService;
-
-    public CreationHandlerMenu() {
-        this.escapeRoomService = new EscapeRoomService();
-        this.roomService = new RoomService();
-        this.clueService = new ClueService();
-        this.decorationService = new DecorationService();
-    }
+public class CreationHandlerMenu extends BaseHandlerMenu {
 
     @Override
     public void display() {

@@ -5,26 +5,10 @@ import model.Clue;
 import model.Decoration;
 import model.EscapeRoom;
 import model.Room;
-import service.ClueService;
-import service.DecorationService;
-import service.EscapeRoomService;
-import service.RoomService;
 
 import java.util.Optional;
 
-public class AdditionHandlerMenu extends Menu {
-
-    EscapeRoomService escapeRoomService;
-    RoomService roomService;
-    ClueService clueService;
-    DecorationService decorationService;
-
-    public AdditionHandlerMenu() {
-        this.escapeRoomService = new EscapeRoomService();
-        this.roomService = new RoomService();
-        this.clueService = new ClueService();
-        this.decorationService = new DecorationService();
-    }
+public class AdditionHandlerMenu extends BaseHandlerMenu {
 
     @Override
     public void display() {
