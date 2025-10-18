@@ -18,7 +18,7 @@ public class InventoryService {
     }
 
     public void createNewRoom(String name, int difficultyLevel, double price) {
-        Room room = new Room(name, difficultyLevel);
+        Room room = new Room(name, difficultyLevel, price);
         inventory.addRoom(room);
 
     }   public void createNewClue(String theme, double price) {
