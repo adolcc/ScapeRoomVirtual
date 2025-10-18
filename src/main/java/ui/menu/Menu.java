@@ -20,14 +20,22 @@ public abstract class Menu {
     }
 
     protected void showHeader(String title) {
-        int totalWidth = 42;
-        int totalLength = title.length();
-        int leftPadding = (totalWidth - totalLength) / 2;
-        int rightPadding = totalWidth - totalLength - leftPadding;
+        int totalWidth = 40;
+        String paddedTitle = centerText(title, totalWidth);
 
         System.out.println("╔════════════════════════════════════════╗");
-        System.out.println("║" + " ".repeat(leftPadding) + title + " ".repeat(rightPadding) +"║");
+        System.out.println("║" + paddedTitle + "║");
         System.out.println("╚════════════════════════════════════════╝");
+    }
+
+    private String centerText(String text, int width) {
+        if (text.length() >= width) {
+            return text.substring(0, width);
+        }
+        int padding = width - text.length();
+        int leftPadding = padding / 2;
+        int rightPadding = padding - leftPadding;
+        return " ".repeat(leftPadding) + text + " ".repeat(rightPadding);
     }
 
     protected int readIntInput(String prompt) {
@@ -49,5 +57,6 @@ public abstract class Menu {
 
     protected void pressEnterToContinue() {
         System.out.println("\n↵ Presione Enter para continuar . . . ");
+        scan.nextLine();
     }
 }
