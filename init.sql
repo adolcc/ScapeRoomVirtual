@@ -1,5 +1,30 @@
-CREATE TABLE IF NOT EXISTS escape_rooms (
+CREATE TABLE IF NOT EXISTS escape_room (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(255) NOT NULL UNIQUE,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS room (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    escape_room_id BIGINT,
+    name VARCHAR(255) NOT NULL,
+    difficulty_level INT,
+    price DECIMAL(10,2),
+    FOREIGN KEY (escape_room_id) REFERENCES escape_room(id) ON DELETE CASCADE
+);
+
+CREATE TABLE IF NOT EXISTS clue (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    room_id BIGINT,
+    price DECIMAL(10,2),
+    FOREIGN KEY (room_id) REFERENCES room(id) ON DELETE CASCADE
+);
+
+CREATE TABLE IF NOT EXISTS decoration (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    room_id BIGINT,
+    name VARCHAR(255) NOT NULL,
+    material VARCHAR(255),
+    price DECIMAL(10,2),
+    FOREIGN KEY (room_id) REFERENCES room(id) ON DELETE CASCADE
 );
