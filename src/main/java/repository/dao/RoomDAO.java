@@ -62,7 +62,7 @@ import java.util.Optional;
             if (name == null || name.trim().isEmpty()) {
                 throw new IllegalArgumentException("El nombre no puede estar vacío.");
             }
-            String sql = "SELECT id, name, difficulty_level, price , escape_room-id FROM room WHERE name = ?";
+            String sql = "SELECT id, name, difficulty_level, price , escape_room_id FROM room WHERE name = ?";
             Optional<Room> room = Optional.empty();
 
             try (Connection conn = DatabaseConfig.getConnection();
