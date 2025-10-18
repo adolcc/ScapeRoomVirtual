@@ -4,28 +4,11 @@ import model.Clue;
 import model.Decoration;
 import model.EscapeRoom;
 import model.Room;
-import service.ClueService;
-import service.DecorationService;
-import service.EscapeRoomService;
-import service.RoomService;
-
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
-public class ViewHandlerMenu extends Menu {
-
-    EscapeRoomService escapeRoomService;
-    RoomService roomService;
-    ClueService clueService;
-    DecorationService decorationService;
-
-    public ViewHandlerMenu() {
-        this.escapeRoomService = new EscapeRoomService();
-        this.roomService = new RoomService();
-        this.clueService = new ClueService();
-        this.decorationService = new DecorationService();
-    }
+public class ViewHandlerMenu extends BaseHandlerMenu {
 
     @Override
     public void display() {
@@ -153,24 +136,40 @@ public class ViewHandlerMenu extends Menu {
 
     private void listClues() {
         try {
-            // TODO: Cambiar a clueService.getClues() cuando esté implementado
-            // Set<Clue> clues = clueService.getClues();
-            Set<Clue> clues = clueService.getClues();
+            List<Clue> clues = clueService.getClues();
 
             System.out.println("\n🔍 LISTADO DE PISTAS");
             System.out.println("┌─────┬────────────────────────────┬───────────┬─────────────────┐");
             System.out.println("│ ID  │ TEMA                       │   PRECIO  │ SALA ASIGNADA   │");
             System.out.println("├─────┼────────────────────────────┼───────────┼─────────────────┤");
 
-            // Temporal: Mostrar mensaje de desarrollo
-            System.out.println("│" + centerText("Funcionalidad en desarrollo", 65) + "│");
-            System.out.println("│" + centerText("Próximamente...", 65) + "│");
+            if (clues.isEmpty()) {
+                System.out.println("│" + centerText("No hay pistas registradas", 65) + "│");
+            } else {
+                for (Clue clue : clues) {
+                    String roomName = "Sin asignar";
 
+                    if (clue.getRoomId() != null) {
+                        Optional<Room> room = roomService.getRoom(clue.getRoomId());
+                        if (room.isPresent()) {
+                            roomName = truncate(room.get().getName(), 15);
+                        }
+                    }
+
+                    System.out.printf("│ %-3d │ %-26s │ %-9.2f │ %-15s │%n",
+                            clue.getId() != null ? clue.getId() : 0,
+                            truncate(clue.getName() != null ? clue.getName() : "N/A", 26),
+                            clue.getPrice(),
+                            roomName);
+                }
+            }
             System.out.println("└─────┴────────────────────────────┴───────────┴─────────────────┘");
+            System.out.println("Total: " + clues.size() + " pistas.");
 
         } catch (Exception e) {
             System.out.println("❌ Error al cargar las pistas: " + e.getMessage());
         }
+
         pressEnterToContinue();
     }
 

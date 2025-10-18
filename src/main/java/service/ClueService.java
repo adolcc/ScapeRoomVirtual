@@ -4,51 +4,41 @@ import exception.DuplicateClueNameException;
 import exception.EmptyClueNameException;
 import exception.NullClueNameException;
 import model.Clue;
+import repository.dao.ClueDAO;
+import repository.dao.GenericDAO;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.List;
+import java.util.Optional;
 
 public class ClueService {
 
-    private Set<Clue> clueSet;
+    private final GenericDAO<Clue, Long> clueDAO;
 
     public ClueService() {
-        this.clueSet = new HashSet<>();
-    }
-
-    public void checkNotNullName(String name) {
-        if (name == null) {
-            throw new NullClueNameException();
-        }
-    }
-
-    public void checkNotEmptyName(String name) {
-        if (name.trim().isEmpty()) {
-            throw new EmptyClueNameException();
-        }
+        this.clueDAO = new ClueDAO();
     }
 
     public void checkNotDuplicateName(String name) {
-        if (clueSet.contains(new Clue(name, 0))) {
+        if (clueDAO.findByName(name).isPresent()) {
             throw new DuplicateClueNameException();
         }
     }
 
-    public void createClue(String name, double price) {
-        checkNotNullName(name);
-        checkNotEmptyName(name);
+    public Clue createClue(String name, double price) {
         checkNotDuplicateName(name);
-        clueSet.add(new Clue(name, price));
+        Clue clue = new Clue(name, price);
+        return clueDAO.save(clue);
     }
 
-    public Set<Clue> getClues() {
-        return clueSet;
+    public List<Clue> getClues() {
+        return clueDAO.findAll();
     }
 
-    public Clue findByName(String name) {
-        return clueSet.stream()
-                .filter(clue -> clue.getName().equals(name))
-                .findFirst()
-                .orElse(null);
+    public Optional<Clue> getClue(Long id) { return clueDAO.findById(id); }
+    public Optional<Clue> getClue(String name) { return clueDAO.findByName(name); }
+    public boolean deleteClue(Long id) { return clueDAO.delete(id); }
+    public boolean deleteClue(String name) {
+        Optional<Clue> clue = clueDAO.findByName(name);
+        return clue.map(c -> clueDAO.delete(c.getId())).orElse(false);
     }
 }
