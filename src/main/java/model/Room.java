@@ -8,14 +8,14 @@ import java.util.List;
 public class Room {
 
     private String name;
-    private int level;
+    private DifficultyLevel level;
     private List<Clue> clues;
     private List<Decoration> decorations;
     private Long id;
     private Long escapeRoomId;
     private double price;
 
-    public Room(String name, int level, double price) {
+    public Room(String name, DifficultyLevel level, double price) {
         if (name == null || name.trim().isEmpty()) {
             throw new EmptyRoomNameException();
         }
@@ -33,7 +33,7 @@ public class Room {
         return name;
     }
 
-    public int getLevel() {
+    public DifficultyLevel getLevel() {
         return level;
     }
 
@@ -72,6 +72,9 @@ public class Room {
     public void setPrice(double price) {
         this.price = price;
     }
+    public void setLevel(DifficultyLevel level) {
+        this.level = level;
+    }
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -94,8 +97,7 @@ public class Room {
     public double getPrice() {
         return this.price;
     }
-
-    public int getDifficultyLevel() {
-        return this.level;
+    public int getLevelValue() {
+        return level != null ? level.getLevelValue() : 0;
     }
 }

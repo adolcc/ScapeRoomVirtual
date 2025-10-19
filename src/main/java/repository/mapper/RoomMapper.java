@@ -2,6 +2,7 @@ package repository.mapper;
 
 import exception.EmptyNameException;
 import exception.InvalidPriceException;
+import model.DifficultyLevel;
 import model.Room;
 
 import java.sql.PreparedStatement;
@@ -23,9 +24,9 @@ public class RoomMapper implements GeneralMapper<Room> {
 
         Room room = new Room(
                 rs.getString("name"),
-                rs.getInt(" difficulty_level"),
-                rs.getDouble("price")
-        );
+                DifficultyLevel.fromInt(rs.getInt("difficulty_level")),
+                rs.getDouble("price"));
+
         room.setId(rs.getLong("id"));
         Long escapeRoomId = rs.getLong("escape_room_id");
         if (!rs.wasNull()) {
@@ -43,7 +44,7 @@ public class RoomMapper implements GeneralMapper<Room> {
         validateEntity(room);
 
         stmt.setString(1, room.getName());
-        stmt.setInt(2, room.getLevel());
+        stmt.setInt(2, room.getLevel().getLevelValue());
         stmt.setDouble(3, room.getPrice());
         if (room.getEscapeRoomId() != null) {
             stmt.setLong(4, room.getEscapeRoomId());
@@ -63,7 +64,7 @@ public class RoomMapper implements GeneralMapper<Room> {
         if (room.getPrice() <= 0) {
             throw new InvalidPriceException();
         }
-        if (room.getLevel() < 1 || room.getLevel() > 5) {
+        if (room.getLevel() == null) {
             throw new IllegalArgumentException("El nivel de la sala debe estar entre 1 y 5");
         }
     }

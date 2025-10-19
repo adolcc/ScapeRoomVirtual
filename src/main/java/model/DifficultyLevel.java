@@ -13,13 +13,13 @@ public enum DifficultyLevel {
         this.level = level;
     }
 
-    public int getLevel() {
+    public int getLevelValue() {
         return level;
     }
 
     public static DifficultyLevel fromInt(int level) {
         for (DifficultyLevel difficulty : values()) {
-            if (difficulty.getLevel() == level) {
+            if (difficulty.getLevelValue() == level) {
                 return difficulty;
             }
         }
