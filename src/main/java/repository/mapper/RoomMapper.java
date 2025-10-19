@@ -23,7 +23,7 @@ public class RoomMapper implements GeneralMapper<Room> {
 
         Room room = new Room(
                 rs.getString("name"),
-                rs.getInt("level"),
+                rs.getInt(" difficulty_level"),
                 rs.getDouble("price")
         );
         room.setId(rs.getLong("id"));

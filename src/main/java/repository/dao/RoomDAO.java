@@ -44,17 +44,21 @@ import java.util.Optional;
             }
 
             String sql = "SELECT id, name, difficulty_level, price, escape_room_id FROM room WHERE id = ?";
-            Optional<Room> room = Optional.empty();
+
             try (Connection conn = DatabaseConfig.getConnection();
                  PreparedStatement stmt = conn.prepareStatement(sql)) {
 
                 stmt.setLong(1, id);
-                room =  executeQueryAndMapToRoom(stmt);
+                ResultSet rs = stmt.executeQuery();
+
+                if (rs.next()) {
+                    return Optional.of(mapper.fromResultSet(rs));
+                }
 
             } catch (SQLException e) {
                 throw new PersistenceException("Error al buscar la sala con ID = " + id + ".");
             }
-            return  room;
+            return  Optional.empty();
         }
 
         @Override
@@ -63,18 +67,20 @@ import java.util.Optional;
                 throw new IllegalArgumentException("El nombre no puede estar vacío.");
             }
             String sql = "SELECT id, name, difficulty_level, price , escape_room_id FROM room WHERE name = ?";
-            Optional<Room> room = Optional.empty();
+
 
             try (Connection conn = DatabaseConfig.getConnection();
                  PreparedStatement stmt = conn.prepareStatement(sql)) {
 
                 stmt.setString(1, name);
-                room = executeQueryAndMapToRoom(stmt);
-
+                ResultSet rs = stmt.executeQuery();
+                if (rs.next()){
+                    return Optional.of(mapper.fromResultSet(rs));
+                }
             } catch (SQLException e) {
                 throw new PersistenceException("Error al buscar sala por nombre: " + name + ".");
             }
-            return room;
+            return Optional.empty();
         }
 
         @Override
@@ -126,16 +132,6 @@ import java.util.Optional;
                 }
             }
         }
-
-        private Optional<Room> executeQueryAndMapToRoom(PreparedStatement stmt) throws SQLException {
-            try (ResultSet rs = stmt.executeQuery()) {
-                if (rs.next()) {
-                    return Optional.of(mapper.fromResultSet(rs));
-                }
-                return Optional.empty();
-            }
-        }
-
         public List<Room> findByEscapeRoomId(Long escapeRoomId) {
             if (escapeRoomId == null || escapeRoomId <= 0) {
                 throw new IllegalArgumentException("El escapeRoomId debe ser un número positivo.");
