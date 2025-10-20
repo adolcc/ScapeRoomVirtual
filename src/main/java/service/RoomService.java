@@ -1,6 +1,5 @@
 package service;
 
-
 import exception.*;
 import model.Clue;
 import model.Decoration;
@@ -8,94 +7,72 @@ import model.DifficultyLevel;
 import model.Room;
 import repository.dao.ClueDAO;
 import repository.dao.DecorationDAO;
+import repository.dao.GenericDAO;
 import repository.dao.RoomDAO;
+
 import java.util.List;
 import java.util.Optional;
 
 public class RoomService {
 
-    private final RoomDAO roomDAO;
-    private final DecorationDAO decorationDAO;
-    private final ClueDAO clueDAO;
-    public RoomService(){
+    private final GenericDAO<Room, Long> roomDAO;
+    private final GenericDAO<Clue, Long> clueDAO;
+    private final GenericDAO<Decoration, Long> decorationDAO;
+
+    public RoomService() {
         this.roomDAO = new RoomDAO();
-        this.decorationDAO =new DecorationDAO();
-        this.clueDAO =new ClueDAO();
-    }
+        this.clueDAO = new ClueDAO();
+        this.decorationDAO = new DecorationDAO();
 
-    private void checkNotNullName(String name) {
-        if (name == null) {
-            throw new NullEscapeRoomNameException();
-        }
-    }
-
-    private void checkNotEmptyName(String name) {
-        if (name.trim().isEmpty()) {
-            throw new EmptyRoomNameException();
-        }
     }
 
     private void checkNotDuplicateName(String name) {
-       if (roomDAO.findByName(name).isPresent()) {
-        throw new DuplicateRoomNameException();
+        if (roomDAO.findByName(name).isPresent()) {
+            throw new DuplicateRoomNameException();
         }
     }
 
-    private void checkValidPrice(double price) {
-        if (price <= 0) {
-            throw new InvalidPriceException();
-        }
-    }
-
-    public Room createRoom(String name, DifficultyLevel level, double price){
-        checkNotNullName(name);
-        checkNotEmptyName(name);
+    public Room createRoom(String name, DifficultyLevel level, double price) {
         checkNotDuplicateName(name);
-        checkValidPrice(price);
-
-        Room room = new Room (name.trim(), level, price);
+        Room room = new Room(name.trim(), level, price);
         return roomDAO.save(room);
     }
-    public Decoration addDecorationToRoom(String roomName, String decorationName) {
+
+    public void addDecorationToRoom(String roomName, String decorationName) {
         Room room = roomDAO.findByName(roomName)
                 .orElseThrow(() -> new RoomNotFoundException("Sala inexistente"));
 
         Decoration decoration = decorationDAO.findByName(decorationName)
                 .orElseThrow(() -> new DecorationNotFoundException("Decoración no encontrada"));
-        Long roomId = room.getId();
-        decoration.setRoomId(roomId);
-        return decorationDAO.save(decoration);
+
+        DecorationDAO decorationDAO1 = (DecorationDAO) decorationDAO;
+
+        decorationDAO1.roomAssignment(decoration.getId(), room.getId());
     }
-    public Decoration removeDecorationFromRoom(String roomName, String decorationName) {
-        Room room = roomDAO.findByName(roomName).orElseThrow(() -> new RoomNotFoundException("Sala inexistente"+roomName));
-        Decoration decoration = decorationDAO.findByName(decorationName).orElseThrow(() -> new DecorationNotFoundException("Decoración no encontrada"+decorationName));
-    if (!decoration.getRoomId().equals(room.getId())) {
-        throw new IllegalArgumentException("La decoracion indicada no está asociada a la sala solicitada.");
-    }
-        decoration.setRoomId(null);
-        return decorationDAO.save(decoration);
-    }
-    public Clue addClueToRoom(String roomName, String clueName) {
+
+    public void addClueToRoom(String roomName, String clueName) {
         Room room = roomDAO.findByName(roomName)
                 .orElseThrow(() -> new RoomNotFoundException("Sala inexistente: " + roomName));
 
         Clue clue = clueDAO.findByName(clueName)
                 .orElseThrow(() -> new ClueNotFoundException("Pista no encontrada: " + clueName));
 
-        Long roomId = room.getId();
-        clue.setRoomId(roomId);
-        return clueDAO.save(clue);
+        ClueDAO clueDAO1 = (ClueDAO) clueDAO;
+        clueDAO1.roomAssignment(clue.getId(), room.getId());
     }
-        
+
     public List<Room> getRooms() {
         return roomDAO.findAll();
     }
+
     public Optional<Room> getRoom(String name) {
         return roomDAO.findByName(name);
     }
+
     public Optional<Room> getRoom(Long id) {
         return roomDAO.findById(id);
     }
+
     public boolean deleteRoom(Long id) {
         return roomDAO.delete(id);
     }

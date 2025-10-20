@@ -5,6 +5,7 @@ import model.EscapeRoom;
 import model.Room;
 import repository.dao.EscapeRoomDAO;
 import repository.dao.GenericDAO;
+import repository.dao.RoomDAO;
 
 import java.util.List;
 import java.util.Optional;
@@ -12,9 +13,11 @@ import java.util.Optional;
 public class EscapeRoomService {
 
     private final GenericDAO<EscapeRoom, Long> escapeRoomDAO;
+    private final GenericDAO<Room, Long> roomDAO;
 
     public EscapeRoomService() {
         this.escapeRoomDAO = new EscapeRoomDAO();
+        this.roomDAO = new RoomDAO();
     }
 
     private void checkNotDuplicateName(String name) {
@@ -36,15 +39,22 @@ public class EscapeRoomService {
         if (escapeRoom.getRooms().contains(room)) {
             throw new DuplicateRoomNameException();
         }
-        if (room.getClues().size() < 2) {
+        Room roomToAssign = roomDAO.findById(room.getId()).orElseThrow(() -> new RoomNotFoundException("Sala no encontrada."));
+
+        if (roomToAssign.getClues().size() < 2) {
             throw new InsufficientCluesException();
         }
-        if (room.getDecorations().size() < 2) {
+        if (roomToAssign.getDecorations().size() < 2) {
             throw new InsufficientDecorationsException();
         }
 
-        escapeRoom.addRoom(room);
-        escapeRoomDAO.save(escapeRoom);
+        RoomDAO roomDAO1 = (RoomDAO) roomDAO;
+
+        boolean assigned = roomDAO1.escapeRoomAssignment(room.getId(), escapeRoom.getId());
+
+        if (assigned) {
+            escapeRoom.addRoom(room);
+        }
     }
 
     public List<EscapeRoom> getEscapeRooms() {
