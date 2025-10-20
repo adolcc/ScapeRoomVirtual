@@ -10,10 +10,6 @@ public class Notification {
     private LocalDateTime sendDate;
     private NotificationType type;
 
-    public enum NotificationType {
-        EMAIL, GIFT, ACHIEVEMENT, TICKET
-    }
-
     public Notification(String id, String recipientEmail, String subject, String message, NotificationType type) {
         if (recipientEmail == null || recipientEmail.isEmpty()) {
             throw new IllegalArgumentException("El email del destinatario no puede ser nulo o vacío");
@@ -48,16 +44,5 @@ public class Notification {
 
     public NotificationType getType() {
         return type;
-    }
-
-    @Override
-    public String toString() {
-        return "Notification{" +
-                "id='" + id + '\'' +
-                ", recipientEmail='" + recipientEmail + '\'' +
-                ", subject='" + subject + '\'' +
-                ", type=" + type +
-                ", sendDate=" + sendDate +
-                '}';
     }
 }

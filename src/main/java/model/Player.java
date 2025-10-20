@@ -50,14 +50,4 @@ public class Player {
     public void setNewsletterSubscribed(boolean newsletterSubscribed) {
         this.newsletterSubscribed = newsletterSubscribed;
     }
-
-    @Override
-    public String toString() {
-        return "Player{" +
-                "id='" + id + '\'' +
-                ", name='" + name + '\'' +
-                ", email='" + email + '\'' +
-                ", newsletterSubscribed=" + newsletterSubscribed +
-                '}';
-    }
 }
