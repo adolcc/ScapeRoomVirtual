@@ -112,6 +112,22 @@ public class ClueDAO implements GenericDAO<Clue, Long> {
         return clues;
     }
 
+    public boolean roomAssignment(Long clueId, Long roomId) {
+        String sql = "UPDATE clue SET room_id = ? WHERE id = ?";
+        int affectedRows;
+
+        try (Connection conn = DatabaseConfig.getConnection();
+        PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setLong(1, roomId);
+            stmt.setLong(2, clueId);
+
+            affectedRows = stmt.executeUpdate();
+        } catch (SQLException e) {
+            throw new PersistenceException("Error al asignar pista a la sala.");
+        }
+        return affectedRows > 0;
+    }
+
     @Override
     public boolean delete(Long id) {
         if (id == null || id <= 0) {

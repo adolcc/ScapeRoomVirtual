@@ -111,6 +111,22 @@ public class DecorationDAO implements GenericDAO<Decoration, Long> {
         return decorations;
     }
 
+    public boolean roomAssignment(Long decorationId, Long roomId) {
+        String sql = "UPDATE decoration SET room_id = ? WHERE id = ?";
+        int affectedRows;
+
+        try (Connection conn = DatabaseConfig.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setLong(1, roomId);
+            stmt.setLong(2, decorationId);
+
+            affectedRows = stmt.executeUpdate();
+        } catch (SQLException e) {
+            throw new PersistenceException("Error al asignar decoración a la sala.");
+        }
+        return affectedRows > 0;
+    }
+
     @Override
     public boolean delete(Long id) {
         if (id == null || id <= 0) {

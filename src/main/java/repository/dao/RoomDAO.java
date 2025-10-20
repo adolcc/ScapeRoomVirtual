@@ -102,6 +102,22 @@ import java.util.Optional;
             return rooms;
         }
 
+        public boolean escapeRoomAssignment(Long roomId, Long escapeRoomId) {
+            String sql = "UPDATE room SET escape_room_id = ? WHERE id = ?";
+            int affectedRows;
+
+            try (Connection conn = DatabaseConfig.getConnection();
+                 PreparedStatement stmt = conn.prepareStatement(sql)) {
+                stmt.setLong(1, escapeRoomId);
+                stmt.setLong(2, roomId);
+
+                affectedRows = stmt.executeUpdate();
+            } catch (SQLException e) {
+                throw new PersistenceException("Error al asignar sala al escape room.");
+            }
+            return affectedRows > 0;
+        }
+
         @Override
         public boolean delete(Long id) {
             if (id == null || id <= 0) {
