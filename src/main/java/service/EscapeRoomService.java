@@ -51,7 +51,7 @@ public class EscapeRoomService {
         }
 
         RoomDAO roomDAO1 = (RoomDAO) roomDAO;
-        boolean assigned = roomDAO1.escapeRoomAssignment(roomToAssign.getId(), escapeRoom.getId());
+        boolean assigned = roomDAO1.escapeRoomAssignment(room.getId(), escapeRoom.getId());
 
         if (assigned) {
             loadRooms(escapeRoom);
