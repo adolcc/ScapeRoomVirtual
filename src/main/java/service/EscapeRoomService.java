@@ -3,6 +3,7 @@ package service;
 import exception.*;
 import model.EscapeRoom;
 import model.Room;
+import model.RoomAssets;
 import repository.dao.EscapeRoomDAO;
 import repository.dao.GenericDAO;
 import repository.dao.RoomDAO;
@@ -50,23 +51,35 @@ public class EscapeRoomService {
         }
 
         RoomDAO roomDAO1 = (RoomDAO) roomDAO;
-        boolean assigned = roomDAO1.escapeRoomAssignment(room.getId(), escapeRoom.getId());
+        boolean assigned = roomDAO1.escapeRoomAssignment(roomToAssign.getId(), escapeRoom.getId());
 
         if (assigned) {
-            escapeRoom.addRoom(room);
+            loadRooms(escapeRoom);
         }
     }
 
+    private void loadRooms(EscapeRoom escapeRoom) {
+        RoomDAO roomDAO1 = (RoomDAO) roomDAO;
+        List<Room> rooms = roomDAO1.findByEscapeRoomId(escapeRoom.getId());
+        escapeRoom.setRooms(rooms);
+    }
+
     public List<EscapeRoom> getEscapeRooms() {
-        return escapeRoomDAO.findAll();
+        List<EscapeRoom> escapeRooms = escapeRoomDAO.findAll();
+        escapeRooms.forEach(this::loadRooms);
+        return escapeRooms;
     }
 
     public Optional<EscapeRoom> getEscapeRoom(String name) {
-        return escapeRoomDAO.findByName(name);
+        Optional<EscapeRoom> escapeRoomOpt = escapeRoomDAO.findByName(name);
+        escapeRoomOpt.ifPresent(this::loadRooms);
+        return escapeRoomOpt;
     }
 
     public Optional<EscapeRoom> getEscapeRoom(Long id) {
-        return escapeRoomDAO.findById(id);
+        Optional<EscapeRoom> escapeRoomOpt = escapeRoomDAO.findById(id);
+        escapeRoomOpt.ifPresent(this::loadRooms);
+        return escapeRoomOpt;
     }
 
     public boolean deleteEscapeRoom(Long id) {
