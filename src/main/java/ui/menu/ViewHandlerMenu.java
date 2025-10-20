@@ -8,6 +8,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
+import static model.Inventory.calculateTotalValue;
+
 public class ViewHandlerMenu extends BaseHandlerMenu {
 
     @Override
@@ -227,8 +229,6 @@ public class ViewHandlerMenu extends BaseHandlerMenu {
             System.out.printf("║ 🔍  Pistas: %-34d ║%n", 0); // Temporal
             System.out.printf("║ 🖼️  Decoraciones: %-29d ║%n", decorations.size());
             System.out.println("║                                                ║");
-
-            // TODO: Calcular valor total cuando esté implementado
             double totalValue = calculateTotalValue(rooms, clues, decorations);
             System.out.printf("║ 💰  Valor total del inventario: %-15.2f € ║%n", totalValue);
             System.out.println("╚════════════════════════════════════════════════╝");
@@ -237,23 +237,6 @@ public class ViewHandlerMenu extends BaseHandlerMenu {
             System.out.println("❌ Error al generar el resumen: " + e.getMessage());
         }
         pressEnterToContinue();
-    }
-
-    private double calculateTotalValue(List<Room> rooms, List<Clue> clues, List<Decoration> decorations) {
-        double total = 0.0;
-
-        for (Room room : rooms) {
-            total += room.getPrice();
-        }
-
-        for (Clue clue : clues) {
-            total += clue.getPrice();
-        }
-
-        for (Decoration decoration : decorations) {
-            total += decoration.getPrice();
-        }
-        return total;
     }
 
     private String truncate(String text, int maxLength) {
@@ -267,18 +250,15 @@ public class ViewHandlerMenu extends BaseHandlerMenu {
     private String truncateWithEmoji(String text, int maxLength) {
         if (text == null) return "";
 
-        // Contar emojis como 2 caracteres para el cálculo de longitud
         int visualLength = 0;
         StringBuilder result = new StringBuilder();
 
         for (int i = 0; i < text.length(); i++) {
             char c = text.charAt(i);
 
-            // Si es emoji (caracteres Unicode fuera del BMP), contar como 2
             if (Character.isHighSurrogate(c)) {
                 visualLength += 2;
             } else {
-                // Caracteres normales contar como 1
                 visualLength += 1;
             }
 
@@ -291,14 +271,12 @@ public class ViewHandlerMenu extends BaseHandlerMenu {
 
         String truncated = result.toString();
         if (truncated.length() < text.length()) {
-            // Asegurarse de no cortar en medio de un emoji
             while (truncated.length() > 0 && Character.isHighSurrogate(truncated.charAt(truncated.length() - 1))) {
                 truncated = truncated.substring(0, truncated.length() - 1);
             }
             return truncated + "...";
         }
 
-        // Rellenar con espacios para alinear
         int padding = maxLength - visualLength;
         if (padding > 0) {
             return truncated + " ".repeat(padding);
