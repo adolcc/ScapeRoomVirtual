@@ -128,6 +128,25 @@ public class ClueDAO implements GenericDAO<Clue, Long> {
         return affectedRows > 0;
     }
 
+    public List<Clue> findByRoomId(Long roomId) {
+        String sql = "SELECT id, name, price, room_id FROM clue WHERE room_id = ?";
+        List<Clue> clues =  new ArrayList<>();
+
+        try (Connection conn = DatabaseConfig.getConnection();
+        PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setLong(1, roomId);
+            ResultSet rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                clues.add(mapper.fromResultSet(rs));
+            }
+        } catch (SQLException e) {
+            throw new PersistenceException("Error al buscar pistas por ID de sala " + roomId + ".");
+        }
+        return clues;
+    }
+
     @Override
     public boolean delete(Long id) {
         if (id == null || id <= 0) {
