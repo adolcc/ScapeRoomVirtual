@@ -10,8 +10,8 @@ public class RemovalHandlerMenu extends BaseHandlerMenu {
 
             System.out.println("1. 🏰 Escape Room.");
             System.out.println("2. 🚪 Sala.");
-            System.out.println("3. 🔍 Pista de una sala.");
-            System.out.println("4. 🖼️ Objeto de decoración de una sala.");
+            System.out.println("3. 🔍 Pista.");
+            System.out.println("4. 🖼️ Objeto de decoración.");
             System.out.println("0. ↩️ Volver al menú principal.");
             System.out.println("════════════════════════════════════════");
 
