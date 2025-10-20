@@ -127,6 +127,25 @@ public class DecorationDAO implements GenericDAO<Decoration, Long> {
         return affectedRows > 0;
     }
 
+    public List<Decoration> findByRoomId(Long roomId) {
+        String sql = "SELECT id, name, material, price, room_id FROM decoration WHERE room_id = ?";
+        List<Decoration> decorations =  new ArrayList<>();
+
+        try (Connection conn = DatabaseConfig.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setLong(1, roomId);
+            ResultSet rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                decorations.add(mapper.fromResultSet(rs));
+            }
+        } catch (SQLException e) {
+            throw new PersistenceException("Error al buscar decoraciones por ID de sala " + roomId + ".");
+        }
+        return decorations;
+    }
+
     @Override
     public boolean delete(Long id) {
         if (id == null || id <= 0) {

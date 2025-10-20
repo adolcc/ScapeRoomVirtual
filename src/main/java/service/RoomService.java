@@ -37,17 +37,21 @@ public class RoomService {
         Room room = new Room(name.trim(), level, price);
         return roomDAO.save(room);
     }
+    private void loadClues(Room room) {
+        ClueDAO clueDAO1 = (ClueDAO) clueDAO;
+        List<Clue> clues = clueDAO1.findByRoomId(room.getId());
+        room.setClues(clues);
+    }
 
-    public void addDecorationToRoom(String roomName, String decorationName) {
-        Room room = roomDAO.findByName(roomName)
-                .orElseThrow(() -> new RoomNotFoundException("Sala inexistente"));
-
-        Decoration decoration = decorationDAO.findByName(decorationName)
-                .orElseThrow(() -> new DecorationNotFoundException("Decoración no encontrada"));
-
+    private void loadDecorations(Room room) {
         DecorationDAO decorationDAO1 = (DecorationDAO) decorationDAO;
+        List<Decoration> decorations = decorationDAO1.findByRoomId(room.getId());
+        room.setDecorations(decorations);
+    }
 
-        decorationDAO1.roomAssignment(decoration.getId(), room.getId());
+    private void loadRelations(Room room) {
+        loadClues(room);
+        loadDecorations(room);
     }
 
     public void addClueToRoom(String roomName, String clueName) {
@@ -58,19 +62,44 @@ public class RoomService {
                 .orElseThrow(() -> new ClueNotFoundException("Pista no encontrada: " + clueName));
 
         ClueDAO clueDAO1 = (ClueDAO) clueDAO;
-        clueDAO1.roomAssignment(clue.getId(), room.getId());
+        boolean assigned = clueDAO1.roomAssignment(clue.getId(), room.getId());
+
+        if (assigned) {
+            loadClues(room);
+        }
+    }
+
+    public void addDecorationToRoom(String roomName, String decorationName) {
+        Room room = roomDAO.findByName(roomName)
+                .orElseThrow(() -> new RoomNotFoundException("Sala inexistente"));
+
+        Decoration decoration = decorationDAO.findByName(decorationName)
+                .orElseThrow(() -> new DecorationNotFoundException("Decoración no encontrada"));
+
+        DecorationDAO decorationDAO1 = (DecorationDAO) decorationDAO;
+        boolean assigned = decorationDAO1.roomAssignment(decoration.getId(), room.getId());
+
+        if (assigned) {
+            loadDecorations(room);
+        }
     }
 
     public List<Room> getRooms() {
-        return roomDAO.findAll();
+        List<Room> rooms = roomDAO.findAll();
+        rooms.forEach(this::loadRelations);
+        return rooms;
     }
 
     public Optional<Room> getRoom(String name) {
-        return roomDAO.findByName(name);
+        Optional<Room> roomOpt = roomDAO.findByName(name);
+        roomOpt.ifPresent(this::loadRelations);
+        return roomOpt;
     }
 
     public Optional<Room> getRoom(Long id) {
-        return roomDAO.findById(id);
+        Optional<Room> roomOpt = roomDAO.findById(id);
+        roomOpt.ifPresent(this::loadRelations);
+        return roomOpt;
     }
 
     public boolean deleteRoom(Long id) {
