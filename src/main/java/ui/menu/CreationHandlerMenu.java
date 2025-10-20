@@ -101,7 +101,7 @@ public class CreationHandlerMenu extends Menu {
         try {
             System.out.println("\n🎯 Creando nueva pista . . .");
             String name = readStringInput("Tema de la pista: ");
-            double price = readIntInput("Precio de la pista: ");
+            double price = readDoubleInput("Precio de la pista: ");
             clueService.createClue(name, price);
             System.out.println("✅ Pista '" + name + "' creada exitosamente.");
         } catch (DuplicateClueNameException e) {
