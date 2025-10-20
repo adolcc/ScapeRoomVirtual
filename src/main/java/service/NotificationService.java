@@ -28,7 +28,6 @@ public class NotificationService {
             return false;
         }
 
-        // Verificar duplicados
         if (playersByEmail.containsKey(email.toLowerCase())) {
             return false;
         }
