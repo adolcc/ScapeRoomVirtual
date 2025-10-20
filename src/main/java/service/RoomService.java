@@ -4,6 +4,7 @@ package service;
 import exception.*;
 import model.Clue;
 import model.Decoration;
+import model.DifficultyLevel;
 import model.Room;
 import repository.dao.ClueDAO;
 import repository.dao.DecorationDAO;
@@ -46,7 +47,7 @@ public class RoomService {
         }
     }
 
-    public Room createRoom(String name,int level, double price){
+    public Room createRoom(String name, DifficultyLevel level, double price){
         checkNotNullName(name);
         checkNotEmptyName(name);
         checkNotDuplicateName(name);

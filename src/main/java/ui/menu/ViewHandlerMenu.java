@@ -91,12 +91,11 @@ public class ViewHandlerMenu extends BaseHandlerMenu {
             List<Room> rooms = roomService.getRooms();
 
             System.out.println("\n🚪 LISTADO DE SALAS");
-            System.out.println("┌─────┬────────────────────────────┬────────┬───────────┬────────────┬────────────┬─────────────────┐");
-            System.out.println("│ ID  │ NOMBRE                     │ NIVEL  │   PRECIO  │  # PISTAS  │# DECORACIÓN│ ESCAPE ROOM     │");
-            System.out.println("├─────┼────────────────────────────┼────────┼───────────┼────────────┼────────────┼─────────────────┤");
-
+            System.out.println("┌─────┬────────────────────────────┬────────────────────┬───────────┬────────────┬────────────┬─────────────────┐");
+            System.out.println("│ ID  │ NOMBRE                     │    DIFICULTAD      │   PRECIO  │  # PISTAS  │# DECORACIÓN│ ESCAPE ROOM     │");
+            System.out.println("├─────┼────────────────────────────┼────────────────────┼───────────┼────────────┼────────────┼─────────────────┤");
             if (rooms.isEmpty()) {
-                System.out.println("│" + centerText("No hay salas registradas", 97) + "│");
+                System.out.println("│" + centerText("No hay salas registradas", 103) + "│");
             } else {
                 for (Room room : rooms) {
                     int clueCount = room.getClues() != null ? room.getClues().size() : 0;
@@ -114,17 +113,17 @@ public class ViewHandlerMenu extends BaseHandlerMenu {
                         }
                     }
 
-                    System.out.printf("│ %-3d │ %-26s │ %-6d │ %-9.2f │ %-10d │ %-10d │ %-15s │%n",
+                    System.out.printf("│ %-3d │ %-26s │ %-16s │ %-9.2f │ %-10d │ %-10d │ %-15s │%n",
                             room.getId() != null ? room.getId() : 0,
-                            truncate(room.getName() != null ? room.getName() : "N/A", 26),
-                            room.getLevel(),
+                            truncate(room.getName(), 26),
+                            truncateWithEmoji(room.getLevel().getDisplayName(), 19),
                             room.getPrice(),
                             clueCount,
                             decorationCount,
                             escapeRoomName);
                 }
             }
-            System.out.println("└─────┴────────────────────────────┴────────┴───────────┴────────────┴────────────┴─────────────────┘");
+            System.out.println("└─────┴────────────────────────────┴────────────────────┴───────────┴────────────┴────────────┴─────────────────┘");
             System.out.println("Total: " + rooms.size() + " salas.");
 
         } catch (Exception e) {
@@ -158,7 +157,7 @@ public class ViewHandlerMenu extends BaseHandlerMenu {
 
                     System.out.printf("│ %-3d │ %-26s │ %-9.2f │ %-15s │%n",
                             clue.getId() != null ? clue.getId() : 0,
-                            truncate(clue.getName() != null ? clue.getName() : "N/A", 26),
+                            truncate(clue.getName(),26),
                             clue.getPrice(),
                             roomName);
                 }
@@ -259,10 +258,53 @@ public class ViewHandlerMenu extends BaseHandlerMenu {
 
     private String truncate(String text, int maxLength) {
         if (text == null) return "";
-        if (text.length() <= maxLength) {
+        String plainText = text.replaceAll("[^\\p{ASCII}]", "X");
+        if (plainText.length() <= maxLength) {
             return text;
         }
         return text.substring(0, maxLength - 3) + "...";
+    }
+    private String truncateWithEmoji(String text, int maxLength) {
+        if (text == null) return "";
+
+        // Contar emojis como 2 caracteres para el cálculo de longitud
+        int visualLength = 0;
+        StringBuilder result = new StringBuilder();
+
+        for (int i = 0; i < text.length(); i++) {
+            char c = text.charAt(i);
+
+            // Si es emoji (caracteres Unicode fuera del BMP), contar como 2
+            if (Character.isHighSurrogate(c)) {
+                visualLength += 2;
+            } else {
+                // Caracteres normales contar como 1
+                visualLength += 1;
+            }
+
+            if (visualLength <= maxLength) {
+                result.append(c);
+            } else {
+                break;
+            }
+        }
+
+        String truncated = result.toString();
+        if (truncated.length() < text.length()) {
+            // Asegurarse de no cortar en medio de un emoji
+            while (truncated.length() > 0 && Character.isHighSurrogate(truncated.charAt(truncated.length() - 1))) {
+                truncated = truncated.substring(0, truncated.length() - 1);
+            }
+            return truncated + "...";
+        }
+
+        // Rellenar con espacios para alinear
+        int padding = maxLength - visualLength;
+        if (padding > 0) {
+            return truncated + " ".repeat(padding);
+        }
+
+        return truncated;
     }
 
     private String centerText(String text, int width) {

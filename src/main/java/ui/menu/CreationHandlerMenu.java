@@ -1,6 +1,7 @@
 package ui.menu;
 
 import exception.*;
+import model.DifficultyLevel;
 
 public class CreationHandlerMenu extends BaseHandlerMenu {
 
@@ -65,7 +66,12 @@ public class CreationHandlerMenu extends BaseHandlerMenu {
         try {
             System.out.println("\n🎯 Creando nueva sala . . .");
             String name = readStringInput("Nombre de la sala: ");
-            int level = readIntInput("Nivel de la Sala (1 a 5): ");
+            System.out.println("Niveles de dificultad disponibles: ");
+            for (DifficultyLevel level : DifficultyLevel.values()) {
+                System.out.println(level.getLevelValue() + ". " + level.getDisplayName());
+            }
+            int levelInput = readIntInput("Nivel de la Sala (1 a 5): ");
+            DifficultyLevel level = DifficultyLevel.fromInt(levelInput);
             double ticketPrice = readDoubleInput("Precio de la sala: ");
             roomService.createRoom(name, level, ticketPrice);
             System.out.println("✅ Sala '" + name + "' creada exitosamente.");
