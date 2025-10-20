@@ -30,31 +30,30 @@ public class Room {
     }
 
     public String getName() {
-        return name;
+        return this.name;
     }
 
     public DifficultyLevel getLevel() {
-        return level;
+        return this.level;
     }
 
     public List<Clue> getClues() {
-        return clues;
+        return this.clues;
     }
 
     public List<Decoration> getDecorations() {
-        return decorations;
+        return this.decorations;
     }
 
-    public void addClue(Clue clue) {
-        clues.add(clue);
+    public void setClues(List<Clue> clues) {
+        this.clues = clues;
     }
 
-    public void addDecoration(Decoration decoration) {
-        decorations.add(decoration);
+    public void setDecorations(List<Decoration> decorations) {
+        this.decorations = decorations;
     }
-
     public Long getId() {
-        return id;
+        return this.id;
     }
 
     public void setId(Long id) {
@@ -62,7 +61,7 @@ public class Room {
     }
 
     public Long getEscapeRoomId() {
-        return escapeRoomId;
+        return this.escapeRoomId;
     }
 
     public void setEscapeRoomId(Long escapeRoomId) {

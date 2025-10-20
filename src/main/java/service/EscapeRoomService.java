@@ -14,10 +14,12 @@ public class EscapeRoomService {
 
     private final GenericDAO<EscapeRoom, Long> escapeRoomDAO;
     private final GenericDAO<Room, Long> roomDAO;
+    private final RoomService roomService;
 
     public EscapeRoomService() {
         this.escapeRoomDAO = new EscapeRoomDAO();
         this.roomDAO = new RoomDAO();
+        this.roomService = new RoomService();
     }
 
     private void checkNotDuplicateName(String name) {
@@ -35,12 +37,11 @@ public class EscapeRoomService {
     public void addRoomToEscapeRoom(String escapeRoomName, Room room) {
         EscapeRoom escapeRoom = escapeRoomDAO.findByName(escapeRoomName)
                 .orElseThrow(EscapeRoomNotFoundException::new);
+        Room roomToAssign = roomService.getRoom(room.getId()).orElseThrow(() -> new RoomNotFoundException("Sala no encontrada."));
 
         if (escapeRoom.getRooms().contains(room)) {
             throw new DuplicateRoomNameException();
         }
-        Room roomToAssign = roomDAO.findById(room.getId()).orElseThrow(() -> new RoomNotFoundException("Sala no encontrada."));
-
         if (roomToAssign.getClues().size() < 2) {
             throw new InsufficientCluesException();
         }
@@ -49,7 +50,6 @@ public class EscapeRoomService {
         }
 
         RoomDAO roomDAO1 = (RoomDAO) roomDAO;
-
         boolean assigned = roomDAO1.escapeRoomAssignment(room.getId(), escapeRoom.getId());
 
         if (assigned) {
