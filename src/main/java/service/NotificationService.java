@@ -1,6 +1,7 @@
 package service;
 
 import model.Notification;
+import model.NotificationType;
 import model.Player;
 
 import java.util.*;
@@ -76,7 +77,7 @@ public class NotificationService {
 
         String id = UUID.randomUUID().toString();
         Notification notification = new Notification(
-            id, email, subject, message, Notification.NotificationType.EMAIL
+                id, email, subject, message, NotificationType.EMAIL
         );
 
         notifications.add(notification);
@@ -95,7 +96,7 @@ public class NotificationService {
         String id = UUID.randomUUID().toString();
 
         Notification notification = new Notification(
-            id, email, subject, message, Notification.NotificationType.GIFT
+                id, email, subject, message, NotificationType.GIFT
         );
 
         notifications.add(notification);
@@ -114,7 +115,7 @@ public class NotificationService {
         String id = UUID.randomUUID().toString();
 
         Notification notification = new Notification(
-            id, email, subject, message, Notification.NotificationType.ACHIEVEMENT
+                id, email, subject, message, NotificationType.ACHIEVEMENT
         );
 
         notifications.add(notification);
@@ -133,7 +134,7 @@ public class NotificationService {
         String id = UUID.randomUUID().toString();
 
         Notification notification = new Notification(
-            id, email, subject, message, Notification.NotificationType.TICKET
+                id, email, subject, message, NotificationType.TICKET
         );
 
         notifications.add(notification);
