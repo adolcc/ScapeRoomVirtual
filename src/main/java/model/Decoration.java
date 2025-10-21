@@ -25,19 +25,6 @@ public class Decoration {
         this.id = null;
     }
 
-    public Decoration(String name, String material, double price, Long roomId) {
-        validateName(name);
-        validateName(material);
-        validatePrice(price);
-
-        this.name = name;
-        this.material = material;
-        this.price = price;
-        this.id = null;
-        this.roomId = roomId;
-    }
-
-
     public String getName() {
         return this.name;
     }

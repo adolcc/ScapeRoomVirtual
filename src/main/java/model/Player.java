@@ -1,16 +1,16 @@
 package model;
 
-import java.util.UUID;
+import java.util.Objects;
 
 public class Player {
-    private String id;
+    private Long id;
     private String name;
     private String email;
     private boolean newsletterSubscribed;
 
     public Player(String name, String email) {
         validateEmail(email);
-        this.id = UUID.randomUUID().toString();
+        this.id = null;
         this.name = name;
         this.email = email;
         this.newsletterSubscribed = false;
@@ -22,20 +22,24 @@ public class Player {
         }
     }
 
-    public String getId() {
-        return id;
+    public Long getId() {
+        return this.id;
     }
 
     public String getName() {
-        return name;
+        return this.name;
+    }
+
+    public String getEmail() {
+        return this.email;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    public String getEmail() {
-        return email;
     }
 
     public void setEmail(String email) {
@@ -44,10 +48,24 @@ public class Player {
     }
 
     public boolean isNewsletterSubscribed() {
-        return newsletterSubscribed;
+        return this.newsletterSubscribed;
     }
 
     public void setNewsletterSubscribed(boolean newsletterSubscribed) {
         this.newsletterSubscribed = newsletterSubscribed;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Player other = (Player) o;
+
+        return this.email.equalsIgnoreCase(other.getEmail());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(this.email != null ? this.email.toLowerCase() : null);
     }
 }
