@@ -4,7 +4,8 @@ public enum NotificationType {
     EMAIL("Correo electrónico"),
     GIFT("Regalo"),
     ACHIEVEMENT("Logro"),
-    TICKET("Tiquet");
+    TICKET("Tiquet"),
+    NEWSLETTER("Boletin informativo");
 
     private final String displayName;
 

@@ -2,153 +2,63 @@ package service;
 
 import model.Notification;
 import model.NotificationType;
-import model.Player;
+import model.Observer;
+import model.Subject;
 
-import java.util.*;
-import java.util.stream.Collectors;
+import java.util.ArrayList;
+import java.util.List;
 
-public class NotificationService {
-    private static NotificationService instance;
-    private Map<String, Player> playersByEmail;
-    private List<Notification> notifications;
+public class NotificationService implements Subject {
+    private List<Observer> observers = new ArrayList<>();
+    private Notification currentNotification;
 
-    private NotificationService() {
-        this.playersByEmail = new HashMap<>();
-        this.notifications = new ArrayList<>();
-    }
-
-    public static NotificationService getInstance() {
-        if (instance == null) {
-            instance = new NotificationService();
-        }
-        return instance;
-    }
-
-    public boolean registerPlayer(String name, String email) {
-        if (email == null || email.trim().isEmpty()) {
-            return false;
-        }
-
-        if (playersByEmail.containsKey(email.toLowerCase())) {
-            return false;
-        }
-
-        try {
-            Player player = new Player(name, email);
-            playersByEmail.put(email.toLowerCase(), player);
-            return true;
-        } catch (IllegalArgumentException e) {
-            return false;
+    public void registerObserver(Observer observer) {
+        if (!observers.contains(observer)) {
+            observers.add(observer);
         }
     }
 
-    public Player findPlayerByEmail(String email) {
-        if (email == null || email.trim().isEmpty()) {
-            return null;
-        }
-        return playersByEmail.get(email.toLowerCase());
+    public void removeObserver(Observer observer) {
+        observers.remove(observer);
     }
 
-    public boolean updateSubscription(String email, boolean subscribe) {
-        Player player = findPlayerByEmail(email);
-        if (player == null) {
-            return false;
+    public void notifyObservers() {
+        for (Observer observer : observers) {
+            observer.update(this);
         }
-
-        player.setNewsletterSubscribed(subscribe);
-        return true;
     }
 
-    public List<Player> getSubscribedPlayers() {
-        return playersByEmail.values().stream()
-                .filter(Player::isNewsletterSubscribed)
-                .collect(Collectors.toList());
+    public void sendAchievementNotification(String email, String achievementName) {
+        sendNotification(email, "¡Nuevo logro desbloqueado!",
+                "Has conseguido: " + achievementName,
+                NotificationType.ACHIEVEMENT);
     }
 
-    public boolean sendNotification(String email, String subject, String message) {
-        if (email == null || email.trim().isEmpty()) {
-            return false;
-        }
-
-        Player player = findPlayerByEmail(email);
-        if (player == null) {
-            return false;
-        }
-
-        String id = UUID.randomUUID().toString();
-        Notification notification = new Notification(
-                id, email, subject, message, NotificationType.EMAIL
-        );
-
-        notifications.add(notification);
-        System.out.println("Notificación enviada: " + notification);
-        return true;
+    public void sendTicketNotification(String email, String subject, String message) {
+        sendNotification(email, subject, message, NotificationType.TICKET);
     }
 
-    public boolean sendGift(String email, String giftName, String description) {
-        Player player = findPlayerByEmail(email);
-        if (player == null) {
-            return false;
-        }
-
-        String subject = "¡Has recibido un regalo!";
-        String message = "Regalo: " + giftName + "\n" + description;
-        String id = UUID.randomUUID().toString();
-
-        Notification notification = new Notification(
-                id, email, subject, message, NotificationType.GIFT
-        );
-
-        notifications.add(notification);
-        System.out.println("Regalo enviado: " + notification);
-        return true;
+    public void sendGiftNotification(String email, String giftName) {
+        sendNotification(email, "¡Has recibido un regalo!",
+                "Te han enviado: " + giftName,
+                NotificationType.GIFT);
     }
 
-    public boolean registerAchievement(String email, String achievementName, String description) {
-        Player player = findPlayerByEmail(email);
-        if (player == null) {
-            return false;
-        }
-
-        String subject = "¡Nuevo logro desbloqueado!";
-        String message = "Has conseguido: " + achievementName + "\n" + description;
-        String id = UUID.randomUUID().toString();
-
-        Notification notification = new Notification(
-                id, email, subject, message, NotificationType.ACHIEVEMENT
-        );
-
-        notifications.add(notification);
-        System.out.println("Logro registrado: " + notification);
-        return true;
+    public Notification getCurrentNotification() {
+        return currentNotification;
     }
 
-    public boolean associateTicket(String email, String ticketId) {
-        Player player = findPlayerByEmail(email);
-        if (player == null || ticketId == null || ticketId.trim().isEmpty()) {
-            return false;
-        }
-
-        String subject = "Ticket asociado: #" + ticketId;
-        String message = "Se ha asociado el ticket #" + ticketId + " a tu cuenta.";
-        String id = UUID.randomUUID().toString();
-
-        Notification notification = new Notification(
-                id, email, subject, message, NotificationType.TICKET
-        );
-
-        notifications.add(notification);
-        System.out.println("Ticket asociado: " + notification);
-        return true;
+    public void sendNotification(String recipientEmail, String subject, String message, NotificationType type) {
+        String id = String.valueOf(System.currentTimeMillis());
+        currentNotification = new Notification(id, recipientEmail, subject, message, type);
+        notifyObservers();
     }
 
-    public List<Notification> getNotificationsByEmail(String email) {
-        if (email == null) {
-            return Collections.emptyList();
-        }
+    public void sendNewsletterToAll(String subject, String message) {
+        sendNotification("all", subject, message, NotificationType.NEWSLETTER);
+    }
 
-        return notifications.stream()
-                .filter(n -> n.getRecipientEmail().equalsIgnoreCase(email))
-                .collect(Collectors.toList());
+    public void sendPersonalNotification(String email, String subject, String message) {
+        sendNotification(email, subject, message, NotificationType.EMAIL);
     }
 }
