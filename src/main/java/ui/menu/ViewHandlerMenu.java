@@ -19,7 +19,7 @@ public class ViewHandlerMenu extends BaseHandlerMenu {
             System.out.println("4. 🖼️ Listado de Objetos de Decoración");
             System.out.println("5. 📊 Resumen General del Inventario");
             System.out.println("6. 💰 Activos por Sala");
-            System.out.println("0. ↩️  Volver al menú principal");
+            System.out.println("0. ↩️ Volver al menú principal");
             System.out.println("════════════════════════════════════════");
 
             int option = readIntInput("Selecciona una opción: ");
@@ -214,7 +214,6 @@ public class ViewHandlerMenu extends BaseHandlerMenu {
 
     private void showInventorySummary() {
         try {
-            String summary = inventoryService.generateInventorySummary();
             String healthStatus = inventoryService.getInventoryHealthStatus();
             InventoryStats stats = inventoryService.getInventoryStats();
 
@@ -282,6 +281,7 @@ public class ViewHandlerMenu extends BaseHandlerMenu {
         }
         return text.substring(0, maxLength - 3) + "...";
     }
+
     private String truncateWithEmoji(String text, int maxLength) {
         if (text == null) return "";
 
@@ -331,6 +331,4 @@ public class ViewHandlerMenu extends BaseHandlerMenu {
 
         return " ".repeat(leftPadding) + text + " ".repeat(rightPadding);
     }
-
-
 }
