@@ -1,7 +1,7 @@
 package repository.mapper;
 
-import exception.EmptyNameException;
-import exception.InvalidPriceException;
+import constant.FieldName;
+import exception.factory.ExceptionFactory;
 import model.Decoration;
 
 import java.sql.PreparedStatement;
@@ -62,10 +62,10 @@ public class DecorationMapper implements GeneralMapper<Decoration> {
         }
         if (decoration.getName() == null || decoration.getName().trim().isEmpty()
                 || decoration.getMaterial() == null || decoration.getMaterial().trim().isEmpty()) {
-            throw new EmptyNameException();
+            throw ExceptionFactory.requiredField(FieldName.NAME);
         }
         if (decoration.getPrice() < 0) {
-            throw new InvalidPriceException();
+            throw ExceptionFactory.invalidPrice();
         }
     }
 }

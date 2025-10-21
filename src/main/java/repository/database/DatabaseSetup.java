@@ -1,6 +1,6 @@
 package repository.database;
 
-import exception.PersistenceException;
+import exception.core.PersistenceException;
 
 import java.nio.file.Files;
 import java.nio.file.Paths;

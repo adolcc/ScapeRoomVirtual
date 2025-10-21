@@ -1,4 +1,3 @@
-import exception.*;
 import model.Decoration;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;

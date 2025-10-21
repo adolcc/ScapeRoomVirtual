@@ -1,6 +1,3 @@
-import exception.DuplicateClueNameException;
-import exception.EmptyClueNameException;
-import exception.NullClueNameException;
 import model.Clue;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

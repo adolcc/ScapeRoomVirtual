@@ -1,6 +1,7 @@
 package service;
 
-import exception.DuplicateNameException;
+import constant.EntityType;
+import exception.factory.ExceptionFactory;
 import model.Decoration;
 import repository.dao.DecorationDAO;
 import repository.dao.GenericDAO;
@@ -18,7 +19,7 @@ public class DecorationService {
 
     private void checkNotDuplicateName(String name) {
         if (decorationDAO.findByName(name).isPresent()) {
-            throw new DuplicateNameException();
+            throw ExceptionFactory.duplicateValue(EntityType.DECORATION, name);
         }
     }
 

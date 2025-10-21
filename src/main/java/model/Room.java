@@ -1,6 +1,8 @@
 package model;
 
-import exception.*;
+import constant.FieldName;
+import exception.factory.ExceptionFactory;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -17,10 +19,10 @@ public class Room {
 
     public Room(String name, DifficultyLevel level, double price) {
         if (name == null || name.trim().isEmpty()) {
-            throw new EmptyRoomNameException();
+            throw ExceptionFactory.requiredField(FieldName.NAME);
         }
         if (price <=0){
-            throw new InvalidPriceException();
+            throw ExceptionFactory.invalidPrice();
         }
         this.name = name.trim();
         this.level = level;

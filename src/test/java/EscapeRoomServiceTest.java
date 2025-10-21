@@ -1,6 +1,3 @@
-import exception.DuplicateEscapeRoomNameException;
-import exception.EmptyEscapeRoomNameException;
-import exception.NullEscapeRoomNameException;
 import model.EscapeRoom;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;

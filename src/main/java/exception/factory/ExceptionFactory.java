@@ -25,8 +25,8 @@ public class ExceptionFactory {
         return new ValidationException(String.format("Se requieren al menos %d %s", minRequired, element.getDisplayName()));
     }
 
-    public static DuplicateResourceException duplicateValue(EntityType entity, String value) {
-        return new DuplicateResourceException(String.format("El %s '%s' ya está asignado.", entity.getDisplayName(), value));
+    public static DuplicateResourceException duplicateValue(EntityType entity, String identifier) {
+        return new DuplicateResourceException(String.format("El %s '%s' ya está asignado.", entity.getDisplayName(), identifier));
     }
 
     public static NotFoundException notFound(EntityType resourceType, String identifier) {

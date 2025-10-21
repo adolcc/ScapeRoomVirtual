@@ -1,7 +1,8 @@
 package repository.dao;
 
-import exception.EmptyNameException;
-import exception.PersistenceException;
+import constant.FieldName;
+import exception.core.PersistenceException;
+import exception.factory.ExceptionFactory;
 import model.Decoration;
 import repository.database.DatabaseConfig;
 import repository.mapper.DecorationMapper;
@@ -69,7 +70,7 @@ public class DecorationDAO implements GenericDAO<Decoration, Long> {
     @Override
     public Optional<Decoration> findByName(String name) {
         if (name == null || name.trim().isEmpty()) {
-            throw new EmptyNameException();
+            throw ExceptionFactory.requiredField(FieldName.NAME);
         }
 
         String sql = "SELECT id, name, material, price, room_id FROM decoration WHERE" +

@@ -1,7 +1,8 @@
 package repository.dao;
 
-import exception.EmptyNameException;
-import exception.PersistenceException;
+import constant.FieldName;
+import exception.core.PersistenceException;
+import exception.factory.ExceptionFactory;
 import model.EscapeRoom;
 import repository.database.DatabaseConfig;
 import repository.mapper.EscapeRoomMapper;
@@ -70,7 +71,7 @@ public class EscapeRoomDAO implements GenericDAO<EscapeRoom, Long> {
     @Override
     public Optional<EscapeRoom> findByName(String name) {
         if (name == null || name.trim().isEmpty()) {
-            throw new EmptyNameException();
+            throw ExceptionFactory.requiredField(FieldName.NAME);
         }
 
         String sql = "SELECT id, name FROM escape_room WHERE name = ?";

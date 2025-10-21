@@ -1,7 +1,7 @@
 package repository.mapper;
 
-import exception.EmptyNameException;
-import exception.InvalidPriceException;
+import constant.FieldName;
+import exception.factory.ExceptionFactory;
 import model.DifficultyLevel;
 import model.Room;
 
@@ -59,10 +59,10 @@ public class RoomMapper implements GeneralMapper<Room> {
             throw new IllegalArgumentException("La sala no puede ser nula");
         }
         if (room.getName() == null || room.getName().trim().isEmpty()) {
-            throw new EmptyNameException();
+            throw ExceptionFactory.requiredField(FieldName.NAME);
         }
         if (room.getPrice() <= 0) {
-            throw new InvalidPriceException();
+            throw ExceptionFactory.invalidPrice();
         }
         if (room.getLevel() == null) {
             throw new IllegalArgumentException("El nivel de la sala debe estar entre 1 y 5");

@@ -1,6 +1,7 @@
 package repository.mapper;
 
-import exception.EmptyNameException;
+import constant.FieldName;
+import exception.factory.ExceptionFactory;
 import model.Player;
 
 import java.sql.PreparedStatement;
@@ -49,7 +50,7 @@ public class PlayerMapper implements GeneralMapper<Player> {
         }
         if (player.getName() == null || player.getName().trim().isEmpty()
                 || player.getEmail() == null || player.getEmail().trim().isEmpty()) {
-            throw new EmptyNameException();
+            throw ExceptionFactory.requiredField(FieldName.NAME);
         }
     }
 }

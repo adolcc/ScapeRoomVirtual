@@ -1,7 +1,7 @@
 package repository.dao;
 
 import model.Room;
-import exception.PersistenceException;
+import exception.core.PersistenceException;
 import repository.database.DatabaseConfig;
 import repository.mapper.RoomMapper;
 import repository.mapper.GeneralMapper;

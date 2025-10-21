@@ -1,7 +1,7 @@
 package model;
 
-import exception.EmptyEscapeRoomNameException;
-import exception.NullEscapeRoomNameException;
+import constant.FieldName;
+import exception.factory.ExceptionFactory;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -40,10 +40,10 @@ public class EscapeRoom {
 
     private void validateName(String name) {
         if (name == null) {
-            throw new NullEscapeRoomNameException();
+            throw ExceptionFactory.requiredField(FieldName.NAME);
         }
         if (name.trim().isEmpty()) {
-            throw new EmptyEscapeRoomNameException();
+            throw ExceptionFactory.requiredField(FieldName.NAME);
         }
     }
 

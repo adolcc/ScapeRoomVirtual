@@ -1,9 +1,10 @@
 package service;
 
-import exception.*;
+import constant.ElementType;
+import constant.EntityType;
+import exception.factory.ExceptionFactory;
 import model.EscapeRoom;
 import model.Room;
-import model.RoomAssets;
 import repository.dao.EscapeRoomDAO;
 import repository.dao.GenericDAO;
 import repository.dao.RoomDAO;
@@ -25,7 +26,7 @@ public class EscapeRoomService {
 
     private void checkNotDuplicateName(String name) {
         if (escapeRoomDAO.findByName(name).isPresent()) {
-            throw new DuplicateEscapeRoomNameException();
+            throw ExceptionFactory.duplicateValue(EntityType.ROOM, name);
         }
     }
 
@@ -37,17 +38,17 @@ public class EscapeRoomService {
 
     public void addRoomToEscapeRoom(String escapeRoomName, Room room) {
         EscapeRoom escapeRoom = escapeRoomDAO.findByName(escapeRoomName)
-                .orElseThrow(EscapeRoomNotFoundException::new);
-        Room roomToAssign = roomService.getRoom(room.getId()).orElseThrow(() -> new RoomNotFoundException("Sala no encontrada."));
+                .orElseThrow(() -> ExceptionFactory.notFound(EntityType.ESCAPE_ROOM, escapeRoomName));
+        Room roomToAssign = roomService.getRoom(room.getId()).orElseThrow(() -> ExceptionFactory.notFound(EntityType.ROOM, room.getName()));
 
         if (escapeRoom.getRooms().contains(room)) {
-            throw new DuplicateRoomNameException();
+            throw ExceptionFactory.duplicateValue(EntityType.ROOM, roomToAssign.getName());
         }
         if (roomToAssign.getClues().size() < 2) {
-            throw new InsufficientCluesException();
+            throw ExceptionFactory.insufficientElements(ElementType.CLUES, 2);
         }
         if (roomToAssign.getDecorations().size() < 2) {
-            throw new InsufficientDecorationsException();
+            throw ExceptionFactory.insufficientElements(ElementType.DECORATIONS, 2);
         }
 
         RoomDAO roomDAO1 = (RoomDAO) roomDAO;

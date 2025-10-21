@@ -1,6 +1,7 @@
 package service;
 
-import exception.*;
+import constant.EntityType;
+import exception.factory.ExceptionFactory;
 import model.Clue;
 import model.Decoration;
 import model.DifficultyLevel;
@@ -28,7 +29,7 @@ public class RoomService {
 
     private void checkNotDuplicateName(String name) {
         if (roomDAO.findByName(name).isPresent()) {
-            throw new DuplicateRoomNameException();
+            throw ExceptionFactory.duplicateValue(EntityType.ROOM, name);
         }
     }
 
@@ -56,10 +57,10 @@ public class RoomService {
 
     public void addClueToRoom(String roomName, String clueName) {
         Room room = roomDAO.findByName(roomName)
-                .orElseThrow(() -> new RoomNotFoundException("Sala inexistente: " + roomName));
+                .orElseThrow(() -> ExceptionFactory.notFound(EntityType.ROOM, roomName));
 
         Clue clue = clueDAO.findByName(clueName)
-                .orElseThrow(() -> new ClueNotFoundException("Pista no encontrada: " + clueName));
+                .orElseThrow(() -> ExceptionFactory.notFound(EntityType.CLUE, clueName));
 
         ClueDAO clueDAO1 = (ClueDAO) clueDAO;
         boolean assigned = clueDAO1.roomAssignment(clue.getId(), room.getId());
@@ -71,10 +72,10 @@ public class RoomService {
 
     public void addDecorationToRoom(String roomName, String decorationName) {
         Room room = roomDAO.findByName(roomName)
-                .orElseThrow(() -> new RoomNotFoundException("Sala inexistente"));
+                .orElseThrow(() -> ExceptionFactory.notFound(EntityType.ROOM, roomName));
 
         Decoration decoration = decorationDAO.findByName(decorationName)
-                .orElseThrow(() -> new DecorationNotFoundException("Decoración no encontrada"));
+                .orElseThrow(() -> ExceptionFactory.notFound(EntityType.DECORATION, decorationName));
 
         DecorationDAO decorationDAO1 = (DecorationDAO) decorationDAO;
         boolean assigned = decorationDAO1.roomAssignment(decoration.getId(), room.getId());

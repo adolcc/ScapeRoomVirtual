@@ -1,8 +1,7 @@
 package model;
 
-import exception.EmptyNameException;
-import exception.InvalidPriceException;
-import exception.NullNameException;
+import constant.FieldName;
+import exception.factory.ExceptionFactory;
 
 import java.util.Objects;
 
@@ -52,16 +51,16 @@ public class Clue {
 
     private void validateName(String name) {
         if (name == null) {
-            throw new NullNameException();
+            throw ExceptionFactory.requiredField(FieldName.NAME);
         }
         if (name.trim().isEmpty()) {
-            throw new EmptyNameException();
+            throw ExceptionFactory.requiredField(FieldName.NAME);
         }
     }
 
     private void validatePrice(double price) {
         if (price <= 0) {
-            throw new InvalidPriceException();
+            throw ExceptionFactory.invalidPrice();
         }
     }
 

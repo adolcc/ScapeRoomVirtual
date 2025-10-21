@@ -1,6 +1,7 @@
 package repository.mapper;
 
-import exception.EmptyNameException;
+import constant.FieldName;
+import exception.factory.ExceptionFactory;
 import model.EscapeRoom;
 
 import java.sql.PreparedStatement;
@@ -39,7 +40,7 @@ public EscapeRoom fromResultSet(ResultSet rs) throws SQLException {
     @Override
     public void validateEntity(EscapeRoom escapeRoom) {
         if (escapeRoom == null || escapeRoom.getName() == null || escapeRoom.getName().trim().isEmpty()) {
-            throw new EmptyNameException();
+            throw ExceptionFactory.requiredField(FieldName.NAME);
         }
     }
 

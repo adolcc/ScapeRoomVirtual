@@ -1,7 +1,8 @@
 package repository.dao;
 
-import exception.EmptyClueNameException;
-import exception.PersistenceException;
+import constant.FieldName;
+import exception.core.PersistenceException;
+import exception.factory.ExceptionFactory;
 import model.Clue;
 import repository.database.DatabaseConfig;
 import repository.mapper.ClueMapper;
@@ -72,7 +73,7 @@ public class ClueDAO implements GenericDAO<Clue, Long> {
     @Override
     public Optional<Clue> findByName(String name) {
         if (name == null || name.trim().isEmpty()) {
-            throw new EmptyClueNameException();
+            throw ExceptionFactory.requiredField(FieldName.NAME);
         }
 
         String sql = "SELECT id, name, price, room_id FROM clue WHERE name = ?";

@@ -1,7 +1,7 @@
 package repository.mapper;
 
-import exception.EmptyClueNameException;
-import exception.InvalidPriceException;
+import constant.FieldName;
+import exception.factory.ExceptionFactory;
 import model.Clue;
 
 import java.sql.PreparedStatement;
@@ -59,10 +59,10 @@ public class ClueMapper implements GeneralMapper<Clue> {
             throw new IllegalArgumentException("La pista no puede estar vacía.");
         }
         if (clue.getName() == null || clue.getName().trim().isEmpty()) {
-            throw new EmptyClueNameException();
+            throw ExceptionFactory.requiredField(FieldName.NAME);
         }
         if (clue.getPrice() < 0) {
-            throw new InvalidPriceException();
+            throw ExceptionFactory.invalidPrice();
         }
     }
 }
