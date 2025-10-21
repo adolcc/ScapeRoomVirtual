@@ -3,7 +3,7 @@ package model;
 import java.util.Objects;
 
 public class Player {
-    private String id;
+    private Long id;
     private String name;
     private String email;
     private boolean newsletterSubscribed;
@@ -22,7 +22,7 @@ public class Player {
         }
     }
 
-    public String getId() {
+    public Long getId() {
         return this.id;
     }
 
@@ -30,12 +30,16 @@ public class Player {
         return this.name;
     }
 
-    public void setName(String name) {
-        this.name = name;
-    }
-
     public String getEmail() {
         return this.email;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     public void setEmail(String email) {
