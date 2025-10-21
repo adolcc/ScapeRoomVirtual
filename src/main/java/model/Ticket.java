@@ -9,7 +9,7 @@ public class Ticket {
     private String playerEmail;
     private LocalDateTime creationDate;
     private TicketStatus status;
-    private String qrCode;
+
 
 
     public Ticket(String playerEmail) {
@@ -21,22 +21,18 @@ public class Ticket {
         this.playerEmail = playerEmail.toLowerCase();
         this.creationDate = LocalDateTime.now();
         this.status = TicketStatus.ACTIVE;
-        this.qrCode = generateQRCode();
+
     }
 
     private String generateUniqueId() {
         return "TKT-" + UUID.randomUUID().toString().substring(0, 8).toUpperCase();
     }
 
-    private String generateQRCode() {
-        return "QR-" + this.id + "-" + UUID.randomUUID().toString().substring(0, 6).toUpperCase();
-    }
-
     public String getId() { return id; }
     public String getPlayerEmail() { return playerEmail; }
     public LocalDateTime getCreationDate() { return creationDate; }
     public TicketStatus getStatus() { return status; }
-    public String getQrCode() { return qrCode; }
+
 
     public void setId(String id) { this.id = id; }
 
@@ -59,6 +55,6 @@ public class Ticket {
 
     @Override
     public String toString() {
-        return String.format("Ticket[id=%s, player=%s, status=%s, qrCode=%s]", id, playerEmail, status, qrCode);
+        return String.format("Ticket[id=%s, player=%s, status=%s]", id, playerEmail, status);
     }
 }

@@ -41,6 +41,7 @@ public class TicketService {
         ticketsByPlayerEmail
                 .computeIfAbsent(playerEmail.toLowerCase(), k -> new ArrayList<>())
                 .add(ticket);
+
         notificationService.associateTicket(playerEmail, ticket.getId());
 
         return ticket;
