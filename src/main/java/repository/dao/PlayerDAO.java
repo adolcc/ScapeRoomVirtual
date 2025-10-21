@@ -48,7 +48,7 @@ public class PlayerDAO implements GenericDAO<Player, Long> {
             throw new IllegalArgumentException("El ID debe ser un número positivo.");
         }
 
-        String sql = "SELECT id, name, email FROM player WHERE id = ?";
+        String sql = "SELECT id, name, email, newsletter_subscribed FROM player WHERE id = ?";
         Optional<Player> player = Optional.empty();
 
         try (Connection conn = DatabaseConfig.getConnection();
@@ -73,7 +73,7 @@ public class PlayerDAO implements GenericDAO<Player, Long> {
             throw new EmptyNameException();
         }
 
-        String sql = "SELECT id, name, email FROM player WHERE name = ?";
+        String sql = "SELECT id, name, email, newsletter_subscribed FROM player WHERE name = ?";
         Optional<Player> player = Optional.empty();
 
         try (Connection conn = DatabaseConfig.getConnection();
@@ -98,7 +98,7 @@ public class PlayerDAO implements GenericDAO<Player, Long> {
             throw new EmptyNameException();
         }
 
-        String sql = "SELECT id, name, email FROM player WHERE email = ?";
+        String sql = "SELECT id, name, email, newsletter_subscribed FROM player WHERE email = ?";
         Optional<Player> player = Optional.empty();
 
         try (Connection conn = DatabaseConfig.getConnection();
@@ -120,7 +120,7 @@ public class PlayerDAO implements GenericDAO<Player, Long> {
 
     @Override
     public List<Player> findAll() {
-        String sql = "SELECT id, name, email FROM player";
+        String sql = "SELECT id, name, email, newsletter_subscribed FROM player";
         List<Player> players = new ArrayList<>();
 
         try (Connection conn = DatabaseConfig.getConnection();
