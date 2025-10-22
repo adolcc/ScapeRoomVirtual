@@ -1,5 +1,7 @@
 package ui.menu;
 
+import java.util.Random;
+
 public class NotificationHandlerMenu extends Menu {
 
     @Override
@@ -50,15 +52,16 @@ public class NotificationHandlerMenu extends Menu {
     private void sendDiscountCode() {
         System.out.println("\n💰 Enviando código de descuento...");
         String playerEmail = readStringInput("Email del jugador frecuente: ");
-        String code = "DESC25"; // Generar código automáticamente
-        System.out.println("✅ Código '" + code + "' enviado a: " + playerEmail);
+        String code = "DESC25" + (new Random().nextInt(9000) + 1000);
+        System.out.println("✅ Código de descuento enviado a " + playerEmail);
+        System.out.println("   Código: " + code + " (20% de descuento)" + "' enviado a: " + playerEmail);
         pressEnterToContinue();
     }
 
     private void sendNewsletterInvitation() {
-        System.out.println("\n📧 Enviando invitación a newsletter...");
-        String email = readStringInput("Email para suscripción: ");
-        System.out.println("✅ Invitación enviada a: " + email);
+        String email = readStringInput("📧 Email para suscripción: ");
+        System.out.println("✅ Invitación a newsletter enviada a: " + email);
+        System.out.println("   El jugador recibirá actualizaciones mensuales");
         pressEnterToContinue();
     }
 }

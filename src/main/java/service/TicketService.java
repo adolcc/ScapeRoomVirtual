@@ -10,13 +10,12 @@ import java.util.*;
 public class TicketService {
     private static TicketService instance;
     private PlayerDAO playerDAO;
-    private NotificationService notificationService;
+
     private Map<String, Ticket> ticketsById;
     private Map<String, List<Ticket>> ticketsByPlayerEmail;
 
     private TicketService() {
         this.playerDAO = new PlayerDAO();
-        this.notificationService = NotificationService.getInstance();
         this.ticketsById = new HashMap<>();
         this.ticketsByPlayerEmail = new HashMap<>();
     }
@@ -41,9 +40,6 @@ public class TicketService {
         ticketsByPlayerEmail
                 .computeIfAbsent(playerEmail.toLowerCase(), k -> new ArrayList<>())
                 .add(ticket);
-
-        notificationService.associateTicket(playerEmail, ticket.getId());
-
         return ticket;
     }
 

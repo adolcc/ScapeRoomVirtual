@@ -1,6 +1,13 @@
 package ui.menu;
 
+import model.Ticket;
+import service.TicketService;
+
+import java.util.List;
+import java.util.Optional;
+
 public class TicketHandlerMenu extends Menu {
+    private TicketService ticketService = TicketService.getInstance();
 
     @Override
     public void display() {
@@ -41,24 +48,46 @@ public class TicketHandlerMenu extends Menu {
     }
 
     private void generateTicket() {
-        System.out.println("\n🎫 Generando ticket...");
-        // TODO: Integrar con TicketService
-        System.out.println("✅ Ticket generado exitosamente.");
+        try {
+            String playerEmail = readStringInput("📧 Email del jugador: ");
+            Ticket ticket = ticketService.createTicket(playerEmail);
+            System.out.println("✅ Ticket generado exitosamente:");
+            System.out.println("   ID: " + ticket.getId());
+            System.out.println("   Jugador: " + ticket.getPlayerEmail());
+            System.out.println("   Estado: " + ticket.getStatus());
+        } catch (Exception e) {
+            System.out.println("❌ Error: " + e.getMessage());
+        }
         pressEnterToContinue();
     }
 
     private void viewTickets() {
-        System.out.println("\n📊 Listando tickets...");
-        // TODO: Integrar con TicketService
-        System.out.println("✅ Funcionalidad en desarrollo.");
+        List<Ticket> tickets = ticketService.findAllTickets();
+        System.out.println("\n📊 TICKETS GENERADOS:");
+        if (tickets.isEmpty()) {
+            System.out.println("No hay tickets generados.");
+        } else {
+            tickets.forEach(ticket ->
+                    System.out.println("🎫 " + ticket.getId() + " - " +
+                            ticket.getPlayerEmail() + " - " + ticket.getStatus()));
+        }
         pressEnterToContinue();
     }
 
     private void findTicket() {
-        System.out.println("\n🔍 Buscando ticket...");
-        Long ticketId = readIntInput("ID del ticket: ").longValue();
-        // TODO: Integrar con TicketService
-        System.out.println("✅ Funcionalidad en desarrollo.");
+        String ticketId = readStringInput("🔍 ID del ticket: ");
+        Optional<Ticket> ticket = ticketService.findTicketById(ticketId);
+        if (ticket.isPresent()) {
+            Ticket t = ticket.get();
+            System.out.println("✅ Ticket encontrado:");
+            System.out.println("   ID: " + t.getId());
+            System.out.println("   Jugador: " + t.getPlayerEmail());
+            System.out.println("   Fecha: " + t.getCreationDate());
+            System.out.println("   Estado: " + t.getStatus());
+            System.out.println("   Válido: " + (t.isValid() ? "✅" : "❌"));
+        } else {
+            System.out.println("❌ No se encontró el ticket con ID: " + ticketId);
+        }
         pressEnterToContinue();
     }
 }
