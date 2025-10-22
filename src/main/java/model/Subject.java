@@ -3,5 +3,5 @@ package model;
 public interface Subject {
     void registerObserver(Observer observer);
     void removeObserver(Observer observer);
-    void notifyObservers();
+    void notifyObservers(NotificationMessage type);
 }

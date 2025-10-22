@@ -7,17 +7,19 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-public class EscapeRoom {
+public class EscapeRoom implements Subject{
 
     private Long id;
     private String name;
     private List<Room> rooms;
+    private List<Observer> observers;
 
     public EscapeRoom(String name) {
         validateName(name);
 
         this.name = name;
         this.rooms = new ArrayList<>();
+        this.observers = new ArrayList<>();
         this.id = null;
     }
 
@@ -64,4 +66,18 @@ public class EscapeRoom {
         return Objects.hash(this.name != null ? this.name.toLowerCase() : null);
     }
 
+    @Override
+    public void registerObserver(Observer observer) {
+        observers.add(observer);
+    }
+
+    @Override
+    public void removeObserver(Observer observer) {
+        observers.remove(observer);
+    }
+
+    @Override
+    public void notifyObservers(NotificationMessage type) {
+        observers.forEach(observer -> observer.update(type.getDisplayName(), this.name));
+    }
 }

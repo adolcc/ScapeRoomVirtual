@@ -1,6 +1,6 @@
 package model;
 
 public interface Observer {
-    void update(Subject subject);
+    void update(String message, String source);
     String getEmail();
 }

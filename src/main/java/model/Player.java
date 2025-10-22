@@ -1,7 +1,5 @@
 package model;
 
-import service.NotificationService;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -11,7 +9,8 @@ public class Player implements Observer {
     private String name;
     private String email;
     private boolean newsletterSubscribed;
-    private List<Notification> notifications = new ArrayList<>();
+    private List<String> receivedNotifications = new ArrayList<>();
+
 
     public Player(String name, String email) {
         validateEmail(email);
@@ -36,17 +35,10 @@ public class Player implements Observer {
     }
 
     @Override
-    public void update(Subject subject) {
-        if (subject instanceof NotificationService) {
-            NotificationService notificationService = (NotificationService) subject;
-            Notification notification = notificationService.getCurrentNotification();
-
-            if ((notification.getType() == NotificationType.NEWSLETTER && newsletterSubscribed) ||
-                    notification.getType() == NotificationType.EMAIL && notification.getRecipientEmail().equals(email) ||
-                    notification.getRecipientEmail().equals("all")) {
-                notifications.add(notification);
-            }
-        }
+    public void update(String message, String source) {
+        System.out.println("Jugador " + name + " (" + email + ") recibió notificación de " +
+                source + ": " + message);
+        receivedNotifications.add(message);
     }
 
     public String getEmail() {
