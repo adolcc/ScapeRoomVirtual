@@ -1,7 +1,8 @@
 package repository.dao;
 
-import exception.EmptyClueNameException;
-import exception.PersistenceException;
+import constant.FieldName;
+import exception.core.PersistenceException;
+import exception.factory.ExceptionFactory;
 import model.Clue;
 import repository.database.DatabaseConfig;
 import repository.mapper.ClueMapper;
@@ -72,7 +73,7 @@ public class ClueDAO implements GenericDAO<Clue, Long> {
     @Override
     public Optional<Clue> findByName(String name) {
         if (name == null || name.trim().isEmpty()) {
-            throw new EmptyClueNameException();
+            throw ExceptionFactory.requiredField(FieldName.NAME);
         }
 
         String sql = "SELECT id, name, price, room_id FROM clue WHERE name = ?";
@@ -108,6 +109,41 @@ public class ClueDAO implements GenericDAO<Clue, Long> {
             }
         } catch (SQLException e) {
             throw new PersistenceException("Error al buscar todas las pistas.");
+        }
+        return clues;
+    }
+
+    public boolean roomAssignment(Long clueId, Long roomId) {
+        String sql = "UPDATE clue SET room_id = ? WHERE id = ?";
+        int affectedRows;
+
+        try (Connection conn = DatabaseConfig.getConnection();
+        PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setLong(1, roomId);
+            stmt.setLong(2, clueId);
+
+            affectedRows = stmt.executeUpdate();
+        } catch (SQLException e) {
+            throw new PersistenceException("Error al asignar pista a la sala.");
+        }
+        return affectedRows > 0;
+    }
+
+    public List<Clue> findByRoomId(Long roomId) {
+        String sql = "SELECT id, name, price, room_id FROM clue WHERE room_id = ?";
+        List<Clue> clues =  new ArrayList<>();
+
+        try (Connection conn = DatabaseConfig.getConnection();
+        PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setLong(1, roomId);
+            ResultSet rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                clues.add(mapper.fromResultSet(rs));
+            }
+        } catch (SQLException e) {
+            throw new PersistenceException("Error al buscar pistas por ID de sala " + roomId + ".");
         }
         return clues;
     }

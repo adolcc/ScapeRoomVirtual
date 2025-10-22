@@ -1,12 +1,9 @@
 package ui.menu;
 
-import model.Clue;
-import model.Decoration;
-import model.EscapeRoom;
-import model.Room;
+import model.*;
+
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 
 public class ViewHandlerMenu extends BaseHandlerMenu {
 
@@ -21,7 +18,8 @@ public class ViewHandlerMenu extends BaseHandlerMenu {
             System.out.println("3. 🔍 Listado de Pistas");
             System.out.println("4. 🖼️ Listado de Objetos de Decoración");
             System.out.println("5. 📊 Resumen General del Inventario");
-            System.out.println("0. ↩️  Volver al menú principal");
+            System.out.println("6. 💰 Activos por Sala");
+            System.out.println("0. ↩️ Volver al menú principal");
             System.out.println("════════════════════════════════════════");
 
             int option = readIntInput("Selecciona una opción: ");
@@ -47,11 +45,14 @@ public class ViewHandlerMenu extends BaseHandlerMenu {
             case 5:
                 showInventorySummary();
                 break;
+            case 6:
+                showRoomAssets();
+                break;
             case 0:
                 exit = true;
                 break;
             default:
-                System.out.println("❌ Opción no válida. Elija una opción entre 0 y 5.");
+                System.out.println("❌ Opción no válida. Elija una opción entre 0 y 6.");
                 pressEnterToContinue();
         }
     }
@@ -91,12 +92,11 @@ public class ViewHandlerMenu extends BaseHandlerMenu {
             List<Room> rooms = roomService.getRooms();
 
             System.out.println("\n🚪 LISTADO DE SALAS");
-            System.out.println("┌─────┬────────────────────────────┬────────┬───────────┬────────────┬────────────┬─────────────────┐");
-            System.out.println("│ ID  │ NOMBRE                     │ NIVEL  │   PRECIO  │  # PISTAS  │# DECORACIÓN│ ESCAPE ROOM     │");
-            System.out.println("├─────┼────────────────────────────┼────────┼───────────┼────────────┼────────────┼─────────────────┤");
-
+            System.out.println("┌─────┬────────────────────────────┬────────────────────┬───────────┬────────────┬────────────┬─────────────────┐");
+            System.out.println("│ ID  │ NOMBRE                     │    DIFICULTAD      │   PRECIO  │  # PISTAS  │# DECORACIÓN│ ESCAPE ROOM     │");
+            System.out.println("├─────┼────────────────────────────┼────────────────────┼───────────┼────────────┼────────────┼─────────────────┤");
             if (rooms.isEmpty()) {
-                System.out.println("│" + centerText("No hay salas registradas", 97) + "│");
+                System.out.println("│" + centerText("No hay salas registradas", 103) + "│");
             } else {
                 for (Room room : rooms) {
                     int clueCount = room.getClues() != null ? room.getClues().size() : 0;
@@ -114,17 +114,17 @@ public class ViewHandlerMenu extends BaseHandlerMenu {
                         }
                     }
 
-                    System.out.printf("│ %-3d │ %-26s │ %-6d │ %-9.2f │ %-10d │ %-10d │ %-15s │%n",
+                    System.out.printf("│ %-3d │ %-26s │ %-16s │ %-9.2f │ %-10d │ %-10d │ %-15s │%n",
                             room.getId() != null ? room.getId() : 0,
-                            truncate(room.getName() != null ? room.getName() : "N/A", 26),
-                            room.getLevel(),
+                            truncate(room.getName(), 26),
+                            truncateWithEmoji(room.getLevel().getDisplayName(), 19),
                             room.getPrice(),
                             clueCount,
                             decorationCount,
                             escapeRoomName);
                 }
             }
-            System.out.println("└─────┴────────────────────────────┴────────┴───────────┴────────────┴────────────┴─────────────────┘");
+            System.out.println("└─────┴────────────────────────────┴────────────────────┴───────────┴────────────┴────────────┴─────────────────┘");
             System.out.println("Total: " + rooms.size() + " salas.");
 
         } catch (Exception e) {
@@ -140,7 +140,7 @@ public class ViewHandlerMenu extends BaseHandlerMenu {
 
             System.out.println("\n🔍 LISTADO DE PISTAS");
             System.out.println("┌─────┬────────────────────────────┬───────────┬─────────────────┐");
-            System.out.println("│ ID  │ TEMA                       │   PRECIO  │ SALA ASIGNADA   │");
+            System.out.println("│ ID  │ NOMBRE                     │   PRECIO  │ SALA ASIGNADA   │");
             System.out.println("├─────┼────────────────────────────┼───────────┼─────────────────┤");
 
             if (clues.isEmpty()) {
@@ -158,7 +158,7 @@ public class ViewHandlerMenu extends BaseHandlerMenu {
 
                     System.out.printf("│ %-3d │ %-26s │ %-9.2f │ %-15s │%n",
                             clue.getId() != null ? clue.getId() : 0,
-                            truncate(clue.getName() != null ? clue.getName() : "N/A", 26),
+                            truncate(clue.getName(),26),
                             clue.getPrice(),
                             roomName);
                 }
@@ -214,55 +214,110 @@ public class ViewHandlerMenu extends BaseHandlerMenu {
 
     private void showInventorySummary() {
         try {
-            List<EscapeRoom> escapeRooms = escapeRoomService.getEscapeRooms();
-            List<Room> rooms = roomService.getRooms();
-            List<Clue> clues = clueService.getClues();
-            List<Decoration> decorations = decorationService.getDecorations();
+            String healthStatus = inventoryService.getInventoryHealthStatus();
+            InventoryStats stats = inventoryService.getInventoryStats();
+
+            double averagePrice = inventoryService.getAverageRoomPrice();
+            Room mostExpensive = inventoryService.getMostExpensiveRoom();
+            Room cheapest = inventoryService.getCheapestRoom();
 
             System.out.println("\n📊 RESUMEN GENERAL DEL INVENTARIO");
-            System.out.println("╔════════════════════════════════════════════════╗");
-            System.out.println("║                ESTADÍSTICAS GLOBALES           ║");
-            System.out.println("╠════════════════════════════════════════════════╣");
-            System.out.printf("║ 🏰  Escape Rooms: %-28d ║%n", escapeRooms.size());
-            System.out.printf("║ 🚪  Salas: %-35d ║%n", rooms.size());
-            System.out.printf("║ 🔍  Pistas: %-34d ║%n", 0); // Temporal
-            System.out.printf("║ 🖼️  Decoraciones: %-29d ║%n", decorations.size());
-            System.out.println("║                                                ║");
-
-            // TODO: Calcular valor total cuando esté implementado
-            double totalValue = calculateTotalValue(rooms, clues, decorations);
-            System.out.printf("║ 💰  Valor total del inventario: %-15.2f € ║%n", totalValue);
-            System.out.println("╚════════════════════════════════════════════════╝");
-
+            System.out.println("╔══════════════════════════════════════════════════════╗");
+            System.out.println("║                ESTADÍSTICAS GLOBALES                 ║");
+            System.out.println("╠══════════════════════════════════════════════════════╣");
+            System.out.printf("║ 🏰  Escape Rooms: %-34d ║%n", escapeRoomService.getEscapeRooms().size());
+            System.out.printf("║ 🚪  Salas: %-41d ║%n", stats.getRoomCount());
+            System.out.printf("║ 🔍  Pistas: %-40d ║%n", stats.getClueCount());
+            System.out.printf("║ 🖼️  Decoraciones: %-35d ║%n", stats.getDecorationCount());
+            System.out.println("║                                                      ║");
+            System.out.printf("║ 💰  Valor total del inventario: %-20.2f € ║%n", stats.getTotalValue());
+            System.out.printf("║ 📈  Precio promedio de salas: %-19.2f € ║%n", averagePrice);
+            System.out.printf("║ 🏷️  Sala más cara: %-31s ║%n",
+                    mostExpensive != null ? truncate(mostExpensive.getName(), 30) : "N/A");
+            System.out.printf("║ 💸  Sala más económica: %-26s ║%n",
+                    cheapest != null ? truncate(cheapest.getName(), 25) : "N/A");
+            System.out.println("║                                                      ║");
+            System.out.printf("║ 🩺  Estado del inventario: %-25s ║%n", healthStatus);
+            System.out.println("╚══════════════════════════════════════════════════════╝");
         } catch (Exception e) {
             System.out.println("❌ Error al generar el resumen: " + e.getMessage());
         }
         pressEnterToContinue();
     }
 
-    private double calculateTotalValue(List<Room> rooms, List<Clue> clues, List<Decoration> decorations) {
-        double total = 0.0;
+    public void showRoomAssets() {
+        try {
+            List<RoomAssets> roomAssets = inventoryService.getRoomAssetsDetails();
+            System.out.println("\n💰 ACTIVOS POR SALA");
+            System.out.println("┌────────────────────────────┬─────────────────┐");
+            System.out.println("│ NOMBRE DE LA SALA          │ VALOR TOTAL (€) │");
+            System.out.println("├────────────────────────────┼─────────────────┤");
 
-        for (Room room : rooms) {
-            total += room.getPrice();
-        }
+            if (roomAssets.isEmpty()) {
+                System.out.println("│" + centerText("No hay salas con activos", 53) + "│");
+            } else {
+                for (RoomAssets asset : roomAssets) {
+                    System.out.printf("│ %-26s │ %15.2f │%n",
+                            truncate(asset.getRoomName(), 26),
+                            asset.getTotalAssets());
+                }
+            }
+            System.out.println("└────────────────────────────┴─────────────────┘");
 
-        for (Clue clue : clues) {
-            total += clue.getPrice();
-        }
+            double total = roomAssets.stream().mapToDouble(RoomAssets::getTotalAssets).sum();
+            System.out.printf("Total general: %.2f €%n", total);
 
-        for (Decoration decoration : decorations) {
-            total += decoration.getPrice();
+        } catch (Exception e) {
+            System.out.println("❌ Error al cargar los activos por sala: " + e.getMessage());
         }
-        return total;
+        pressEnterToContinue();
     }
 
     private String truncate(String text, int maxLength) {
         if (text == null) return "";
-        if (text.length() <= maxLength) {
+        String plainText = text.replaceAll("[^\\p{ASCII}]", "X");
+        if (plainText.length() <= maxLength) {
             return text;
         }
         return text.substring(0, maxLength - 3) + "...";
+    }
+
+    private String truncateWithEmoji(String text, int maxLength) {
+        if (text == null) return "";
+
+        int visualLength = 0;
+        StringBuilder result = new StringBuilder();
+
+        for (int i = 0; i < text.length(); i++) {
+            char c = text.charAt(i);
+
+            if (Character.isHighSurrogate(c)) {
+                visualLength += 2;
+            } else {
+                visualLength += 1;
+            }
+
+            if (visualLength <= maxLength) {
+                result.append(c);
+            } else {
+                break;
+            }
+        }
+
+        String truncated = result.toString();
+        if (truncated.length() < text.length()) {
+            while (truncated.length() > 0 && Character.isHighSurrogate(truncated.charAt(truncated.length() - 1))) {
+                truncated = truncated.substring(0, truncated.length() - 1);
+            }
+            return truncated + "...";
+        }
+
+        int padding = maxLength - visualLength;
+        if (padding > 0) {
+            return truncated + " ".repeat(padding);
+        }
+
+        return truncated;
     }
 
     private String centerText(String text, int width) {
@@ -276,6 +331,4 @@ public class ViewHandlerMenu extends BaseHandlerMenu {
 
         return " ".repeat(leftPadding) + text + " ".repeat(rightPadding);
     }
-
-
 }

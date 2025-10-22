@@ -1,6 +1,9 @@
 package model;
 
-import exception.*;
+import constant.DifficultyLevel;
+import constant.FieldName;
+import exception.factory.ExceptionFactory;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -8,19 +11,19 @@ import java.util.List;
 public class Room {
 
     private String name;
-    private int level;
+    private DifficultyLevel level;
     private List<Clue> clues;
     private List<Decoration> decorations;
     private Long id;
     private Long escapeRoomId;
     private double price;
 
-    public Room(String name, int level, double price) {
+    public Room(String name, DifficultyLevel level, double price) {
         if (name == null || name.trim().isEmpty()) {
-            throw new EmptyRoomNameException();
+            throw ExceptionFactory.requiredField(FieldName.NAME);
         }
         if (price <=0){
-            throw new InvalidPriceException();
+            throw ExceptionFactory.invalidPrice();
         }
         this.name = name.trim();
         this.level = level;
@@ -30,31 +33,30 @@ public class Room {
     }
 
     public String getName() {
-        return name;
+        return this.name;
     }
 
-    public int getLevel() {
-        return level;
+    public DifficultyLevel getLevel() {
+        return this.level;
     }
 
     public List<Clue> getClues() {
-        return clues;
+        return this.clues;
     }
 
     public List<Decoration> getDecorations() {
-        return decorations;
+        return this.decorations;
     }
 
-    public void addClue(Clue clue) {
-        clues.add(clue);
+    public void setClues(List<Clue> clues) {
+        this.clues = clues;
     }
 
-    public void addDecoration(Decoration decoration) {
-        decorations.add(decoration);
+    public void setDecorations(List<Decoration> decorations) {
+        this.decorations = decorations;
     }
-
     public Long getId() {
-        return id;
+        return this.id;
     }
 
     public void setId(Long id) {
@@ -62,7 +64,7 @@ public class Room {
     }
 
     public Long getEscapeRoomId() {
-        return escapeRoomId;
+        return this.escapeRoomId;
     }
 
     public void setEscapeRoomId(Long escapeRoomId) {
@@ -71,6 +73,9 @@ public class Room {
     
     public void setPrice(double price) {
         this.price = price;
+    }
+    public void setLevel(DifficultyLevel level) {
+        this.level = level;
     }
     @Override
     public boolean equals(Object o) {
@@ -94,8 +99,7 @@ public class Room {
     public double getPrice() {
         return this.price;
     }
-
-    public int getDifficultyLevel() {
-        return this.level;
+    public int getLevelValue() {
+        return level != null ? level.getLevelValue() : 0;
     }
 }

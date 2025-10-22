@@ -1,6 +1,7 @@
 package service;
 
-import exception.DuplicateClueNameException;
+import constant.EntityType;
+import exception.factory.ExceptionFactory;
 import model.Clue;
 import repository.dao.ClueDAO;
 import repository.dao.GenericDAO;
@@ -18,7 +19,7 @@ public class ClueService {
 
     public void checkNotDuplicateName(String name) {
         if (clueDAO.findByName(name).isPresent()) {
-            throw new DuplicateClueNameException();
+            throw ExceptionFactory.duplicateValue(EntityType.CLUE, name);
         }
     }
 

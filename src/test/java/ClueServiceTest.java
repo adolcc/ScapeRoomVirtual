@@ -1,6 +1,5 @@
-import exception.DuplicateClueNameException;
-import exception.EmptyClueNameException;
-import exception.NullClueNameException;
+import exception.core.DuplicateResourceException;
+import exception.core.ValidationException;
 import model.Clue;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -20,33 +19,32 @@ public class ClueServiceTest {
 
     @Test
     void givenValidName_whenCreatingClue_thenSuccess() {
-        clueService.createClue("Mira detrás del cuadro", 0);
+        Clue clue = clueService.createClue("Mira detrás del placard.", 15);
 
-        assertTrue(clueService.getClues().contains(new Clue("Mira detrás del cuadro", 0)));
+        assertTrue(clueService.getClues().contains(clue));
     }
 
     @Test
     void givenNullName_whenCreatingClue_thenThrowException() {
-        Exception e = assertThrows(NullClueNameException.class,
+        Exception e = assertThrows(ValidationException.class,
                 () -> clueService.createClue(null, 0));
 
-        assertEquals("El nombre de la pista no puede ser nulo.", e.getMessage());
+        assertEquals("El campo 'nombre' es obligatorio.", e.getMessage());
     }
 
     @Test
     void givenEmptyName_whenCreatingClue_thenThrowException(){
-        Exception e = assertThrows(EmptyClueNameException.class,
+        Exception e = assertThrows(ValidationException.class,
                 () -> clueService.createClue(" ", 0));
 
-        assertEquals("El nombre de la pista no puede estar vacío.", e.getMessage());
+        assertEquals("El campo 'nombre' es obligatorio.", e.getMessage());
     }
 
     @Test
     void givenAlreadyExistingName_whenCreatingClue_thenThrowException() {
-        clueService.createClue("Mira detrás del cuadro", 500);
-        Exception e = assertThrows(DuplicateClueNameException.class,
+        Exception e = assertThrows(DuplicateResourceException.class,
                 () -> clueService.createClue("Mira detrás del cuadro", 500));
 
-        assertEquals("El nombre elegido corresponde a una pista existente.", e.getMessage());
+        assertEquals("Ya existe Pista 'Mira detrás del cuadro'.", e.getMessage());
     }
 }

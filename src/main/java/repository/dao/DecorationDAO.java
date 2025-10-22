@@ -1,7 +1,8 @@
 package repository.dao;
 
-import exception.EmptyNameException;
-import exception.PersistenceException;
+import constant.FieldName;
+import exception.core.PersistenceException;
+import exception.factory.ExceptionFactory;
 import model.Decoration;
 import repository.database.DatabaseConfig;
 import repository.mapper.DecorationMapper;
@@ -69,7 +70,7 @@ public class DecorationDAO implements GenericDAO<Decoration, Long> {
     @Override
     public Optional<Decoration> findByName(String name) {
         if (name == null || name.trim().isEmpty()) {
-            throw new EmptyNameException();
+            throw ExceptionFactory.requiredField(FieldName.NAME);
         }
 
         String sql = "SELECT id, name, material, price, room_id FROM decoration WHERE" +
@@ -107,6 +108,41 @@ public class DecorationDAO implements GenericDAO<Decoration, Long> {
             }
         } catch (SQLException e) {
             throw new PersistenceException("Error al buscar todas las decoraciones.");
+        }
+        return decorations;
+    }
+
+    public boolean roomAssignment(Long decorationId, Long roomId) {
+        String sql = "UPDATE decoration SET room_id = ? WHERE id = ?";
+        int affectedRows;
+
+        try (Connection conn = DatabaseConfig.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setLong(1, roomId);
+            stmt.setLong(2, decorationId);
+
+            affectedRows = stmt.executeUpdate();
+        } catch (SQLException e) {
+            throw new PersistenceException("Error al asignar decoración a la sala.");
+        }
+        return affectedRows > 0;
+    }
+
+    public List<Decoration> findByRoomId(Long roomId) {
+        String sql = "SELECT id, name, material, price, room_id FROM decoration WHERE room_id = ?";
+        List<Decoration> decorations =  new ArrayList<>();
+
+        try (Connection conn = DatabaseConfig.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setLong(1, roomId);
+            ResultSet rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                decorations.add(mapper.fromResultSet(rs));
+            }
+        } catch (SQLException e) {
+            throw new PersistenceException("Error al buscar decoraciones por ID de sala " + roomId + ".");
         }
         return decorations;
     }

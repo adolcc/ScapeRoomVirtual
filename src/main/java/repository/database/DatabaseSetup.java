@@ -1,5 +1,7 @@
 package repository.database;
 
+import exception.core.PersistenceException;
+
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.sql.Connection;
@@ -7,6 +9,14 @@ import java.sql.SQLException;
 import java.sql.Statement;
 
 public class DatabaseSetup {
+
+    public DatabaseSetup() {
+        try {
+            initializeDatabase();
+    } catch (SQLException e) {
+            throw new PersistenceException("Advertencia: no se pudo inicializar la BD.");
+        }
+    }
 
     public Connection getConnection() throws SQLException {
         return DatabaseConfig.getConnection();
@@ -20,6 +30,7 @@ public class DatabaseSetup {
             stmt.execute("DELETE FROM clue");
             stmt.execute("DELETE FROM room");
             stmt.execute("DELETE FROM escape_room");
+            stmt.execute("DELETE FROM player");
             stmt.execute("SET FOREIGN_KEY_CHECKS = 1");
         }
     }
@@ -86,17 +97,13 @@ public class DatabaseSetup {
                     "price DECIMAL(10,2), " +
                     "FOREIGN KEY (room_id) REFERENCES room(id) ON DELETE CASCADE)");
 
+            stmt.execute("CREATE TABLE IF NOT EXISTS player (" +
+                    "id BIGINT AUTO_INCREMENT PRIMARY KEY, " +
+                    "name VARCHAR(255) NOT NULL UNIQUE, " +
+                    "newsletter_subscribed BOOLEAN DEFAULT FALSE)");
+
         } catch (SQLException e) {
             throw new RuntimeException("Error al intentar hacer una estructura de tabla mínima.");
         }
     }
-
-    public boolean testConnection() {
-        try (Connection conn = getConnection()) {
-            return conn.isValid(2);
-        } catch (SQLException e) {
-            return false;
-        }
-    }
-
 }

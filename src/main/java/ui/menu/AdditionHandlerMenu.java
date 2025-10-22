@@ -1,6 +1,10 @@
 package ui.menu;
 
-import exception.*;
+import constant.EntityType;
+import constant.FieldName;
+import exception.core.NotFoundException;
+import exception.core.ValidationException;
+import exception.factory.ExceptionFactory;
 import model.Clue;
 import model.Decoration;
 import model.EscapeRoom;
@@ -58,8 +62,8 @@ public class AdditionHandlerMenu extends BaseHandlerMenu {
             escapeRoomService.addRoomToEscapeRoom(escapeRoomName, room);
             System.out.println("✅ Sala " + roomName + " añadida al Escape Room " + escapeRoomName + ".");
 
-        } catch (EscapeRoomNotFoundException | RoomNotFoundException | EmptyNameException e) {
-            System.out.println(e.getMessage());
+        } catch (NotFoundException | ValidationException e) {
+            System.out.println("❌ Error: " + e.getMessage());
         } catch (Exception e) {
             System.out.println("❌ Error inesperado: " + e.getMessage());
         }
@@ -78,8 +82,8 @@ public class AdditionHandlerMenu extends BaseHandlerMenu {
             roomService.addClueToRoom(roomName, clueName);
             System.out.println("✅ Pista " + clueName + " añadida a la Sala " + roomName + ".");
 
-        } catch (RoomNotFoundException | ClueNotFoundException | EmptyNameException e) {
-            System.out.println(e.getMessage());
+        } catch (NotFoundException | ValidationException e) {
+            System.out.println("❌ Error: " + e.getMessage());
         }  catch (Exception e) {
             System.out.println("❌ Error inesperado: " + e.getMessage());
         }
@@ -97,8 +101,8 @@ public class AdditionHandlerMenu extends BaseHandlerMenu {
             roomService.addDecorationToRoom(roomName, decorationName);
             System.out.println("✅ Decoración " + decorationName + " añadida a la sala " + roomName + ".");
 
-        } catch (RoomNotFoundException | DecorationNotFoundException | EmptyNameException e) {
-            System.out.println(e.getMessage());
+        } catch (NotFoundException | ValidationException e) {
+            System.out.println("❌ Error: " + e.getMessage());
         } catch(Exception e){
             System.out.println("❌ Error inesperado: " + e.getMessage());
         }
@@ -107,44 +111,44 @@ public class AdditionHandlerMenu extends BaseHandlerMenu {
 
     private EscapeRoom validateEscapeRoom(String escapeRoomName) {
         if (escapeRoomName == null || escapeRoomName.trim().isEmpty()) {
-            throw new EmptyNameException();
+            throw ExceptionFactory.requiredField(FieldName.NAME);
         }
         Optional<EscapeRoom> escapeRoomOpt = escapeRoomService.getEscapeRoom(escapeRoomName.trim());
         if (escapeRoomOpt.isEmpty()) {
-            throw new EscapeRoomNotFoundException();
+            throw ExceptionFactory.notFound(EntityType.ESCAPE_ROOM, escapeRoomName);
         }
         return escapeRoomOpt.get();
     }
 
     private Room validateRoom(String roomName) {
         if (roomName == null || roomName.trim().isEmpty()) {
-            throw new EmptyNameException();
+            throw ExceptionFactory.requiredField(FieldName.NAME);
         }
         Optional<Room> roomOpt = roomService.getRoom(roomName.trim());
         if (roomOpt.isEmpty()) {
-            throw new RoomNotFoundException("❌ No se encontró la sala: " + roomName);
+            throw ExceptionFactory.notFound(EntityType.ROOM, roomName);
         }
         return roomOpt.get();
     }
 
     private Clue validateClue(String clueName) {
         if (clueName == null || clueName.trim().isEmpty()) {
-            throw new EmptyNameException();
+            throw ExceptionFactory.requiredField(FieldName.NAME);
         }
         Optional<Clue> clueOpt = clueService.getClue(clueName.trim());
         if (clueOpt.isEmpty()) {
-            throw new ClueNotFoundException("❌ No se encontró la pista: " + clueName);
+            throw ExceptionFactory.notFound(EntityType.CLUE, clueName);
         }
         return clueOpt.get();
     }
 
     private Decoration validateDecoration(String decorationName) {
         if (decorationName == null || decorationName.trim().isEmpty()) {
-            throw new EmptyNameException();
+            throw ExceptionFactory.requiredField(FieldName.NAME);
         }
         Optional<Decoration> decoOpt = decorationService.getDecoration(decorationName.trim());
         if (decoOpt.isEmpty()) {
-            throw new DecorationNotFoundException("❌ No se encontró la decoración: " + decorationName);
+            throw ExceptionFactory.notFound(EntityType.DECORATION, decorationName);
         }
         return decoOpt.get();
     }

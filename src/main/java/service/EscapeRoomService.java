@@ -1,10 +1,13 @@
 package service;
 
-import exception.*;
+import constant.ElementType;
+import constant.EntityType;
+import exception.factory.ExceptionFactory;
 import model.EscapeRoom;
 import model.Room;
 import repository.dao.EscapeRoomDAO;
 import repository.dao.GenericDAO;
+import repository.dao.RoomDAO;
 
 import java.util.List;
 import java.util.Optional;
@@ -12,14 +15,18 @@ import java.util.Optional;
 public class EscapeRoomService {
 
     private final GenericDAO<EscapeRoom, Long> escapeRoomDAO;
+    private final GenericDAO<Room, Long> roomDAO;
+    private final RoomService roomService;
 
     public EscapeRoomService() {
         this.escapeRoomDAO = new EscapeRoomDAO();
+        this.roomDAO = new RoomDAO();
+        this.roomService = new RoomService();
     }
 
     private void checkNotDuplicateName(String name) {
         if (escapeRoomDAO.findByName(name).isPresent()) {
-            throw new DuplicateEscapeRoomNameException();
+            throw ExceptionFactory.duplicateValue(EntityType.ESCAPE_ROOM, name);
         }
     }
 
@@ -31,32 +38,49 @@ public class EscapeRoomService {
 
     public void addRoomToEscapeRoom(String escapeRoomName, Room room) {
         EscapeRoom escapeRoom = escapeRoomDAO.findByName(escapeRoomName)
-                .orElseThrow(EscapeRoomNotFoundException::new);
+                .orElseThrow(() -> ExceptionFactory.notFound(EntityType.ESCAPE_ROOM, escapeRoomName));
+        Room roomToAssign = roomService.getRoom(room.getId()).orElseThrow(() -> ExceptionFactory.notFound(EntityType.ROOM, room.getName()));
 
         if (escapeRoom.getRooms().contains(room)) {
-            throw new DuplicateRoomNameException();
+            throw ExceptionFactory.duplicateValue(EntityType.ROOM, roomToAssign.getName());
         }
-        if (room.getClues().size() < 2) {
-            throw new InsufficientCluesException();
+        if (roomToAssign.getClues().size() < 2) {
+            throw ExceptionFactory.insufficientElements(ElementType.CLUES, 2);
         }
-        if (room.getDecorations().size() < 2) {
-            throw new InsufficientDecorationsException();
+        if (roomToAssign.getDecorations().size() < 2) {
+            throw ExceptionFactory.insufficientElements(ElementType.DECORATIONS, 2);
         }
 
-        escapeRoom.addRoom(room);
-        escapeRoomDAO.save(escapeRoom);
+        RoomDAO roomDAO1 = (RoomDAO) roomDAO;
+        boolean assigned = roomDAO1.escapeRoomAssignment(room.getId(), escapeRoom.getId());
+
+        if (assigned) {
+            loadRooms(escapeRoom);
+        }
+    }
+
+    private void loadRooms(EscapeRoom escapeRoom) {
+        RoomDAO roomDAO1 = (RoomDAO) roomDAO;
+        List<Room> rooms = roomDAO1.findByEscapeRoomId(escapeRoom.getId());
+        escapeRoom.setRooms(rooms);
     }
 
     public List<EscapeRoom> getEscapeRooms() {
-        return escapeRoomDAO.findAll();
+        List<EscapeRoom> escapeRooms = escapeRoomDAO.findAll();
+        escapeRooms.forEach(this::loadRooms);
+        return escapeRooms;
     }
 
     public Optional<EscapeRoom> getEscapeRoom(String name) {
-        return escapeRoomDAO.findByName(name);
+        Optional<EscapeRoom> escapeRoomOpt = escapeRoomDAO.findByName(name);
+        escapeRoomOpt.ifPresent(this::loadRooms);
+        return escapeRoomOpt;
     }
 
     public Optional<EscapeRoom> getEscapeRoom(Long id) {
-        return escapeRoomDAO.findById(id);
+        Optional<EscapeRoom> escapeRoomOpt = escapeRoomDAO.findById(id);
+        escapeRoomOpt.ifPresent(this::loadRooms);
+        return escapeRoomOpt;
     }
 
     public boolean deleteEscapeRoom(Long id) {

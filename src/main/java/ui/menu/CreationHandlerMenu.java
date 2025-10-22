@@ -1,6 +1,8 @@
 package ui.menu;
 
-import exception.*;
+import exception.core.DuplicateResourceException;
+import exception.core.ValidationException;
+import constant.DifficultyLevel;
 
 public class CreationHandlerMenu extends BaseHandlerMenu {
 
@@ -51,10 +53,8 @@ public class CreationHandlerMenu extends BaseHandlerMenu {
             String name = readStringInput("Nombre del Escape Room: ");
             escapeRoomService.createEscapeRoom(name);
             System.out.println("✅ Escape Room '" + name + "' creado exitosamente.");
-        } catch (DuplicateEscapeRoomNameException e) {
-            System.out.println("❌ Error: Ya existe un Escape Room con ese nombre.");
-        } catch (EmptyEscapeRoomNameException | NullEscapeRoomNameException e) {
-            System.out.println("❌ Error: El nombre del Escape Room no puede estar vacío.");
+        } catch (DuplicateResourceException | ValidationException e) {
+            System.out.println("❌ Error: " + e.getMessage());
         } catch (Exception e) {
             System.out.println("❌ Error inesperado al crear el Escape Room: " + e.getMessage());
         }
@@ -65,17 +65,18 @@ public class CreationHandlerMenu extends BaseHandlerMenu {
         try {
             System.out.println("\n🎯 Creando nueva sala . . .");
             String name = readStringInput("Nombre de la sala: ");
-            int level = readIntInput("Nivel de la Sala (1 a 5): ");
+            System.out.println("Niveles de dificultad disponibles: ");
+            for (DifficultyLevel level : DifficultyLevel.values()) {
+                System.out.println(level.getLevelValue() + ". " + level.getDisplayName());
+            }
+            int levelInput = readIntInput("Nivel de la Sala (1 a 5): ");
+            DifficultyLevel level = DifficultyLevel.fromInt(levelInput);
             double ticketPrice = readDoubleInput("Precio de la sala: ");
             roomService.createRoom(name, level, ticketPrice);
             System.out.println("✅ Sala '" + name + "' creada exitosamente.");
-        } catch (DuplicateRoomNameException e) {
-            System.out.println("❌ Error: Ya existe una sala con ese nombre.");
-        } catch (EmptyRoomNameException | NullEscapeRoomNameException e) {
-            System.out.println("❌ Error: El nombre de la sala no puede estar vacío.");
-        } catch (InvalidPriceException e) {
-            System.out.println("❌ Error: El precio debe ser mayor a 0.");
-        } catch (Exception e) {
+        } catch (DuplicateResourceException | ValidationException e) {
+            System.out.println("❌ Error: " + e.getMessage());
+       } catch (Exception e) {
             System.out.println("❌ Error inesperado al crear la sala: " + e.getMessage());
         }
         pressEnterToContinue();
@@ -85,14 +86,12 @@ public class CreationHandlerMenu extends BaseHandlerMenu {
         try {
             System.out.println("\n🎯 Creando nueva pista . . .");
             String name = readStringInput("Tema de la pista: ");
-            double price = readIntInput("Precio de la pista: ");
+            double price = readDoubleInput("Precio de la pista: ");
             clueService.createClue(name, price);
             System.out.println("✅ Pista '" + name + "' creada exitosamente.");
-        } catch (DuplicateClueNameException e) {
+        } catch (DuplicateResourceException e) {
             System.out.println("❌ Error: Ya existe una pista con ese nombre.");
-        } catch (EmptyClueNameException | NullClueNameException e) {
-            System.out.println("❌ Error: El nombre de la pista no puede estar vacío.");
-        } catch (IllegalArgumentException e) {
+        } catch (ValidationException | IllegalArgumentException e) {
             System.out.println("❌ Error: " + e.getMessage());
         } catch (Exception e) {
             System.out.println("❌ Error inesperado al crear la pista: " + e.getMessage());
@@ -108,12 +107,8 @@ public class CreationHandlerMenu extends BaseHandlerMenu {
             double price = readDoubleInput("Precio: ");
             decorationService.createDecoration(name, material, price);
             System.out.println("✅ Decoración '" + name + "' creada exitosamente.");
-        } catch (DuplicateNameException e) {
-            System.out.println("❌ Error: Ya existe un objeto de decoración con ese nombre.");
-        } catch (EmptyNameException | NullNameException e) {
-            System.out.println("❌ Error: El nombre y material no pueden estar vacíos.");
-        } catch (InvalidPriceException e) {
-            System.out.println("❌ Error: El precio debe ser mayor a 0.");
+        } catch (DuplicateResourceException | ValidationException e) {
+            System.out.println("❌ Error: " + e.getMessage());
         } catch (Exception e) {
             System.out.println("❌ Error inesperado al crear la decoración: " + e.getMessage());
         }
