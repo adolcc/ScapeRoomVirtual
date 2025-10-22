@@ -1,12 +1,16 @@
 package model;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
-public class Player {
+public class Player implements Observer {
     private Long id;
     private String name;
     private String email;
     private boolean newsletterSubscribed;
+    private List<String> receivedNotifications = new ArrayList<>();
+
 
     public Player(String name, String email) {
         validateEmail(email);
@@ -28,6 +32,13 @@ public class Player {
 
     public String getName() {
         return this.name;
+    }
+
+    @Override
+    public void update(String message, String source) {
+        System.out.println("Jugador " + name + " (" + email + ") recibió notificación de " +
+                source + ": " + message);
+        receivedNotifications.add(message);
     }
 
     public String getEmail() {

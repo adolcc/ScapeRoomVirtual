@@ -1,14 +1,15 @@
 package model;
 
-public enum NotificationType {
+public enum NotificationMessage {
     EMAIL("Correo electrónico"),
     GIFT("Regalo"),
     ACHIEVEMENT("Logro"),
-    TICKET("Tiquet");
+    TICKET("Tiquet"),
+    NEWSLETTER("Boletin informativo");
 
     private final String displayName;
 
-    NotificationType(String displayName) {
+    NotificationMessage(String displayName) {
         this.displayName = displayName;
     }
 
