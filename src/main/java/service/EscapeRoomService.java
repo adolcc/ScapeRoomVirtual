@@ -26,7 +26,7 @@ public class EscapeRoomService {
 
     private void checkNotDuplicateName(String name) {
         if (escapeRoomDAO.findByName(name).isPresent()) {
-            throw ExceptionFactory.duplicateValue(EntityType.ROOM, name);
+            throw ExceptionFactory.duplicateValue(EntityType.ESCAPE_ROOM, name);
         }
     }
 

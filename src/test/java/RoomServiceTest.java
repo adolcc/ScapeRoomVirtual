@@ -1,3 +1,6 @@
+import constant.DifficultyLevel;
+import exception.core.DuplicateResourceException;
+import exception.core.ValidationException;
 import model.*;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -31,9 +34,9 @@ public class RoomServiceTest {
     }
 
     @Test
-    void givenValidRoom_whenCreatingRoom_thenSucces() {
+    void givenValidRoom_whenCreatingRoom_thenSuccess() {
         String name = "Room Egipcio";
-        int level = 3;
+        DifficultyLevel level = DifficultyLevel.fromInt(3);
         double price = 100.0;
 
         Room room = roomService.createRoom(name, level, price);
@@ -48,43 +51,43 @@ public class RoomServiceTest {
     @Test
     void givenNullName_whenCreatingRoom_thenThrowException() {
         String name = null;
-        int level = 3;
+        DifficultyLevel level = DifficultyLevel.fromInt(3);
         double price = 100.0;
 
-        Exception e = assertThrows(NullEscapeRoomNameException.class, () -> {
+        Exception e = assertThrows(ValidationException.class, () -> {
             roomService.createRoom(name, level, price);
         });
-        assertEquals("El nombre de la sala no puede ser nulo.", e.getMessage());
+        assertEquals("El campo 'nombre' es obligatorio.", e.getMessage());
     }
     @Test
     void givenEmptyRoomName_whenCreating_thenThrowException() {
         String name = "   ";
-        int level = 3;
+        DifficultyLevel level = DifficultyLevel.fromInt(3);;
         double price = 100.0;
 
-        Exception e =assertThrows(EmptyRoomNameException.class, () -> {
+        Exception e =assertThrows(ValidationException.class, () -> {
             roomService.createRoom(name, level, price);
         });
-        assertEquals("El nombre de la sala no puede estar vacío.", e.getMessage());
+        assertEquals("El campo 'nombre' es obligatorio.", e.getMessage());
     }
     @Test
     void givenDuplicateRoomName_whenCreating_thenThrowException() {
         String name = "Room Egipcio";
-        int level1 = 3;
-        int level2 = 5;
+        DifficultyLevel level1 = DifficultyLevel.fromInt(3);
+        DifficultyLevel level2 = DifficultyLevel.fromInt(5);
         double price = 100.0;
 
         roomService.createRoom(name, level1, price);
-        Exception e = assertThrows(DuplicateRoomNameException.class, () -> {
+        Exception e = assertThrows(DuplicateResourceException.class, () -> {
             roomService.createRoom(name, level2, price);
         });
-        assertEquals("Ya existe una sala con ese nombre.", e.getMessage());
+        assertEquals("Ya existe Sala 'Room Egipcio'.", e.getMessage());
     }
     @Test
     void givenRoomNameWithSpaces_whenCreating_thenNameIsTrimmed() {
         String nameWithSpaces = "  Room Egipcio  ";
         String expectedName = "Room Egipcio";
-        int level = 3;
+        DifficultyLevel level = DifficultyLevel.fromInt(3);
         double price = 100.0;
 
         Room room = roomService.createRoom(nameWithSpaces, level, price);
@@ -92,9 +95,9 @@ public class RoomServiceTest {
     }
     @Test
     void givenMultipleRooms_whenGettingRooms_thenAllRoomsAreReturned() {
-        roomService.createRoom("Room 1", 1, 50.0);
-        roomService.createRoom("Room 2", 2, 75.0);
-        roomService.createRoom("Room 3", 3, 100.0);
+        roomService.createRoom("Room 1", DifficultyLevel.fromInt(1), 50.0);
+        roomService.createRoom("Room 2", DifficultyLevel.fromInt(2), 75.0);
+        roomService.createRoom("Room 3", DifficultyLevel.fromInt(3), 100.0);
 
         List<Room> rooms = roomService.getRooms();
         assertFalse(rooms.isEmpty());
@@ -103,7 +106,7 @@ public class RoomServiceTest {
     @Test
     void givenExistingRoomName_whenGettingRoomByName_thenRoomIsReturned() {
         String name = "Room Egipcio";
-        int level = 3;
+        DifficultyLevel level = DifficultyLevel.fromInt(3);
         double price = 100.0;
         roomService.createRoom(name, level, price);
 
@@ -121,7 +124,7 @@ public class RoomServiceTest {
         assertFalse(foundRoom.isPresent());
     }@Test
     void givenExistingRoomId_whenGettingRoomById_thenRoomIsReturned() {
-        Room createdRoom = roomService.createRoom("Room Egipcio", 3, 100.0);
+        Room createdRoom = roomService.createRoom("Room Egipcio", DifficultyLevel.fromInt(3), 100.0);
         Long roomId = createdRoom.getId();
 
         Optional<Room> foundRoom = roomService.getRoom(roomId);
@@ -138,7 +141,7 @@ public class RoomServiceTest {
     }
     @Test
     void givenExistingRoomId_whenDeletingRoomById_thenRoomIsDeleted() {
-        Room createdRoom = roomService.createRoom("Room Egipcio", 3, 100.0);
+        Room createdRoom = roomService.createRoom("Room Egipcio", DifficultyLevel.fromInt(3), 100.0);
         Long roomId = createdRoom.getId();
 
         boolean isDeleted = roomService.deleteRoom(roomId);
@@ -155,7 +158,7 @@ public class RoomServiceTest {
     }
     @Test
     void givenExistingRoomName_whenDeletingRoomByName_thenRoomIsDeleted() {
-        roomService.createRoom("Room Egipcio", 3, 100.0);
+        roomService.createRoom("Room Egipcio", DifficultyLevel.fromInt(3), 100.0);
 
         boolean isDeleted = roomService.deleteRoom("Room Egipcio");
         assertTrue(isDeleted);
@@ -172,19 +175,19 @@ public class RoomServiceTest {
     @Test
     void givenInvalidPrice_whenCreatingRoom_thenThrowException() {
         String name = "Room Test";
-        int level = 3;
+        DifficultyLevel level = DifficultyLevel.fromInt(3);
         double invalidPrice = 0.0;
 
-       Exception e = assertThrows(InvalidPriceException.class, () -> {
+       Exception e = assertThrows(ValidationException.class, () -> {
             roomService.createRoom(name, level, invalidPrice);
         });
-        assertEquals("El precio debe ser mayor a 0.", e.getMessage());
+        assertEquals("El precio debe ser un valor positivo.", e.getMessage());
     }
     @Test
     void givenNegativePrice_whenCreatingRoom_thenThrowInvalidPriceException() {
 
-        assertThrows(InvalidPriceException.class, () -> {
-            roomService.createRoom("Test Room", 1, -10.0);
+        assertThrows(ValidationException.class, () -> {
+            roomService.createRoom("Test Room", DifficultyLevel.fromInt(1), -10.0);
         });
     }
 }

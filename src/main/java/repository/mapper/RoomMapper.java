@@ -2,7 +2,7 @@ package repository.mapper;
 
 import constant.FieldName;
 import exception.factory.ExceptionFactory;
-import model.DifficultyLevel;
+import constant.DifficultyLevel;
 import model.Room;
 
 import java.sql.PreparedStatement;

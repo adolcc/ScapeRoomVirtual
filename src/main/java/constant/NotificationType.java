@@ -1,4 +1,4 @@
-package model;
+package constant;
 
 public enum NotificationType {
     EMAIL("Correo electrónico"),

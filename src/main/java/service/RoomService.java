@@ -4,7 +4,7 @@ import constant.EntityType;
 import exception.factory.ExceptionFactory;
 import model.Clue;
 import model.Decoration;
-import model.DifficultyLevel;
+import constant.DifficultyLevel;
 import model.Room;
 import repository.dao.ClueDAO;
 import repository.dao.DecorationDAO;

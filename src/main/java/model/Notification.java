@@ -1,5 +1,7 @@
 package model;
 
+import constant.NotificationType;
+
 import java.time.LocalDateTime;
 
 public class Notification {

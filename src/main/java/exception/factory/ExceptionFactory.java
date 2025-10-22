@@ -26,7 +26,7 @@ public class ExceptionFactory {
     }
 
     public static DuplicateResourceException duplicateValue(EntityType entity, String identifier) {
-        return new DuplicateResourceException(String.format("El %s '%s' ya está asignado.", entity.getDisplayName(), identifier));
+        return new DuplicateResourceException(String.format("Ya existe %s '%s'.", entity.getDisplayName(), identifier));
     }
 
     public static NotFoundException notFound(EntityType resourceType, String identifier) {

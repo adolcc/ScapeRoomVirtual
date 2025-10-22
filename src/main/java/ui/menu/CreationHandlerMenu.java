@@ -2,7 +2,7 @@ package ui.menu;
 
 import exception.core.DuplicateResourceException;
 import exception.core.ValidationException;
-import model.DifficultyLevel;
+import constant.DifficultyLevel;
 
 public class CreationHandlerMenu extends BaseHandlerMenu {
 

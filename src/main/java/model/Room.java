@@ -1,5 +1,6 @@
 package model;
 
+import constant.DifficultyLevel;
 import constant.FieldName;
 import exception.factory.ExceptionFactory;
 

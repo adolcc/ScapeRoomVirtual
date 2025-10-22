@@ -1,3 +1,5 @@
+import exception.core.DuplicateResourceException;
+import exception.core.ValidationException;
 import model.Decoration;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
@@ -58,61 +60,61 @@ public class DecorationServiceTest {
     @Test
     void givenNullName_whenCreatingDecoration_thenThrowException() {
 
-        Exception e = assertThrows(NullNameException.class,
+        Exception e = assertThrows(ValidationException.class,
                 () -> decorationService.createDecoration(null, "plástico", 17.71));
 
-        assertEquals("El nombre no puede ser nulo.", e.getMessage());
+        assertEquals("El campo 'nombre' es obligatorio.", e.getMessage());
     }
 
     @Test
     void givenEmptyName_whenCreatingDecoration_thenThrowException() {
 
-        Exception e = assertThrows(EmptyNameException.class,
+        Exception e = assertThrows(ValidationException.class,
                 () -> decorationService.createDecoration(" ", "plástico", 17.71));
 
-        assertEquals("El nombre no puede estar vacío.", e.getMessage());
+        assertEquals("El campo 'nombre' es obligatorio.", e.getMessage());
     }
 
     @Test
     void givenNullMaterial_whenCreatingDecoration_thenThrowException() {
-        Exception e = assertThrows(NullNameException.class,
+        Exception e = assertThrows(ValidationException.class,
                 () -> decorationService.createDecoration("Caja Oculta", null, 53.74));
 
 
-        assertEquals("El nombre no puede ser nulo.", e.getMessage());
+        assertEquals("El campo 'nombre' es obligatorio.", e.getMessage());
     }
 
     @Test
     void givenEmptyMaterial_whenCreatingDecoration_thenThrowException() {
-        Exception e = assertThrows(EmptyNameException.class,
+        Exception e = assertThrows(ValidationException.class,
                 () -> decorationService.createDecoration("Caja Oculta", " ", 53.74));
 
-        assertEquals("El nombre no puede estar vacío.", e.getMessage());
+        assertEquals("El campo 'nombre' es obligatorio.", e.getMessage());
     }
 
     @Test
     void givenZeroPrice_whenCreatingDecoration_thenThrowException() {
-        Exception e = assertThrows(InvalidPriceException.class,
+        Exception e = assertThrows(ValidationException.class,
                 () -> decorationService.createDecoration("Cuaderno de Registro", "cartón y papel", 0.0));
 
-        assertEquals("El precio no puede ser nulo o negativo.", e.getMessage());
+        assertEquals("El precio debe ser un valor positivo.", e.getMessage());
     }
 
     @Test
     void givenNegativePrice_whenCreatingDecoration_thenThrowException() {
-        Exception e = assertThrows(InvalidPriceException.class,
+        Exception e = assertThrows(ValidationException.class,
                 () -> decorationService.createDecoration("Cuaderno de Registro", "cartón y papel", -22.33));
 
-        assertEquals("El precio no puede ser nulo o negativo.", e.getMessage());
+        assertEquals("El precio debe ser un valor positivo.", e.getMessage());
     }
 
     @Test
     void givenDuplicateName_whenCreatingDecoration_thenThrowException() {
         decorationService.createDecoration("Cuadro Sospechoso", "madera y tela", 55.77);
 
-        Exception e = assertThrows(DuplicateNameException.class,
+        Exception e = assertThrows(DuplicateResourceException.class,
                 () -> decorationService.createDecoration("Cuadro sospechoso", "tela y madera", 77.55));
 
-        assertEquals("El nombre escogido ya está siendo utilizado.", e.getMessage());
+        assertEquals("Ya existe Decoración 'Cuadro sospechoso'.", e.getMessage());
     }
 }

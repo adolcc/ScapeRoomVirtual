@@ -28,9 +28,9 @@ public class TicketHandlerMenu extends Menu {
             case 2:
                 viewTickets();
                 break;
-            case 3:
-                findTicket();
-                break;
+//            case 3:
+//                findTicket();
+//                break;
             case 0:
                 exit = true;
                 break;
@@ -54,11 +54,11 @@ public class TicketHandlerMenu extends Menu {
         pressEnterToContinue();
     }
 
-    private void findTicket() {
-        System.out.println("\n🔍 Buscando ticket...");
-        Long ticketId = readIntInput("ID del ticket: ").longValue();
-        // TODO: Integrar con TicketService
-        System.out.println("✅ Funcionalidad en desarrollo.");
-        pressEnterToContinue();
-    }
+//    private void findTicket() {
+//        System.out.println("\n🔍 Buscando ticket...");
+//        Long ticketId = readIntInput("ID del ticket: ").longValue();
+//        // TODO: Integrar con TicketService
+//        System.out.println("✅ Funcionalidad en desarrollo.");
+//        pressEnterToContinue();
+//    }
 }

@@ -1,7 +1,7 @@
 package service;
 
 import model.Notification;
-import model.NotificationType;
+import constant.NotificationType;
 import model.Player;
 
 import java.util.*;

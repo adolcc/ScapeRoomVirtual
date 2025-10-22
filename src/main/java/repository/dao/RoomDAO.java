@@ -1,5 +1,7 @@
 package repository.dao;
 
+import constant.FieldName;
+import exception.factory.ExceptionFactory;
 import model.Room;
 import exception.core.PersistenceException;
 import repository.database.DatabaseConfig;
@@ -65,7 +67,7 @@ public class RoomDAO implements GenericDAO<Room, Long> {
     @Override
     public Optional<Room> findByName(String name) {
         if (name == null || name.trim().isEmpty()) {
-            throw new IllegalArgumentException("El nombre no puede estar vacío.");
+            throw ExceptionFactory.requiredField(FieldName.NAME);
         }
         String sql = "SELECT id, name, difficulty_level, price , escape_room_id FROM room WHERE name = ?";
 

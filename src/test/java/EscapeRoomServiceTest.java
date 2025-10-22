@@ -1,3 +1,5 @@
+import exception.core.DuplicateResourceException;
+import exception.core.ValidationException;
 import model.EscapeRoom;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -38,26 +40,26 @@ public class EscapeRoomServiceTest {
 
     @Test
     void givenNullName_whenCreatingEscapeRoom_thenThrowException() {
-        Exception e = assertThrows(NullEscapeRoomNameException.class,
+        Exception e = assertThrows(ValidationException.class,
                 () -> escapeRoomService.createEscapeRoom(null));
 
-        assertEquals("El nombre del Escape Room no puede ser nulo.", e.getMessage());
+        assertEquals("El campo 'nombre' es obligatorio.", e.getMessage());
     }
 
     @Test
     void givenEmptyName_whenCreatingEscapeRoom_thenThrowException(){
-        Exception e = assertThrows(EmptyEscapeRoomNameException.class,
+        Exception e = assertThrows(ValidationException.class,
                 () -> escapeRoomService.createEscapeRoom(" "));
 
-        assertEquals("El nombre del Escape Room no puede estar vacío.", e.getMessage());
+        assertEquals("El campo 'nombre' es obligatorio.", e.getMessage());
     }
 
     @Test
     void givenAlreadyExistingName_whenCreatingEscapeRoom_thenThrowException() {
         escapeRoomService.createEscapeRoom("La Prisión");
-        Exception e = assertThrows(DuplicateEscapeRoomNameException.class,
+        Exception e = assertThrows(DuplicateResourceException.class,
         () -> escapeRoomService.createEscapeRoom("La Prisión"));
 
-        assertEquals("El nombre elegido corresponde a un Escape Room existente.", e.getMessage());
+        assertEquals("Ya existe Escape Room 'La Prisión'.", e.getMessage());
     }
 }

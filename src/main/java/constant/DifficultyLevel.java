@@ -1,4 +1,4 @@
-package model;
+package constant;
 
 public enum DifficultyLevel {
     VERY_EASY(1, "🌱 Principiante"),
